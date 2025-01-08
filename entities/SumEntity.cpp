@@ -1,4 +1,6 @@
+#include <memory>
 #include "SumEntity.h"
+#include "VariableEntity.h"
 
 std::string SumEntity::toString() {
     string result = "(";
@@ -28,7 +30,27 @@ bool SumEntity::addElements(std::initializer_list<BaseEntity*> list) {
 }
 
 BaseEntity* SumEntity::evaluateFunction() {
-    return BaseEntity::evaluateFunction();
+    BaseEntity::evaluateFunction();
+
+    for(vector<BaseEntity*>::iterator iter = elements.begin(); iter != elements.end(); iter++) {
+        //if subelement is also sum, we can merge them.
+        /*
+        if(SumEntity* s = dynamic_cast<SumEntity*>(*iter)) {
+            //elements.insert(this->elements.end(), s->elements.begin(), s->elements.end());
+            //elements.erase(iter);
+            //s->toString();
+        }
+
+        else if(VariableEntity* v = dynamic_pointer_cast<VariableEntity*>(*iter)) {
+            elements.insert(this->elements.end(), s->elements.begin(), s->elements.end());
+            elements.erase(iter);
+         }
+        else if(ScalarEntity* s = dynamic_pointer_cast<ScalarEntity*>(*iter)) {
+            elements.insert(this->elements.end(), s->elements.begin(), s->elements.end());
+            elements.erase(iter);
+        }
+        */
+    }
 }
 
 BaseEntity* SumEntity::evaluateValue(double x) {

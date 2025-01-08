@@ -40,7 +40,6 @@ void BaseEntity::evaluateFunction(BaseEntity* entity) {
     for(auto element: elements) {
         entity -> addElement(element->evaluateFunction());
     }
-    entity -> evaluateFunction();
 }
 
 /* It will return new object with all the variables replaced by their values. Variables of unknown value will remain.
