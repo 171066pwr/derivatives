@@ -3,23 +3,25 @@
 
 #include "BaseEntity.h"
 #include "../utils/StringUtils.h"
+#include "ScalarEntity.h"
 
 class VariableEntity: public BaseEntity {
 private:
-    char symbol = 'x';
+    string symbol = "x";
     double multiplier;
     double power = 1;
 
 public:
     VariableEntity(double multiplier);
-
     VariableEntity(double multiplier, double power);
+    VariableEntity(string symbol, double multiplier, double power);
+    std::string toString() override;
+    BaseEntity* evaluateValue(double x) override;
+    ScalarEntity* evaluate(double x);
 
-    char getSymbol() {
+    string getSymbol() {
         return symbol;
     }
-
-    std::string toString() override;
 };
 
 #endif //DERIVATIVES_VARIABLEENTITY_H

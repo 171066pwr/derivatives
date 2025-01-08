@@ -12,8 +12,8 @@ private:
 
 public:
     ScalarEntity(double value);
-
-    std::string toString();
+    std::string toString() override ;
+    BaseEntity* evaluateValue(double x) override;
 };
 
 #endif //DERIVATIVES_SCALARENTITY_H
