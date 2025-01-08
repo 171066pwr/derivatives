@@ -27,9 +27,12 @@ public:
      */
     virtual bool addElement(BaseEntity* element);
     virtual std::string toString();
-    virtual void evaluateFunction();
+    virtual BaseEntity* evaluateFunction();
     virtual BaseEntity* evaluateValue(double x);
     virtual BaseEntity* evaluateDerivative();
+
+    void evaluateValue(double x, BaseEntity* entity);
+    void evaluateFunction(BaseEntity* entity);
 };
 
 

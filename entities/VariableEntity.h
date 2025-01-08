@@ -16,6 +16,7 @@ public:
     VariableEntity(double multiplier, double power);
     VariableEntity(string symbol, double multiplier, double power);
     std::string toString() override;
+    BaseEntity* evaluateFunction() override ;
     BaseEntity* evaluateValue(double x) override;
     ScalarEntity* evaluate(double x);
 

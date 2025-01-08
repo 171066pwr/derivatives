@@ -26,3 +26,14 @@ bool SumEntity::addElements(std::initializer_list<BaseEntity*> list) {
     }
     return true;
 }
+
+BaseEntity* SumEntity::evaluateFunction() {
+    return BaseEntity::evaluateFunction();
+}
+
+BaseEntity* SumEntity::evaluateValue(double x) {
+    BaseEntity* evaluated = new SumEntity();
+    BaseEntity::evaluateValue(x, evaluated);
+
+    return evaluated;
+}

@@ -34,3 +34,11 @@ ScalarEntity* VariableEntity::evaluate(double x) {
     return new ScalarEntity(multiplier * pow(x, power));
 }
 
+BaseEntity *VariableEntity::evaluateFunction() {
+    if(multiplier == 0)
+        return new ScalarEntity(0);
+    if(power == 0)
+        return new ScalarEntity(1);
+    return this;
+}
+
