@@ -8,20 +8,31 @@
 class VariableEntity: public BaseEntity {
 private:
     string symbol = "x";
-    double multiplier;
-    double power = 1;
+    double power;
+    ScalarEntity* getScalarEdgeCases();
 
 public:
-    VariableEntity(double multiplier);
-    VariableEntity(double multiplier, double power);
-    VariableEntity(string symbol, double multiplier, double power);
+    VariableEntity(double multiplier = 1, double power = 1);
+    VariableEntity(string symbol, double multiplier = 1, double power = 1);
     std::string toString() override;
     BaseEntity* evaluateFunction() override ;
     BaseEntity* evaluateValue(double x) override;
     ScalarEntity* evaluate(double x);
+    void add(VariableEntity entity) {
+        if (this->symbol == entity.symbol && this->power == entity.power)
+            this->multiplier += entity.multiplier;
+    }
 
     string getSymbol() {
         return symbol;
+    }
+
+    double getMultiplier() {
+        return multiplier;
+    }
+
+    double getPower() {
+        return power;
     }
 };
 

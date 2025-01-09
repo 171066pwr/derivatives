@@ -5,7 +5,12 @@
 #include "../utils/Logger.h"
 
 class SumEntity: public BaseEntity {
+    void mergeSums();
+    void mergeScalars();
+    void mergeVariables();
+    void applyMultiplier();
 public:
+    SumEntity(double multiplier = 1): BaseEntity(multiplier) {};
     std::string toString();
     bool addElement(BaseEntity * element) override;
     bool addElements(std::initializer_list<BaseEntity*> list);

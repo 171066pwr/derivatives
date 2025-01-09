@@ -10,6 +10,10 @@ public:
     static void log(string s) {
         cout << s << endl;
     }
+
+    static void warn(string s);
+    static void important(string s);
+    static void success(string s);
 };
 
 #endif //DERIVATIVES_LOGGER_H

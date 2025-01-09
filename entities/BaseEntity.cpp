@@ -1,13 +1,14 @@
 #include "BaseEntity.h"
 
-BaseEntity::BaseEntity() {
-}
+#include "../utils/StringUtils.h"
+
+BaseEntity::BaseEntity(double multiplier): multiplier(multiplier) {}
 
 BaseEntity::~BaseEntity() {
 }
 
 std::string BaseEntity::toString() {
-    string result = "(";
+    string result = multiplier != 1 ? StringUtils::toString(this->multiplier) + "(" : "(";
     for(auto element: elements) {
         result += element->toString() + " ";
     }
@@ -21,15 +22,17 @@ bool BaseEntity::addElement(BaseEntity * element) {
 }
 
 BaseEntity*  BaseEntity::evaluateFunction() {
-    BaseEntity* evaluated;
-    for(int i = 0; i < elements.size(); i++) {
-        evaluated = elements[i]->evaluateFunction();
-        //if evaluation returned a new object we are freeing memory of old object before losing reference to it, is that correct?
-        //okay, I don't know how to do it without breaking the program, probably because in tests I didn't create them with new operator.
-        //Now it works, just debugger crashes upon vector inspection - known bug, not fixed for 5 years.
-        if(evaluated != elements[i]) {
-            delete elements[i];
-            elements[i] = evaluated;
+    if (elements.size() > 0) {
+        BaseEntity* evaluated;
+        for(int i = 0; i < elements.size(); i++) {
+            evaluated = elements[i]->evaluateFunction();
+            //if evaluation returned a new object we are freeing memory of old object before losing reference to it, is that correct?
+            //okay, I don't know how to do it without breaking the program, probably because in tests I didn't create them with new operator.
+            //Now it works, just debugger crashes upon vector inspection - known bug, not fixed for 5 years.
+            if(evaluated != elements[i]) {
+                delete elements[i];
+                elements[i] = evaluated;
+            }
         }
     }
     return this;
@@ -37,8 +40,8 @@ BaseEntity*  BaseEntity::evaluateFunction() {
 
 // TODO
 void BaseEntity::evaluateFunction(BaseEntity* entity) {
-    for(auto element: elements) {
-        entity -> addElement(element->evaluateFunction());
+    for(int i = 0; i < elements.size(); i++) {
+        entity -> addElement(elements[i]->evaluateFunction());
     }
 }
 

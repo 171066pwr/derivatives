@@ -2,6 +2,8 @@
 #include <cmath>
 #include "VariableEntity.h"
 
+#include "../utils/Logger.h"
+
 std::string VariableEntity::toString() {
     string x = (multiplier == 1 ? "" : StringUtils::toString(multiplier)) + symbol;
     if(power != 1) {
@@ -10,11 +12,9 @@ std::string VariableEntity::toString() {
     return x;
 }
 
-VariableEntity::VariableEntity(double multiplier) : multiplier(multiplier){}
+VariableEntity::VariableEntity(double multiplier, double power) : BaseEntity(multiplier), power(power) {}
 
-VariableEntity::VariableEntity(double multiplier, double power) : multiplier(multiplier), power(power) {}
-
-VariableEntity::VariableEntity(string symbol, double multiplier, double power) : symbol(symbol), multiplier(multiplier), power(power) {}
+VariableEntity::VariableEntity(string symbol, double multiplier, double power) :BaseEntity(multiplier), symbol(symbol), power(power) {}
 
 BaseEntity* VariableEntity::evaluateValue(double x) {
     BaseEntity * result;
@@ -31,14 +31,25 @@ BaseEntity* VariableEntity::evaluateValue(double x) {
 }
 
 ScalarEntity* VariableEntity::evaluate(double x) {
+    ScalarEntity* edgeCase = getScalarEdgeCases();
+    if (edgeCase)
+        return edgeCase;
     return new ScalarEntity(multiplier * pow(x, power));
 }
 
-BaseEntity *VariableEntity::evaluateFunction() {
+BaseEntity* VariableEntity::evaluateFunction() {
+    ScalarEntity* edgeCase = getScalarEdgeCases();
+    if (edgeCase)
+        return edgeCase;
+    return this;
+}
+
+ScalarEntity* VariableEntity::getScalarEdgeCases() {
     if(multiplier == 0)
         return new ScalarEntity(0);
     if(power == 0)
         return new ScalarEntity(1);
-    return this;
+    return nullptr;
 }
+
 
