@@ -7,12 +7,20 @@ class SumEntityTest: public EntityTest {
 public:
     void runTest() override {
         testSum();
-        testMultiplier();
+        testMultiplier0();
+        testMultiplier1();
+        testMultiplier2();
+        testMultiplierValue();
+        testMultiplierNested();
     }
 
 private:
     void testSum();
-    void testMultiplier();
+    void testMultiplier0();
+    void testMultiplier1();
+    void testMultiplier2();
+    void testMultiplierValue();
+    void testMultiplierNested();
 };
 
 #endif //SUMENTITYTEST_H

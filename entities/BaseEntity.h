@@ -17,10 +17,6 @@ public:
     BaseEntity(double multiplier, initializer_list<BaseEntity*> list);
     ~BaseEntity();
 
-    /* some functions accept only 1 element (sin/ln, if something else is added then it's added to their sum/multiplication single element)
-     * grouping of elements can take place when adding on the rules of the function (i.e. scalars, variable of equal power, possible further)
-     * it is even better that we won't have it all in one huge class but distributed across responsible classes
-     */
     bool operator==(const BaseEntity& entity) {
         bool result = multiplier == entity.multiplier;
         result = result && elements.size() == entity.elements.size();
@@ -35,6 +31,10 @@ public:
         return !(*this == entity);
     }
 
+    /* some functions accept only 1 element (sin/ln, if something else is added then it's added to their sum/multiplication single element)
+ * grouping of elements can take place when adding on the rules of the function (i.e. scalars, variable of equal power, possible further)
+ * it is even better that we won't have it all in one huge class but distributed across responsible classes
+ */
     virtual bool addElement(BaseEntity* element);
     virtual bool addElements(initializer_list<BaseEntity *> list);
     virtual std::string toString();

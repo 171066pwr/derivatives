@@ -27,35 +27,49 @@ void SumEntityTest::testSum() {
     delete sum, subSumA, subSumB;
 }
 
-void SumEntityTest::testMultiplier() {
+void SumEntityTest::testMultiplier0() {
     Logger::important("Test SumEntity - multiplier");
-    BaseEntity* testEntity;
     Logger::important("Test multiplier 0");
-    BaseEntity* sum = new SumEntity(0,{new ScalarEntity(-99), new VariableEntity("pi", 2, 30),
-                                       new SumEntity(1, {new VariableEntity(1), new ScalarEntity(1000)})});
+    BaseEntity *sum = new SumEntity(0, {new ScalarEntity(-99), new VariableEntity("pi", 2, 30),
+                                        new SumEntity(1, {new VariableEntity(1), new ScalarEntity(1000)})});
     printAndEvaluateFunction(sum, "Evaluated Function, multiplier: 0");
-    testCondition(*sum == *new ScalarEntity(0), "Multiplier 0 transformed to scalar 0", "Failed to transform multiplier 0 into scalar 0");
+    testCondition(*sum == *new ScalarEntity(0), "Multiplier 0 transformed to scalar 0",
+                  "Failed to transform multiplier 0 into scalar 0");
     delete sum;
+}
+
+void SumEntityTest::testMultiplier1() {
     Logger::important("Test multiplier 1");
-    sum = new SumEntity(1, {new ScalarEntity(1), new VariableEntity(1)});
+    BaseEntity *sum = new SumEntity(1, {new ScalarEntity(1), new VariableEntity(1)});
     printAndEvaluateFunction(sum, "Evaluated Function, multiplier: 1");
     testCondition(sum->getElement(0) == *(new ScalarEntity(1)) && sum->getElement(0) == *(new VariableEntity(1)),
                   "Multiplied by 1 correctly", "Failed to multiply by 1");
     delete sum;
+}
+
+void SumEntityTest::testMultiplier2() {
     Logger::important("Test multiplier 2, function evaluation");
-    sum = new SumEntity(2, {new ScalarEntity(1), new VariableEntity(1)});
+    BaseEntity *sum = new SumEntity(2, {new ScalarEntity(1), new VariableEntity(1)});
     printAndEvaluateFunction(sum, "Evaluated Function, multiplier: 2");
     testCondition(sum->getElement(0) == *(new ScalarEntity(2)) && sum->getElement(0) == *(new VariableEntity(2)),
                   "Multiplied by 2 correctly", "Failed to multiply by 2");
     delete sum;
+}
+
+void SumEntityTest::testMultiplierValue() {
+    BaseEntity* testEntity;
     Logger::important("Test multiplier 2, raw value evaluation");
-    sum = new SumEntity(2, {new ScalarEntity(1), new VariableEntity(1)});
+    BaseEntity *sum = new SumEntity(2, {new ScalarEntity(1), new VariableEntity(1)});
     testEntity = printAndEvaluateValue(sum, 2, "Evaluated value");
     testCondition(testEntity->getElement(0) == *(new ScalarEntity(6)), "Evaluated for x=2 correctly", "Failed to evaluate value");
     delete sum, testEntity;
+}
+
+void SumEntityTest::testMultiplierNested() {
     Logger::important("Test multipliers on sum and subsum");
-    sum = new SumEntity(3, {new ScalarEntity(1), new VariableEntity(2, 2),
-            new SumEntity(2, {new ScalarEntity(1), new VariableEntity(2, 2)})});
+    BaseEntity* testEntity;
+    BaseEntity *sum = new SumEntity(3, {new ScalarEntity(1), new VariableEntity(2, 2),
+                                        new SumEntity(2, {new ScalarEntity(1), new VariableEntity(2, 2)})});
     testEntity = printAndEvaluateValue(sum, 2, "Raw value evaluation for x=2");
     testCondition(testEntity->getElement(0) == *(new ScalarEntity(81)), "Correct result of 81", "Incorrect, should be 81");
     sum = printAndEvaluateFunction(sum, "Function evaluation");
@@ -66,3 +80,10 @@ void SumEntityTest::testMultiplier() {
                   "Correct result of 81", "Incorrect, should be 81");
     delete sum, testEntity;
 }
+
+
+
+
+
+
+
