@@ -29,10 +29,10 @@ bool SumEntity::addElement(BaseEntity * element) {
 
 BaseEntity* SumEntity::evaluateFunction() {
     BaseEntity::evaluateFunction();
-    applyMultiplier();
     mergeSums();
     mergeVariables();
     mergeScalars();
+    applyMultiplier();
     if (elements.size() == 0)
         return new ScalarEntity(0);
     if (elements.size() == 1)
@@ -44,17 +44,6 @@ BaseEntity* SumEntity::evaluateValue(double x) {
     BaseEntity* evaluated = new SumEntity(this->multiplier);
     BaseEntity::evaluateElementsValue(x, evaluated);
     return evaluated;
-}
-
-void SumEntity::applyMultiplier() {
-    if (multiplier == 0) {
-        elements.clear();
-    } else if (multiplier != 1) {
-        for (auto element: elements) {
-            element->multiplyByScalar(multiplier);
-        }
-        multiplier = 1;
-    }
 }
 
 void SumEntity::mergeSums() {
@@ -117,5 +106,16 @@ void SumEntity::mergeVariables() {
         }
         if (variables[0]->getMultiplier() == 0)
             elements.erase(std::remove(elements.begin(), elements.end(), variables[0]), elements.end());
+    }
+}
+
+void SumEntity::applyMultiplier() {
+    if (multiplier == 0) {
+        elements.clear();
+    } else if (multiplier != 1) {
+        for (auto element: elements) {
+            element->multiplyByScalar(multiplier);
+        }
+        multiplier = 1;
     }
 }

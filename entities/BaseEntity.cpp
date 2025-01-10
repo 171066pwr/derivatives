@@ -64,7 +64,7 @@ void BaseEntity::evaluateFunction(BaseEntity* entity) {
  * For consistency I should probably also do it while evaluating function, will think about it later.
 */
 BaseEntity* BaseEntity::evaluateValue(double x) {
-    BaseEntity* evaluated = new BaseEntity();
+    BaseEntity* evaluated = new BaseEntity(multiplier);
     evaluateElementsValue(x, evaluated);
     return evaluated;
 }
