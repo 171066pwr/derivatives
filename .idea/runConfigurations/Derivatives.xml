@@ -1,0 +1,6 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Derivatives" type="CMakeRunConfiguration" factoryName="Application" singleton="true" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Tests" TARGET_NAME="Derivatives" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="Tests" RUN_TARGET_NAME="Derivatives">
+    <envs />
+    <method />
+  </configuration>
+</component>

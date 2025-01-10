@@ -11,9 +11,9 @@ class SumEntity: public BaseEntity {
     void applyMultiplier();
 public:
     SumEntity(double multiplier = 1): BaseEntity(multiplier) {};
+    SumEntity(double multiplier, initializer_list<BaseEntity*> list): BaseEntity(multiplier, list) {};
     std::string toString();
     bool addElement(BaseEntity * element) override;
-    bool addElements(std::initializer_list<BaseEntity*> list);
     BaseEntity* evaluateFunction() override ;
     BaseEntity* evaluateValue(double x) override;
     };

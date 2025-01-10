@@ -2,7 +2,7 @@
 
 int StringUtils::globalPrecision;
 std::stringstream StringUtils::ss;
-StringUtils initializer;
+StringUtils STRING_UTILS_INITIALIZER;
 
 StringUtils::StringUtils() {
     setGlobalPrecision(7);

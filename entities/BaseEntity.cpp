@@ -4,6 +4,10 @@
 
 BaseEntity::BaseEntity(double multiplier): multiplier(multiplier) {}
 
+BaseEntity::BaseEntity(double multiplier, initializer_list<BaseEntity *> list): multiplier(multiplier) {
+    addElements(list);
+}
+
 BaseEntity::~BaseEntity() {
 }
 
@@ -18,6 +22,14 @@ std::string BaseEntity::toString() {
 
 bool BaseEntity::addElement(BaseEntity * element) {
     elements.push_back(element);
+    return true;
+}
+
+bool BaseEntity::addElements(std::initializer_list<BaseEntity*> list) {
+    for (BaseEntity *entity: list) {
+        if (!addElement(entity))
+            return false;
+    }
     return true;
 }
 
@@ -41,7 +53,7 @@ BaseEntity*  BaseEntity::evaluateFunction() {
 // TODO
 void BaseEntity::evaluateFunction(BaseEntity* entity) {
     for(int i = 0; i < elements.size(); i++) {
-        entity -> addElement(elements[i]->evaluateFunction());
+        entity->addElement(elements[i]->evaluateFunction());
     }
 }
 
@@ -53,15 +65,15 @@ void BaseEntity::evaluateFunction(BaseEntity* entity) {
 */
 BaseEntity* BaseEntity::evaluateValue(double x) {
     BaseEntity* evaluated = new BaseEntity();
-    evaluateValue(x, evaluated);
+    evaluateElementsValue(x, evaluated);
     return evaluated;
 }
 
-void BaseEntity::evaluateValue(double x, BaseEntity* entity) {
+void BaseEntity::evaluateElementsValue(double x, BaseEntity *entity) {
     for(auto element: elements) {
-        entity -> addElement(element->evaluateValue(x));
+        entity->addElement(element->evaluateValue(x));
     }
-    entity -> evaluateFunction();
+    entity->evaluateFunction();
 }
 
 //It will return new object
@@ -71,9 +83,9 @@ BaseEntity* BaseEntity::evaluateDerivative() {
     //Just remember that objects allocated globally have to be deleted manually!
     BaseEntity* derivative = new BaseEntity();
     for(auto element: elements) {
-        derivative -> addElement(element->evaluateDerivative());
+        derivative->addElement(element->evaluateDerivative());
     }
     //re-evaluate after derivative
-    derivative -> evaluateFunction();
+    derivative->evaluateFunction();
     return derivative;
 }

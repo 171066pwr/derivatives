@@ -11,7 +11,7 @@ std::string SumEntity::toString() {
     }
     string result = multiplier != 1 ? StringUtils::toString(this->multiplier) + "(" : "(";
     for(int i = 0; i < elements.size(); i++) {
-        result += elements[i] -> toString();
+        result += elements[i]->toString();
         if(elements[i] != elements.back() && elements[i+1]->getMultiplier() >= 0)
             result += " + ";
     }
@@ -21,16 +21,8 @@ std::string SumEntity::toString() {
 
 bool SumEntity::addElement(BaseEntity * element) {
     if(!BaseEntity::addElement(element)){
-        Logger::log("Failed to add element: " + element -> toString());
+        Logger::log("Failed to add element: " + element->toString());
         return false;
-    }
-    return true;
-}
-
-bool SumEntity::addElements(std::initializer_list<BaseEntity*> list) {
-    for(BaseEntity * entity: list) {
-        if(!addElement(entity))
-            return false;
     }
     return true;
 }
@@ -41,7 +33,8 @@ BaseEntity* SumEntity::evaluateFunction() {
     mergeSums();
     mergeVariables();
     mergeScalars();
-
+    if (elements.size() == 0)
+        return new ScalarEntity(0);
     if (elements.size() == 1)
         return elements[0];
     return this;
@@ -49,8 +42,7 @@ BaseEntity* SumEntity::evaluateFunction() {
 
 BaseEntity* SumEntity::evaluateValue(double x) {
     BaseEntity* evaluated = new SumEntity(this->multiplier);
-    BaseEntity::evaluateValue(x, evaluated);
-
+    BaseEntity::evaluateElementsValue(x, evaluated);
     return evaluated;
 }
 
@@ -75,7 +67,7 @@ void SumEntity::mergeSums() {
             toErase.push_back(*iter);
         }
     }
-    //Erase merged SumEntities in separate loop
+    //Erase merged SumEntities in separate loop - iterator invalidates on modification
     for (auto e: toErase) {
         elements.erase(std::remove(elements.begin(), elements.end(), e), elements.end());
     }
@@ -95,18 +87,8 @@ void SumEntity::mergeScalars() {
             elements.erase(std::remove(elements.begin(), elements.end(), scalars[i]), elements.end());
         }
     }
-    if (scalars.size()  == 1 && scalars[0] -> getMultiplier() == 0)
+    if (scalars.size()  == 1 && scalars[0]->getMultiplier() == 0)
         elements.erase(std::remove(elements.begin(), elements.end(), scalars[0]), elements.end());
-    /*
-else if(VariableEntity* v = dynamic_pointer_cast<VariableEntity*>(*iter)) {
-    elements.insert(this->elements.end(), s->elements.begin(), s->elements.end());
-    elements.erase(iter);
- }
-else if(ScalarEntity* s = dynamic_pointer_cast<ScalarEntity*>(*iter)) {
-    elements.insert(this->elements.end(), s->elements.begin(), s->elements.end());
-    elements.erase(iter);
-}
-*/
 }
 
 void SumEntity::mergeVariables() {
@@ -116,7 +98,7 @@ void SumEntity::mergeVariables() {
 
     for(vector<BaseEntity*>::iterator iter = elements.begin(); iter != elements.end(); iter++) {
         if(VariableEntity* v = dynamic_cast<VariableEntity*>(*iter)) {
-            VarKey key = {v -> getSymbol(), v -> getPower()};
+            VarKey key = {v->getSymbol(), v->getPower()};
             if (varMap.find(key) != varMap.end()) {
                 varMap[key].push_back(v);
             } else {

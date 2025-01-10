@@ -8,7 +8,7 @@
 
 class ScalarEntity: public BaseEntity {
 public:
-    ScalarEntity(double value);
+    ScalarEntity(double multiplier);
     std::string toString() override;
     BaseEntity* evaluateValue(double x) override;
     bool addElement(BaseEntity *element) override;

@@ -1,0 +1,6 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Derivatives External" type="CMakeRunConfiguration" factoryName="Application" singleton="true" PROGRAM_PARAMS="/c &quot;start cmd.exe @cmd /c &quot;Derivatives.exe&quot;&quot;" WORKING_DIR="file://$PROJECT_DIR$/cmake-build-debug" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Tests" TARGET_NAME="Derivatives" CONFIG_NAME="Debug" RUN_PATH="C:\Windows\System32\cmd.exe">
+    <envs />
+    <method />
+  </configuration>
+</component>
