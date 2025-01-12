@@ -3,10 +3,13 @@
 
 #include "../utils/Logger.h"
 #include "../entities/BaseEntity.h"
+#include "../utils/StringUtils.h"
 
 class EntityTest {
 public:
-    virtual void runTest() = 0;
+    virtual void runTest(string title){
+        Logger::log("\n------------\t" + title + "        ------------");
+    };
 
     template <typename T>
     void testType(BaseEntity *testEntity, string successMsg, string failMsg){
@@ -29,8 +32,8 @@ public:
 
     BaseEntity* printAndEvaluateValue(BaseEntity *e, double x, string comment = "") {
         BaseEntity* result;
-        cout << (comment == "" ? "" : comment + ":\n") << e->toString();
-        cout << "   =    " << (result = e->evaluateValue(x))->toString() << endl;
+        cout << (comment == "" ? "" : comment + ":\n") << "[x == " + StringUtils::toString(x) + "]   " << e->toString();
+        cout << "   =   " << (result = e->evaluateValue(x))->toString() << endl;
         return result;
     }
 

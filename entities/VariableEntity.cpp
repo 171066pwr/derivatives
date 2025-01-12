@@ -2,7 +2,17 @@
 #include <cmath>
 #include "VariableEntity.h"
 
-#include "../utils/Logger.h"
+BaseEntity *VariableEntity::copy() {
+    return new VariableEntity(symbol, multiplier, power);
+}
+
+bool VariableEntity::equals(const BaseEntity *entity) {
+    const VariableEntity* e = dynamic_cast<const VariableEntity*>(entity);
+    if(e == nullptr)
+        return false;
+    else
+        return this->symbol == e->symbol && this->multiplier == e->multiplier && this->power == e->power;
+}
 
 std::string VariableEntity::toString() {
     string x = (multiplier == 1 ? "" : StringUtils::toString(multiplier)) + symbol;
@@ -51,5 +61,3 @@ ScalarEntity* VariableEntity::getScalarEdgeCases() {
         return new ScalarEntity(1);
     return nullptr;
 }
-
-

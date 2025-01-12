@@ -27,6 +27,6 @@ set(TEST_FILES test/MainTest.cpp entities/BaseEntity.cpp entities/BaseEntity.h e
         test/MultiplicationEntityTest.cpp
         test/MultiplicationEntityTest.h
         entities/MultiplicationEntity.cpp
-        entities/MultiplicationEntity.h utils/ConsoleUtils.cpp utils/ConsoleUtils.h)
+        entities/MultiplicationEntity.h utils/ConsoleUtils.cpp utils/ConsoleUtils.h test/VariableEntityTest.cpp test/VariableEntityTest.h)
 
 add_executable(Tests ${TEST_FILES})

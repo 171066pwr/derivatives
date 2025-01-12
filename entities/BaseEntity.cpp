@@ -8,7 +8,24 @@ BaseEntity::BaseEntity(double multiplier, initializer_list<BaseEntity *> list): 
     addElements(list);
 }
 
-BaseEntity::~BaseEntity() {
+BaseEntity::~BaseEntity() {}
+
+BaseEntity *BaseEntity::copy() {
+    BaseEntity* copy = new BaseEntity(multiplier);
+    for(auto element: elements){
+        copy->addElement(element->copy());
+    }
+    return copy;
+}
+
+bool BaseEntity::equals(const BaseEntity* entity) {
+    bool result = multiplier == entity->multiplier;
+    result = result && elements.size() == entity->elements.size();
+    if(result)
+        for(int i = 0; i < elements.size(); i++) {
+            result = result && *elements[i] == *(entity->elements[i]);
+        }
+    return result;
 }
 
 std::string BaseEntity::toString() {
@@ -48,13 +65,6 @@ BaseEntity*  BaseEntity::evaluateFunction() {
         }
     }
     return this;
-}
-
-// TODO
-void BaseEntity::evaluateFunction(BaseEntity* entity) {
-    for(int i = 0; i < elements.size(); i++) {
-        entity->addElement(elements[i]->evaluateFunction());
-    }
 }
 
 /* It will return new object with all the variables replaced by their values. Variables of unknown value will remain.

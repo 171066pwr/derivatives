@@ -4,11 +4,14 @@
 
 class BaseEntityTest: public EntityTest {
 public:
-    void runTest() override {
+    void runTest(string msg) override {
+        EntityTest::runTest(msg);
+        testOperators();
         testInterfaces();
     };
 private:
     void testInterfaces();
+    void testOperators();
 };
 
 #endif //BASEENTITYTEST_H

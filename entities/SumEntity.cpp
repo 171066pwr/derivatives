@@ -1,9 +1,23 @@
 #include <algorithm>
 #include "SumEntity.h"
-
 #include <map>
-
 #include "VariableEntity.h"
+
+BaseEntity* SumEntity::copy() {
+    BaseEntity* copy = new SumEntity(multiplier);
+    for(auto element: elements){
+        copy->addElement(element->copy());
+    }
+    return copy;
+}
+
+bool SumEntity::equals(const BaseEntity *entity) {
+    const SumEntity* sum = dynamic_cast<const SumEntity*>(entity);
+    if(sum == nullptr)
+        return false;
+    else
+        return BaseEntity::equals(sum);
+}
 
 std::string SumEntity::toString() {
     if (elements.size() == 0) {
@@ -43,7 +57,7 @@ BaseEntity* SumEntity::evaluateFunction() {
 BaseEntity* SumEntity::evaluateValue(double x) {
     BaseEntity* evaluated = new SumEntity(this->multiplier);
     BaseEntity::evaluateElementsValue(x, evaluated);
-    return evaluated;
+    return evaluated->evaluateFunction();
 }
 
 void SumEntity::mergeSums() {

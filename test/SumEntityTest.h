@@ -5,7 +5,9 @@
 
 class SumEntityTest: public EntityTest {
 public:
-    void runTest() override {
+    void runTest(string msg) override {
+        EntityTest::runTest(msg);
+        testEqualsOperators();
         testSum();
         testMultiplier0();
         testMultiplier1();
@@ -15,6 +17,7 @@ public:
     }
 
 private:
+    void testEqualsOperators();
     void testSum();
     void testMultiplier0();
     void testMultiplier1();

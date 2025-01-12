@@ -1,7 +1,13 @@
 #ifndef MULTIPLICATIONENTITY_H
 #define MULTIPLICATIONENTITY_H
 
-class MultiplicationEntityTest {
+#include "EntityTest.h"
+
+class MultiplicationEntityTest: public EntityTest {
+public:
+    void runTest(string msg) override {
+        EntityTest::runTest(msg);
+    }
 
 };
 

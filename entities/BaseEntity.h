@@ -16,19 +16,23 @@ public:
     BaseEntity(double multiplier = 1);
     BaseEntity(double multiplier, initializer_list<BaseEntity*> list);
     ~BaseEntity();
+    virtual BaseEntity* copy();
+    virtual bool equals(const BaseEntity* entity);
 
-    bool operator==(const BaseEntity& entity) {
-        bool result = multiplier == entity.multiplier;
-        result = result && elements.size() == entity.elements.size();
-        if(result)
-            for(int i = 0; i < elements.size(); i++) {
-                result = result && elements[i] == entity.elements[i];
-            }
-        return result;
+    virtual bool operator==(const BaseEntity& entity) {
+        return equals(&entity);
     }
 
-    bool operator!=(const BaseEntity& entity) {
+    virtual bool operator!=(const BaseEntity& entity) {
         return !(*this == entity);
+    }
+
+    virtual bool operator==(const BaseEntity* entity) {
+        return equals(entity);
+    }
+
+    virtual bool operator!=(const BaseEntity* entity) {
+        return this != entity;
     }
 
     /* some functions accept only 1 element (sin/ln, if something else is added then it's added to their sum/multiplication single element)
@@ -43,8 +47,6 @@ public:
     virtual BaseEntity* evaluateDerivative();
 
     void evaluateElementsValue(double x, BaseEntity *entity);
-    void evaluateFunction(BaseEntity* entity);
-
     /*
     std::string getRaw() {
         return raw;
