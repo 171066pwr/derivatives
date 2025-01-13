@@ -2,7 +2,7 @@
 #define DERIVATIVES_SCALARENTITY_H
 
 #include "BaseEntity.h"
-#include "../utils/StringUtils.h"
+#include "../utils/NumberUtils.h"
 #include <iostream>
 #include <sstream>
 

@@ -1,6 +1,7 @@
 #include "BaseEntity.h"
 
-#include "../utils/StringUtils.h"
+#include "../utils/NumberUtils.h"
+#include "ScalarEntity.h"
 
 BaseEntity::BaseEntity(double multiplier): multiplier(multiplier) {}
 
@@ -12,14 +13,14 @@ BaseEntity::~BaseEntity() {}
 
 BaseEntity *BaseEntity::copy() {
     BaseEntity* copy = new BaseEntity(multiplier);
-    for(auto element: elements){
-        copy->addElement(element->copy());
+    for(int i = 0; i < elements.size(); i++){
+        copy->addElement(elements[i]->copy());
     }
     return copy;
 }
 
 bool BaseEntity::equals(const BaseEntity* entity) {
-    bool result = multiplier == entity->multiplier;
+    bool result = NumberUtils::doubleEquals(multiplier, entity->multiplier);
     result = result && elements.size() == entity->elements.size();
     if(result)
         for(int i = 0; i < elements.size(); i++) {
@@ -29,15 +30,17 @@ bool BaseEntity::equals(const BaseEntity* entity) {
 }
 
 std::string BaseEntity::toString() {
-    string result = multiplier != 1 ? StringUtils::toString(this->multiplier) + "(" : "(";
-    for(auto element: elements) {
-        result += element->toString() + " ";
+    string result = multiplier != 1 ? NumberUtils::toString(this->multiplier) + "(" : "(";
+    for(int i = 0; i < elements.size(); i++){
+        result += elements[i]->toString() + " ";
     }
     result += ")";
     return result;
 }
 
 bool BaseEntity::addElement(BaseEntity * element) {
+    if(element->isFunction)
+        this->isFunction = true;
     elements.push_back(element);
     return true;
 }
@@ -52,6 +55,7 @@ bool BaseEntity::addElements(std::initializer_list<BaseEntity*> list) {
 
 BaseEntity*  BaseEntity::evaluateFunction() {
     if (elements.size() > 0) {
+        isFunction = false;
         BaseEntity* evaluated;
         for(int i = 0; i < elements.size(); i++) {
             evaluated = elements[i]->evaluateFunction();
@@ -62,6 +66,7 @@ BaseEntity*  BaseEntity::evaluateFunction() {
                 delete elements[i];
                 elements[i] = evaluated;
             }
+            isFunction = isFunction || evaluated->isFunction;
         }
     }
     return this;
@@ -70,8 +75,8 @@ BaseEntity*  BaseEntity::evaluateFunction() {
 /* It will return new object with all the variables replaced by their values. Variables of unknown value will remain.
  * Later it might be better to pass map of known variables (symbol-value pair) and VariableEntities could replace them based on this map.
  * Right now all know constants have to be coded in VariableEntity, which is also pretty handy solution, just not the best place for dictionary of constants.
- * Also - we are not freeing any memory here, because Evaluate Value explicitly creates new object, so we can evaluate for different X-es.
- * For consistency I should probably also do it while evaluating function, will think about it later.
+ * Also - we are not freeing any memory here, because Evaluate Value explicitly creates new object, so we can evaluate for different SUBSTITUTE_SYMBOL-es.
+ * For consistency I should probably also do it while evaluating isFunction, will think about it later.
 */
 BaseEntity* BaseEntity::evaluateValue(double x) {
     BaseEntity* evaluated = new BaseEntity(multiplier);
@@ -80,8 +85,8 @@ BaseEntity* BaseEntity::evaluateValue(double x) {
 }
 
 void BaseEntity::evaluateElementsValue(double x, BaseEntity *entity) {
-    for(auto element: elements) {
-        entity->addElement(element->evaluateValue(x));
+    for(int i = 0; i < elements.size(); i++){
+        entity->addElement(elements[i]->evaluateValue(x));
     }
     entity->evaluateFunction();
 }
@@ -89,13 +94,26 @@ void BaseEntity::evaluateElementsValue(double x, BaseEntity *entity) {
 //It will return new object
 BaseEntity* BaseEntity::evaluateDerivative() {
     //Have to allocate on the heap (global storage) with new operator. Without that it would be only allocated locally on stack
-    //And it would be lost when closing this function and stack frame; The space would be probably re-allocated to new frames.
+    //And it would be lost when closing this isFunction and stack frame; The space would be probably re-allocated to new frames.
     //Just remember that objects allocated globally have to be deleted manually!
+    if(!isFunction)
+        return new ScalarEntity(0);
+
     BaseEntity* derivative = new BaseEntity();
-    for(auto element: elements) {
-        derivative->addElement(element->evaluateDerivative());
+    for(int i = 0; i < elements.size(); i++){
+        derivative->addElement(elements[i]->evaluateDerivative());
     }
     //re-evaluate after derivative
     derivative->evaluateFunction();
     return derivative;
+}
+
+bool BaseEntity::updateAndGetIsFunction() {
+    for(int i = 0; i < elements.size(); i++) {
+        if(elements[i]->isFunction) {
+            isFunction = true;
+            break;
+        }
+    }
+    return isFunction;
 }

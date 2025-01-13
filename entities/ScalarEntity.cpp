@@ -17,7 +17,7 @@ bool ScalarEntity::equals(const BaseEntity *entity) {
 }
 
 std::string ScalarEntity::toString() {
-    return StringUtils::toString(multiplier);
+    return NumberUtils::toString(multiplier);
 }
 
 BaseEntity *ScalarEntity::evaluateValue(double x) {

@@ -2,8 +2,19 @@
 #include <cmath>
 #include "VariableEntity.h"
 
+string VariableEntity::SUBSTITUTE_SYMBOL = "x";
+map<string, double> VariableEntity::constants {std::make_pair("e", M_E), std::make_pair("pi", M_PI)};
+
+VariableEntity::VariableEntity(double multiplier) : BaseEntity(multiplier) {
+    updateAndGetIsFunction();
+}
+
+VariableEntity::VariableEntity(string symbol = SUBSTITUTE_SYMBOL, double multiplier): BaseEntity(multiplier), symbol(symbol) {
+    updateAndGetIsFunction();
+}
+
 BaseEntity *VariableEntity::copy() {
-    return new VariableEntity(symbol, multiplier, power);
+    return new VariableEntity(symbol, multiplier);
 }
 
 bool VariableEntity::equals(const BaseEntity *entity) {
@@ -11,53 +22,36 @@ bool VariableEntity::equals(const BaseEntity *entity) {
     if(e == nullptr)
         return false;
     else
-        return this->symbol == e->symbol && this->multiplier == e->multiplier && this->power == e->power;
+        return this->symbol == e->symbol && this->multiplier == e->multiplier;
 }
 
 std::string VariableEntity::toString() {
-    string x = (multiplier == 1 ? "" : StringUtils::toString(multiplier)) + symbol;
-    if(power != 1) {
-        x += "^" + StringUtils::toString(power);
-    }
-    return x;
+    return (multiplier == 1 ? "" :  multiplier == -1? "-" : NumberUtils::toString(multiplier)) + symbol;
 }
-
-VariableEntity::VariableEntity(double multiplier, double power) : BaseEntity(multiplier), power(power) {}
-
-VariableEntity::VariableEntity(string symbol, double multiplier, double power) :BaseEntity(multiplier), symbol(symbol), power(power) {}
 
 BaseEntity* VariableEntity::evaluateValue(double x) {
     BaseEntity * result;
-    if(symbol == "x") {
+    if(symbol == SUBSTITUTE_SYMBOL) {
         result = evaluate(x);
-    } else if(symbol == "e") {
-        result = evaluate(M_E);
-    } else if(symbol == "pi") {
-        result = evaluate(M_PI);
+    } else if(constants.find(symbol) != constants.end()) {
+        result = evaluate(constants[symbol]);
     } else {
-        result = this;
+        result = evaluateFunction();
     }
     return result;
 }
 
 ScalarEntity* VariableEntity::evaluate(double x) {
-    ScalarEntity* edgeCase = getScalarEdgeCases();
-    if (edgeCase)
-        return edgeCase;
-    return new ScalarEntity(multiplier * pow(x, power));
+    return new ScalarEntity(multiplier * x);
 }
 
 BaseEntity* VariableEntity::evaluateFunction() {
-    ScalarEntity* edgeCase = getScalarEdgeCases();
-    if (edgeCase)
-        return edgeCase;
+    if(multiplier == 0)
+        return new ScalarEntity(0);
     return this;
 }
 
-ScalarEntity* VariableEntity::getScalarEdgeCases() {
-    if(multiplier == 0)
-        return new ScalarEntity(0);
-    if(power == 0)
-        return new ScalarEntity(1);
-    return nullptr;
+bool VariableEntity::updateAndGetIsFunction() {
+    return symbol == SUBSTITUTE_SYMBOL;
 }
+

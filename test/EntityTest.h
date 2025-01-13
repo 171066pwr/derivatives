@@ -3,7 +3,7 @@
 
 #include "../utils/Logger.h"
 #include "../entities/BaseEntity.h"
-#include "../utils/StringUtils.h"
+#include "../utils/NumberUtils.h"
 
 class EntityTest {
 public:
@@ -32,7 +32,7 @@ public:
 
     BaseEntity* printAndEvaluateValue(BaseEntity *e, double x, string comment = "") {
         BaseEntity* result;
-        cout << (comment == "" ? "" : comment + ":\n") << "[x == " + StringUtils::toString(x) + "]   " << e->toString();
+        cout << (comment == "" ? "" : comment + ":\n") << "[x == " + NumberUtils::toString(x) + "]   " << e->toString();
         cout << "   =   " << (result = e->evaluateValue(x))->toString() << endl;
         return result;
     }

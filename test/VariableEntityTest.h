@@ -9,10 +9,12 @@ public:
         EntityTest::runTest(msg);
         testEqualsOperators();
         testVariableEvaluation();
+        testFunctionCheck();
     }
 private:
     void testEqualsOperators();
     void testVariableEvaluation();
+    void testFunctionCheck();
 };
 
 

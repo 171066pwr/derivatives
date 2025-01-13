@@ -23,7 +23,7 @@ std::string SumEntity::toString() {
     if (elements.size() == 0) {
         return "0";
     }
-    string result = multiplier != 1 ? StringUtils::toString(this->multiplier) + "(" : "(";
+    string result = multiplier != 1 ? NumberUtils::toString(this->multiplier) + "(" : "(";
     for(int i = 0; i < elements.size(); i++) {
         result += elements[i]->toString();
         if(elements[i] != elements.back() && elements[i+1]->getMultiplier() >= 0)
@@ -95,20 +95,12 @@ void SumEntity::mergeScalars() {
 }
 
 void SumEntity::mergeVariables() {
-    typedef std::pair<std::string, double> VarKey;
-    typedef map<VarKey, vector<VariableEntity*>> VarMap;
-    VarMap varMap;
+    map<std::string, vector<VariableEntity*>> varMap;
 
     for(vector<BaseEntity*>::iterator iter = elements.begin(); iter != elements.end(); iter++) {
         if(VariableEntity* v = dynamic_cast<VariableEntity*>(*iter)) {
-            VarKey key = {v->getSymbol(), v->getPower()};
-            if (varMap.find(key) != varMap.end()) {
-                varMap[key].push_back(v);
-            } else {
-                vector<VariableEntity*> variables;
-                variables.push_back(v);
-                varMap.insert({key, variables});
-            }
+            //don't have to find it first; [] operator initializes value for unexisting key with default () constructor value.
+                varMap[v->getSymbol()].push_back(v);
         }
     }
 

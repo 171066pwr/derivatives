@@ -1,20 +1,22 @@
 #ifndef DERIVATIVES_VARIABLEENTITY_H
 #define DERIVATIVES_VARIABLEENTITY_H
 
+#include <map>
 #include "BaseEntity.h"
-#include "../utils/StringUtils.h"
+#include "../utils/NumberUtils.h"
 #include "ScalarEntity.h"
 
 class VariableEntity: public BaseEntity {
 private:
-    string symbol = "x";
-    double power;
-    ScalarEntity* getScalarEdgeCases();
-    bool equals(const BaseEntity* entity) override;
+    static string SUBSTITUTE_SYMBOL;
+    static map<string, double> constants;
+    string symbol = SUBSTITUTE_SYMBOL;
 
+    bool equals(const BaseEntity* entity) override;
+    ScalarEntity* evaluate(double x);
 public:
-    VariableEntity(double multiplier = 1, double power = 1);
-    VariableEntity(string symbol, double multiplier = 1, double power = 1);
+    VariableEntity(double multiplier = 1);
+    VariableEntity(string symbol, double multiplier = 1);
     BaseEntity* copy() override;
 
     bool operator==(const BaseEntity& entity) override {
@@ -24,7 +26,6 @@ public:
         else {
             bool result = BaseEntity::operator==(*variable);
             result = result && symbol == variable->symbol;
-            result = result && power == variable->power;
             return result;
         }
     }
@@ -36,22 +37,15 @@ public:
     std::string toString() override;
     BaseEntity* evaluateFunction() override ;
     BaseEntity* evaluateValue(double x) override;
-    ScalarEntity* evaluate(double x);
+    bool updateAndGetIsFunction() override;
+
     void add(VariableEntity entity) {
-        if (this->symbol == entity.symbol && this->power == entity.power)
+        if (this->symbol == entity.symbol)
             this->multiplier += entity.multiplier;
     }
 
     string getSymbol() {
         return symbol;
-    }
-
-    double getMultiplier() {
-        return multiplier;
-    }
-
-    double getPower() {
-        return power;
     }
 };
 

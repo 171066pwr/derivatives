@@ -4,9 +4,9 @@
 #include "../entities/VariableEntity.h"
 
 void VariableEntityTest::testEqualsOperators() {
-    BaseEntity* original = new VariableEntity("pi", 2, 3);
+    BaseEntity* original = new VariableEntity("pi", 2);
     BaseEntity* copy = original->copy();
-    BaseEntity* other = new VariableEntity(2, 4);
+    BaseEntity* other = new VariableEntity(2);
     Logger::important("test == operator:");
     testCondition(*original == *copy, "success", "failure");
     Logger::important("test != operator:");
@@ -28,4 +28,17 @@ void VariableEntityTest::testVariableEvaluation() {
     variable = new VariableEntity("y", 2);
     testCondition(*printAndEvaluateValue(variable, 3) == *new VariableEntity("y", 2), "success", "failure");
     delete variable;
+    variable = new VariableEntity(0);
+    testCondition(*printAndEvaluateValue(variable, 3) == *new ScalarEntity(0), "success", "failure");
+    delete variable;
+    variable = new VariableEntity("pi", 0);
+    testCondition(*printAndEvaluateValue(variable, 3) == *new ScalarEntity(0), "success", "failure");
+    delete variable;
+    variable = new VariableEntity("y", 0);
+    testCondition(*printAndEvaluateValue(variable, 3) == *new ScalarEntity(0), "success", "failure");
+    delete variable;
+}
+
+void VariableEntityTest::testFunctionCheck() {
+
 }
