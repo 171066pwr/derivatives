@@ -30,7 +30,9 @@ bool VariableEntity::equals(const BaseEntity *entity) {
 }
 
 std::string VariableEntity::toString() {
-    return (NumberUtils::doubleEquals(multiplier, 1) ? "" :  NumberUtils::doubleEquals(multiplier, -1)? "-" : NumberUtils::toString(multiplier)) + symbol;
+    return (NumberUtils::doubleEquals(multiplier, 1.0) ?
+            "" :  NumberUtils::doubleEquals(multiplier, -1.0) ?
+                  "-" : NumberUtils::toString(multiplier)) + symbol;
 }
 
 BaseEntity* VariableEntity::evaluateValue(double x) {

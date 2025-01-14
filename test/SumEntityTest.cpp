@@ -25,7 +25,7 @@ void SumEntityTest::testSum() {
     SumEntity* subSumB = new SumEntity(1, {new VariableEntity(-2), new VariableEntity("pi", -1), new VariableEntity(-4), new ScalarEntity(1.3)});
 
     Logger::important("Test merging scalars");
-    testType<ScalarEntity>(printAndEvaluateFunction(sum), "Transormed SumEntity into ScalarEntity;", "Failed to transform scalar SumEntity into ScalarEntity!");
+    testType<ScalarEntity>(printAndEvaluateFunction(sum), "correct", "should be (1)");
 
     Logger::important("Test merging variables");
     printAndEvaluateFunction(subSumA);
@@ -37,7 +37,7 @@ void SumEntityTest::testSum() {
     sum->addElements({new VariableEntity("pi"), new VariableEntity(2), new ScalarEntity(-0.3)});
     sum->addElements({subSumA, subSumB});
     subSumA->addElements({new VariableEntity("y"), new VariableEntity("x")});
-    testCondition(*printAndEvaluateFunction(sum) == *new SumEntity(1, {new ScalarEntity(2), new VariableEntity("y")}), "Merged sums successfully", "Failed to merge sums!");
+    testCondition(*printAndEvaluateFunction(sum) == *new SumEntity(1, {new ScalarEntity(2), new VariableEntity("y")}), "Merged sums successfully", "should be (2+y)");
     delete sum, subSumA, subSumB;
 }
 
@@ -75,7 +75,7 @@ void SumEntityTest::testMultiplierValue() {
     Logger::important("Test multiplier 2, raw value evaluation");
     BaseEntity *sum = new SumEntity(2, {new ScalarEntity(1), new VariableEntity(1)});
     testEntity = printAndEvaluateValue(sum, 2, "Evaluated value");
-    testCondition(*testEntity == *new ScalarEntity(6), "Evaluated for x=2 correctly", "Failed to evaluate value");
+    testCondition(*testEntity == *new ScalarEntity(6), "correct", "should be 6");
     delete sum, testEntity;
 }
 
@@ -85,7 +85,7 @@ void SumEntityTest::testMultiplierNested() {
     BaseEntity *sum = new SumEntity(3, {new ScalarEntity(1), new VariableEntity(2),
                                         new SumEntity(2, {new ScalarEntity(1), new VariableEntity(2)})});
     testEntity = printAndEvaluateValue(sum, 2, "Raw value evaluation for x=2");
-    testCondition(*testEntity == *new ScalarEntity(45), "Correct result of 45", "Incorrect, should be 45");
+    testCondition(*testEntity == *new ScalarEntity(45), "correct", "should be 45");
     sum = printAndEvaluateFunction(sum, "Function evaluation");
     testCondition(*sum == *new SumEntity(1, {new ScalarEntity(9), new VariableEntity(18)}),
                   "correct", "should be 9+18x");

@@ -16,8 +16,8 @@ private:
     ScalarEntity* evaluate(double x);
 public:
     static void changeSubstituteSymbol(string symbol);
-    VariableEntity(double multiplier = 1);
-    VariableEntity(string symbol, double multiplier = 1);
+    VariableEntity(double multiplier = 1.0);
+    VariableEntity(string symbol, double multiplier = 1.0);
     BaseEntity* copy() override;
 
     bool operator==(const BaseEntity& entity) override {

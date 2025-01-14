@@ -30,7 +30,7 @@ bool BaseEntity::equals(const BaseEntity* entity) {
 }
 
 std::string BaseEntity::toString() {
-    string result = multiplier != 1 ? NumberUtils::toString(this->multiplier) + "(" : "(";
+    string result = !NumberUtils::doubleEquals(multiplier, 1.0) ? NumberUtils::toString(this->multiplier) + "(" : "(";
     for(int i = 0; i < elements.size(); i++){
         result += elements[i]->toString() + " ";
     }

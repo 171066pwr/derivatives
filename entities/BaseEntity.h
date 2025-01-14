@@ -1,3 +1,4 @@
+#include <algorithm>
 #ifndef DERIVATIVES_BASEENTITY_H
 #define DERIVATIVES_BASEENTITY_H
 
@@ -7,13 +8,17 @@
 using namespace std;
 
 class BaseEntity {
-private:
 protected:
-    double multiplier = 1;
+    double multiplier = 1.0;
     bool isFunction = false;
     vector<BaseEntity*> elements;
+
+    void deleteElement(BaseEntity* element) {
+        delete element;
+        elements.erase(std::remove(elements.begin(), elements.end(), element), elements.end());
+    }
 public:
-    BaseEntity(double multiplier = 1);
+    BaseEntity(double multiplier = 1.0);
     BaseEntity(double multiplier, initializer_list<BaseEntity*> list);
     ~BaseEntity();
     virtual BaseEntity* copy();
@@ -54,6 +59,12 @@ public:
 
     double getMultiplier() {
         return multiplier;
+    }
+
+    double getAndResetMultiplier() {
+        double result = multiplier;
+        multiplier = 1.0;
+        return result;
     }
 
     void multiplyByScalar(double scalar) {

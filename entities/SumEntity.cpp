@@ -25,9 +25,11 @@ std::string SumEntity::toString() {
     if (elements.size() == 0) {
         return "0";
     }
-    string result = multiplier != 1 ? NumberUtils::toString(this->multiplier) + "(" : "(";
+    string result = (NumberUtils::doubleEquals(multiplier, 1.0) ?
+                     "" :  NumberUtils::doubleEquals(multiplier, -1.0) ?
+                           "-" : NumberUtils::toString(multiplier)) + "(";
     for(int i = 0; i < elements.size(); i++) {
-        result += elements[i]->toString();
+        result += (elements[i]->getMultiplier() < 0.0) ? "(" + elements[i]->toString() + ")" : elements[i]->toString();
         if(elements[i] != elements.back() && elements[i+1]->getMultiplier() >= 0)
             result += " + ";
     }
@@ -63,6 +65,11 @@ BaseEntity* SumEntity::evaluateValue(double x) {
     return evaluated->evaluateFunction();
 }
 
+bool SumEntity::updateAndGetIsFunction() {
+    isFunction = false;
+    return BaseEntity::updateAndGetIsFunction();
+}
+
 void SumEntity::mergeSums() {
     vector<BaseEntity*> toErase;
     vector<BaseEntity*> toInsert;
@@ -75,7 +82,7 @@ void SumEntity::mergeSums() {
     }
     //Erase merged SumEntities in separate loop - iterator invalidates on modification
     for (auto e: toErase) {
-        elements.erase(std::remove(elements.begin(), elements.end(), e), elements.end());
+        deleteElement(e);
     }
     elements.insert(this->elements.end(), toInsert.begin(), toInsert.end());
 }
@@ -87,13 +94,11 @@ void SumEntity::mergeScalars() {
             scalars.push_back(s);
         }
     }
-    if (scalars.size() > 1) {
-        for (int i = scalars.size()-1; i > 0; i--) {
-            scalars[0]->add(*scalars[i]);
-            elements.erase(std::remove(elements.begin(), elements.end(), scalars[i]), elements.end());
-        }
+    for (int i = scalars.size()-1; i > 0; i--) {
+        scalars[0]->add(*scalars[i]);
+        deleteElement(scalars[i]);
     }
-    if (scalars.size()  == 1 && scalars[0]->getMultiplier() == 0)
+    if (scalars.size() == 1 && NumberUtils::doubleEquals(scalars[0]->getMultiplier(), 0.0))
         elements.erase(std::remove(elements.begin(), elements.end(), scalars[0]), elements.end());
 }
 
@@ -121,15 +126,10 @@ void SumEntity::mergeVariables() {
 void SumEntity::applyMultiplier() {
     if (NumberUtils::doubleEquals(multiplier, 0)) {
         elements.clear();
-    } else if (!NumberUtils::doubleEquals(multiplier, 1)) {
+    } else if (!NumberUtils::doubleEquals(multiplier, 1.0)) {
         for (auto element: elements) {
             element->multiplyByScalar(multiplier);
         }
         multiplier = 1;
     }
-}
-
-bool SumEntity::updateAndGetIsFunction() {
-    isFunction = false;
-    return BaseEntity::updateAndGetIsFunction();
 }

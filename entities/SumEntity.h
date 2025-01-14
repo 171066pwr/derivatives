@@ -11,7 +11,7 @@ private:
     void mergeVariables();
     void applyMultiplier();
 public:
-    SumEntity(double multiplier = 1): BaseEntity(multiplier) {};
+    SumEntity(double multiplier = 1.0): BaseEntity(multiplier) {};
     SumEntity(double multiplier, initializer_list<BaseEntity*> list): BaseEntity(multiplier, list) {};
     BaseEntity* copy();
     bool equals(const BaseEntity* entity) override;
