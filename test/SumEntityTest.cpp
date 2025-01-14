@@ -87,10 +87,9 @@ void SumEntityTest::testMultiplierNested() {
     testEntity = printAndEvaluateValue(sum, 2, "Raw value evaluation for x=2");
     testCondition(*testEntity == *new ScalarEntity(45), "Correct result of 45", "Incorrect, should be 45");
     sum = printAndEvaluateFunction(sum, "Function evaluation");
-    //TODO
     testCondition(*sum == *new SumEntity(1, {new ScalarEntity(9), new VariableEntity(18)}),
-                  "Correct result of 9+18x", "Incorrect, should be 9+18x");
+                  "correct", "should be 9+18x");
     testCondition(*printAndEvaluateValue(sum, 2, "Evaluating for x = 2") == *new ScalarEntity(45),
-                  "Correct result of 45", "Incorrect, should be 45");
+                  "correct", "should be 45");
     delete sum, testEntity;
 }

@@ -40,7 +40,7 @@ void BaseEntityTest::testInterfaces() {
     Logger::important("Test addElements with initializer list");//0.00002 + 3x + 3pi + e
     subSumA->addElements({new VariableEntity(3), new VariableEntity("pi", 2), new VariableEntity("e"), new VariableEntity(0), subSubSum});
     SumEntity* sum = new SumEntity(1, {new ScalarEntity(2), new ScalarEntity(20.00002), new VariableEntity(1), new VariableEntity(-1),
-                                       new VariableEntity("pi", 1), subSumA, subSumB});
+                                       new VariableEntity("pi"), subSumA, subSumB});
     result = new ScalarEntity(6.00002 + 3* M_PI + M_E);
     testCondition(*printAndEvaluateValue(sum, 2, "Evaluating value without evaluating isFunction") == *result,
                   result->toString(), "Incorrect - should be " + result->toString());
@@ -49,4 +49,14 @@ void BaseEntityTest::testInterfaces() {
     testCondition(*printAndEvaluateValue(sum, 2, "Evaluating value after evaluating isFunction") == *result,
                                         result->toString(), "Incorrect - should be " + result->toString());
     delete sum, subSubSum, subSumA, subSumB, result;
-}
+    Logger::important("Test updateAndGetFunction - function status propagation");
+    subSumA = new SumEntity(1, {new ScalarEntity(1), new VariableEntity("pi")});
+    subSumB = new SumEntity(1, {new ScalarEntity(2), new VariableEntity()});
+    sum = new SumEntity(1, {new VariableEntity("y"), subSumA, subSumB});
+    testCondition(sum->getIsFunction(), "isFunction propagated without update", "isFunction not propagated with update");
+    testCondition(sum->updateAndGetIsFunction(), "isFunction updated properly", "isFunction not updated");
+    sum->addElement(new VariableEntity(-1));
+    testCondition(!printAndEvaluateFunction(sum, "Substracting function component, then updating function status:")->getIsFunction(), "isFunction updated on function evaluation", "isFunction not updated on function evaluation");
+    delete sum, subSumA, subSumB;
+
+};

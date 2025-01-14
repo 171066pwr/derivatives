@@ -41,6 +41,9 @@ public:
  */
     virtual bool addElement(BaseEntity* element);
     virtual bool addElements(initializer_list<BaseEntity *> list);
+    /* todo - might be useful
+     * virtual void sortElements();
+     * */
     virtual std::string toString();
     virtual BaseEntity* evaluateFunction();
     virtual BaseEntity* evaluateValue(double x);
@@ -63,6 +66,10 @@ public:
 
     int getSize() {
         return elements.size();
+    }
+
+    bool getIsFunction() {
+        return isFunction;
     }
 
     BaseEntity getElement(int index) {

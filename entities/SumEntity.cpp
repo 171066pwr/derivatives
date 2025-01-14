@@ -12,6 +12,8 @@ BaseEntity* SumEntity::copy() {
 }
 
 bool SumEntity::equals(const BaseEntity *entity) {
+    //If the new type to be casted to is a pointer the result is a nullptr on error. If it is a reference it throws an exception.
+    //So we have to cast pointers or catch bad_cast
     const SumEntity* sum = dynamic_cast<const SumEntity*>(entity);
     if(sum == nullptr)
         return false;
@@ -51,6 +53,7 @@ BaseEntity* SumEntity::evaluateFunction() {
         return new ScalarEntity(0);
     if (elements.size() == 1)
         return elements[0];
+    updateAndGetIsFunction();
     return this;
 }
 
@@ -116,12 +119,17 @@ void SumEntity::mergeVariables() {
 }
 
 void SumEntity::applyMultiplier() {
-    if (multiplier == 0) {
+    if (NumberUtils::doubleEquals(multiplier, 0)) {
         elements.clear();
-    } else if (multiplier != 1) {
+    } else if (!NumberUtils::doubleEquals(multiplier, 1)) {
         for (auto element: elements) {
             element->multiplyByScalar(multiplier);
         }
         multiplier = 1;
     }
+}
+
+bool SumEntity::updateAndGetIsFunction() {
+    isFunction = false;
+    return BaseEntity::updateAndGetIsFunction();
 }

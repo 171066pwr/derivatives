@@ -40,5 +40,19 @@ void VariableEntityTest::testVariableEvaluation() {
 }
 
 void VariableEntityTest::testFunctionCheck() {
-
+    Logger::important("Test isFunction check:");
+    BaseEntity* variable = new VariableEntity("pi");
+    testCondition(!variable->getIsFunction(), "pi is not a function", "pi is not a function");
+    delete variable;
+    variable = new VariableEntity();
+    testCondition(variable->getIsFunction(), "x is a function", "x is a function");
+    delete variable;
+    variable = new VariableEntity("y");
+    testCondition(!variable->getIsFunction(), "y is not a function if we substitute for x", "y is not a function if we substitute for x");
+    Logger::important("Changing substitute to y...");
+    VariableEntity::changeSubstituteSymbol("y");
+    testCondition(variable->updateAndGetIsFunction(), "y is a function now", "y is a function now");
+    Logger::important("Changing substitute back to x");
+    VariableEntity::changeSubstituteSymbol("x");
+    delete variable;
 }

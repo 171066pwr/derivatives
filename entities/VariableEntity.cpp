@@ -5,6 +5,10 @@
 string VariableEntity::SUBSTITUTE_SYMBOL = "x";
 map<string, double> VariableEntity::constants {std::make_pair("e", M_E), std::make_pair("pi", M_PI)};
 
+void VariableEntity::changeSubstituteSymbol(string symbol) {
+    SUBSTITUTE_SYMBOL = symbol;
+}
+
 VariableEntity::VariableEntity(double multiplier) : BaseEntity(multiplier) {
     updateAndGetIsFunction();
 }
@@ -22,11 +26,11 @@ bool VariableEntity::equals(const BaseEntity *entity) {
     if(e == nullptr)
         return false;
     else
-        return this->symbol == e->symbol && this->multiplier == e->multiplier;
+        return this->symbol == e->symbol && NumberUtils::doubleEquals(this->multiplier, e->multiplier);
 }
 
 std::string VariableEntity::toString() {
-    return (multiplier == 1 ? "" :  multiplier == -1? "-" : NumberUtils::toString(multiplier)) + symbol;
+    return (NumberUtils::doubleEquals(multiplier, 1) ? "" :  NumberUtils::doubleEquals(multiplier, -1)? "-" : NumberUtils::toString(multiplier)) + symbol;
 }
 
 BaseEntity* VariableEntity::evaluateValue(double x) {
@@ -46,12 +50,12 @@ ScalarEntity* VariableEntity::evaluate(double x) {
 }
 
 BaseEntity* VariableEntity::evaluateFunction() {
-    if(multiplier == 0)
+    if(NumberUtils::doubleEquals(multiplier, 0))
         return new ScalarEntity(0);
     return this;
 }
 
 bool VariableEntity::updateAndGetIsFunction() {
-    return symbol == SUBSTITUTE_SYMBOL;
+    return isFunction = (symbol == SUBSTITUTE_SYMBOL);
 }
 
