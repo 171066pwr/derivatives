@@ -4,7 +4,7 @@
 #include "Multiplication.h"
 
 Power::~Power() {
-    delete this->power;
+    deleteAndZero(power);
 }
 
 BaseEntity *Power::copy() {
@@ -51,7 +51,7 @@ BaseEntity *Power::evaluateFunction() {
     BaseEntity::evaluateFunction();
     power = evaluatePower();
 
-    return BaseEntity::evaluateFunction();
+    return this;
 }
 
 BaseEntity *Power::evaluateValue(double x) {
@@ -71,12 +71,7 @@ bool Power::multiplyPower(Power power) {
 }
 
 BaseEntity *Power::evaluatePower() {
-    BaseEntity *newPower = power->evaluateFunction();
-    if(power != newPower) {
-        delete power;
-        power = newPower;
-    }
-    return power;
+    return power = evaluateAndDelete(power);
 }
 
 BaseEntity *Power::splitMultiplications() {
@@ -87,6 +82,6 @@ BaseEntity *Power::splitMultiplications() {
     for(int i = 0; i < m->getSize(); i++) {
         product->addElement(new Power(this->power->copy(), m->getElement(i)->copy()));
     }
-    delete this->power;
+    deleteAndZero(power);
 
 }

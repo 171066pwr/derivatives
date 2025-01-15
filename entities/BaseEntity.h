@@ -14,8 +14,8 @@ protected:
     vector<BaseEntity *> elements;
 
     void deleteElement(BaseEntity *element) {
-        delete element;
         elements.erase(std::remove(elements.begin(), elements.end(), element), elements.end());
+        deleteAndZero(element);
     }
 
     BaseEntity *evaluateAndDelete(BaseEntity* entity);
@@ -91,6 +91,12 @@ public:
 
     BaseEntity *getElement(int index) {
         return (index >= 0 && index < elements.size()) ? elements[index] : nullptr;
+    }
+
+    template<typename T>
+    void deleteAndZero(T *&entity) {
+        delete entity;
+        entity = nullptr;
     }
 };
 

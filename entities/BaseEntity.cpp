@@ -10,8 +10,6 @@ BaseEntity::BaseEntity(double multiplier, initializer_list<BaseEntity *> list): 
 }
 
 BaseEntity::~BaseEntity() {
-    for(int i = 0; i < elements.size(); i++)
-        delete elements[i];
 }
 
 BaseEntity *BaseEntity::copy() {
@@ -113,8 +111,10 @@ BaseEntity *BaseEntity::evaluateDerivative() {
         derivative->addElement(elements[i]->evaluateDerivative());
     }
     //re-evaluate after derivative
-    derivative->evaluateFunction();
-    return derivative;
+    BaseEntity *result = derivative->evaluateFunction();
+    if (result != derivative)
+        delete derivative;
+    return result;
 }
 
 bool BaseEntity::updateAndGetIsFunction() {
@@ -130,7 +130,7 @@ bool BaseEntity::updateAndGetIsFunction() {
 BaseEntity *BaseEntity::evaluateAndDelete(BaseEntity *entity) {
     BaseEntity* evaluated = entity->evaluateFunction();
     if(evaluated != entity)
-        delete entity;
+        deleteAndZero(entity);
     return evaluated;
 }
 
@@ -138,7 +138,7 @@ BaseEntity *BaseEntity::evaluateAndReplaceElement(BaseEntity *entity) {
     BaseEntity* evaluated = entity->evaluateFunction();
     if(evaluated != entity) {
         std::replace(elements.begin(), elements.end(), entity, evaluated);
-        delete entity;
+        deleteAndZero(entity);
     }
     return evaluated;
 }

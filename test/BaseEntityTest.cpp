@@ -7,48 +7,52 @@
 
 void BaseEntityTest::testOperators() {
     BaseEntity *original = new Scalar(25);
-    BaseEntity *copy = original->copy();
     BaseEntity *other = new Scalar(20);
     Logger::important("Test == operator with scalar:");
-    testCondition(*original == *copy, "success", "failure");
+    testCondition(*original == *original->copy(), "success", "failure");
     Logger::important("Test != operator with scalar:");
     testCondition(*original != *other, "success", "failure");
 
-    BaseEntity *sum = new Sum(3, {original, other});
-    BaseEntity *sum2 = new Sum(3, {copy, other});
+    BaseEntity *sum = new Sum(3, {original->copy(), other->copy()});
+    BaseEntity *sum2 = new Sum(3, {original->copy(), other->copy()});
     Logger::important("Test == operator with subelements:");
     testCondition(*sum == *sum2, "success", "failure");
-    sum2->addElement(original);
+    sum2->addElement(original->copy());
     Logger::important("Test != operator with subelements:");
     testCondition(*sum != *sum2, "success", "failure");
 
     BaseEntity *variable = new Variable(3);
     Logger::important("Test == operator for different Entity types:");
     testCondition(!(*sum == *variable), "success", "failure");
-    sum2->addElement(original);
+    sum2->addElement(original->copy());
     Logger::important("Test != operator for different Entity types:");
     testCondition(*sum != *variable, "success", "failure");
+    deleteMultiple({original, other, sum, sum2, variable});
 }
 
 void BaseEntityTest::testInterfaces() {
-    BaseEntity *result;
     Logger::important("Test BaseEntity interface functions - inheritance");
     Logger::important("Test super constructor with initializer list");
-    Sum *subSumA = new Sum();
-    Sum *subSumB = new Sum(1, {new Scalar(-1), new Variable()});
-    Sum *subSubSum = new Sum(1, {new Scalar(-42), new Scalar(21), new Variable(2), new Variable(-3)});
+    BaseEntity *expected;
+    BaseEntity *testEntity;
+    BaseEntity *subSumA = new Sum();
+    BaseEntity *subSumB = new Sum(1, {new Scalar(-1), new Variable()});
+    BaseEntity *subSubSum = new Sum(1, {new Scalar(-42), new Scalar(21), new Variable(2), new Variable(-3)});
+
     Logger::important("Test addElements with initializer list");//0.00002 + 3x + 3pi + e
-    subSumA->addElements({new Variable(3), new Variable("pi", 2), new Variable("e"), new Variable(0), subSubSum});
-    Sum *sum = new Sum(1, {new Scalar(2), new Scalar(20.00002), new Variable(1), new Variable(-1),
-                                       new Variable("pi"), subSumA, subSumB});
-    result = new Scalar(6.00002 + 3* M_PI + M_E);
-    testCondition(*printAndEvaluateValue(sum, 2, "Evaluating value without evaluating isFunction") == *result,
-                  result->toString(), "Incorrect - should be " + result->toString());
-    printAndEvaluateFunction(sum, "Evaluating isFunction");
-    testCondition(sum == printAndEvaluateFunction(sum, "Second evaluation (should be already in final form): "), "correct", "incorrect");
-    testCondition(*printAndEvaluateValue(sum, 2, "Evaluating value after evaluating isFunction") == *result,
-                                        result->toString(), "Incorrect - should be " + result->toString());
-    delete sum, subSubSum, subSumA, subSumB, result;
+    subSumA->addElements({new Variable(3), new Variable("pi", 2), new Variable("e"), new Variable(0), subSubSum->copy()});
+    BaseEntity *sum = new Sum(1, {new Scalar(2), new Scalar(20.00002), new Variable(1), new Variable(-1),
+                                       new Variable("pi"), subSumA->copy(), subSumB->copy()});
+    expected = new Scalar(6.00002 + 3* M_PI + M_E);
+    testEntity = printAndEvaluateValue(sum, 2, "Evaluating value without evaluating isFunction");
+    testCondition(*testEntity == *expected,expected->toString(), "Incorrect - should be " + expected->toString());
+    testEntity = printAndEvaluateFunction(sum, "Evaluating isFunction");
+    testCondition(*testEntity == *(sum = printAndEvaluateFunction(sum, "Second evaluation (should be already in final form): ")),
+        "correct", "incorrect");
+    replace(testEntity, printAndEvaluateValue(sum, 2, "Evaluating value after evaluating isFunction"));
+    testCondition(*testEntity == *expected,expected->toString(), "Incorrect - should be " + expected->toString());
+    deleteMultiple({subSubSum, subSumA, subSumB, testEntity, expected});
+
     Logger::important("Test updateAndGetFunction - function status propagation");
     subSumA = new Sum(1, {new Scalar(1), new Variable("pi")});
     subSumB = new Sum(1, {new Scalar(2), new Variable()});
@@ -57,6 +61,5 @@ void BaseEntityTest::testInterfaces() {
     testCondition(sum->updateAndGetIsFunction(), "isFunction updated properly", "isFunction not updated");
     sum->addElement(new Variable(-1));
     testCondition(!printAndEvaluateFunction(sum, "Substracting function component, then updating function status:")->getIsFunction(), "isFunction updated on function evaluation", "isFunction not updated on function evaluation");
-    delete sum, subSumA, subSumB;
-
+    delete sum;
 };

@@ -13,7 +13,7 @@ void MultiplicationTest::testEqualsOperators() {
     multi2 = new Multiplication(2, {other, original->copy()});
     Logger::important("test != operator:");
     testCondition(*multi != *multi2, "success", "failure");
-    delete original, other, multi, multi2;
+    deleteMultiple({original, other, multi, multi2});
 }
 
 void MultiplicationTest::testMergeMultiplications() {
@@ -33,17 +33,17 @@ void MultiplicationTest::testMergeMultiplications() {
     testEntity->addElements({new Variable(2), new Variable("pi", 3)});
     expected = replace(expected, new Multiplication(90, {new Variable(), new Variable("pi")}));
     testCondition(*(testEntity = printAndEvaluateFunction(testEntity, "Test add element and evaluate variables")) == *expected, "correct", "should be 90(x*pi)");
-    delete testEntity, expected;
+    deleteMultiple({testEntity, expected});
 
     Logger::important("Test merge multiplications");
     BaseEntity *subA = new Multiplication(1.0/5, {new Scalar(5), new Scalar(1), new Variable(2)});
     BaseEntity *subB = new Multiplication(2, {new Scalar(5), new Variable(), new Variable("y", 1.0/2)});
     testEntity = multi->copy();
     testEntity->addElements({subA, subB});
-    testEntity = printAndEvaluateFunction(testEntity);
+    replace(testEntity, printAndEvaluateFunction(testEntity));
     expected = new Multiplication(150, {new Variable(), new Variable(), new Variable("y")});
     testCondition(*testEntity == *expected, "correct", "should be 150(x*x*y)");
-    delete testEntity, expected, multi; // can't delete subA, subB - they were deleted during evaluation as subelements! Deleting again will result in segfault!
+    deleteMultiple({testEntity, expected, multi}); // can't delete subA, subB - they were deleted during evaluation as subelements! Deleting again will result in segfault!
 }
 
 void MultiplicationTest::testMergeSums() {
@@ -67,5 +67,6 @@ void MultiplicationTest::testMergeSums() {
     testEntity = printAndEvaluateFunction(testEntity, "Evaluated mixed entities");
     replace(expected, new Sum(1, {new Variable(-96), new Multiplication(24, {new Variable(), new Variable(), new Variable()})}));
     testCondition(*testEntity == *expected, "correct", "should be (-96x + 24(x*x*x)");
+    deleteMultiple({testEntity, expected, multi});
 }
 

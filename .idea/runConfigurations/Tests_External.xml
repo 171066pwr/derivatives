@@ -1,6 +1,7 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Tests External" type="CMakeRunConfiguration" factoryName="Application" singleton="true" PROGRAM_PARAMS="/c &quot;start cmd.exe @cmd /c &quot;Tests.exe&quot;&quot;" WORKING_DIR="file://$PROJECT_DIR$/cmake-build-debug" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Tests" TARGET_NAME="Tests" CONFIG_NAME="Debug" RUN_PATH="C:\Windows\System32\cmd.exe">
-    <envs />
-    <method />
+  <configuration default="false" name="Tests External" type="CMakeRunConfiguration" factoryName="Application" singleton="true" PROGRAM_PARAMS="/c &quot;start cmd.exe @cmd /k &quot;Tests.exe&quot;&quot;" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" WORKING_DIR="file://$PROJECT_DIR$/cmake-build-debug" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Tests" TARGET_NAME="Tests" CONFIG_NAME="Debug" RUN_PATH="$PROJECT_DIR$/../../../Windows/System32/cmd.exe">
+    <method v="2">
+      <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+    </method>
   </configuration>
 </component>

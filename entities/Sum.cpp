@@ -42,13 +42,11 @@ BaseEntity *Sum::evaluateFunction() {
     mergeScalars();
     mergeMultiplier();
     if (elements.size() == 0) {
-        delete this;
         return new Scalar(0);
     }
     if (elements.size() == 1) {
         BaseEntity *element = elements[0];
         elements.clear();
-        delete this;
         return element;
     }
     updateAndGetIsFunction();
@@ -128,21 +126,24 @@ void Sum::mergeMultiplications() {
     }
 
     for(int i = 0; i < multiplications.size() && elements.size() > 1; i++){
+        bool updated = false;
         for(int j = i+1; j < multiplications.size(); j++) {
             if(multiplications[i]->contentsEquals(multiplications[j])) {
                 multiplications[i]->addToMultiplier(multiplications[j]->getMultiplier());
                 deleteElement(multiplications[j]);
                 multiplications.erase(multiplications.begin() + j);
+                updated = true;
                 j--;
             }
-            evaluateAndReplaceElement(multiplications[i]);
         }
+        if (updated)
+            evaluateAndReplaceElement(multiplications[i]);
     }
 }
 
 void Sum::mergeMultiplier() {
-    if (NumberUtils::doubleEquals(multiplier, 0)) {
-        for(int i = elements.size(); i <= 0; i--)
+    if (NumberUtils::doubleEquals(multiplier, 0.0)) {
+        for(int i = elements.size() -1; i >= 0; i--)
             deleteElement(elements[i]);
     } else if (!NumberUtils::doubleEquals(multiplier, 1.0)) {
         for (auto element: elements) {

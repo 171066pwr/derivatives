@@ -21,7 +21,7 @@ public:
     BaseEntity *copy() override;
 
     bool operator==(const BaseEntity& entity) override {
-        equals(&entity);
+        return equals(&entity);
     }
 
     std::string toString() override;

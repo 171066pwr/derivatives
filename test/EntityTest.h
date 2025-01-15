@@ -23,10 +23,14 @@ public:
             Logger::warn(failMsg);
     }
 
-    BaseEntity *printAndEvaluateFunction(BaseEntity *e, string comment = "") {
+    BaseEntity *printAndEvaluateFunction(BaseEntity *&e, string comment = "") {
         BaseEntity *result;
         cout << (comment == "" ? "" : comment + ":\n") << e->toString();
         cout << "   =    " << (result = e->evaluateFunction())->toString() << endl;
+        if (e != result) {
+            delete e;
+            e = nullptr;
+        }
         return result;
     }
 
@@ -46,6 +50,11 @@ public:
         if(old != current)
             delete old;
         return old = current;
+    }
+
+    void deleteMultiple(initializer_list<BaseEntity *> list) {
+        for (auto e: list)
+            delete e;
     }
 };
 

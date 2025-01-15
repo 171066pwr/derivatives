@@ -40,7 +40,6 @@ BaseEntity *Multiplication::evaluateFunction() {
     BaseEntity::evaluateFunction();
     //merge multiplications or multipliers first? In recursive action it will merge everything anyways?
     if(NumberUtils::doubleEquals(multiplier, 0.0) || NumberUtils::doubleEquals(multiplier *= mergeMultipliers(), 0.0)) {
-        delete this;
         return new Scalar(0);
     }
     mergeMultiplications();
@@ -79,17 +78,19 @@ double Multiplication::mergeMultipliers() {
     }
     if(NumberUtils::doubleEquals(mergedMultiplier, 0.0)) {
         for (int i = 0; i < elements.size(); i++) {
-            delete elements[i];
+            deleteAndZero(elements[i]);
         }
         elements.clear();
     } else {
         for (int i = scalars.size()-1; i > 0; i--) {
             elements.erase(std::remove(elements.begin(), elements.end(), scalars[i]), elements.end());
-            delete scalars[i];
+            deleteAndZero(scalars[i]);
         }
 
-        if(elements.size() > 1 && scalars.size() > 0)
-           elements.erase(std::remove(elements.begin(), elements.end(), scalars[0]), elements.end());
+        if(elements.size() > 1 && scalars.size() > 0) {
+            elements.erase(std::remove(elements.begin(), elements.end(), scalars[0]), elements.end());
+            deleteAndZero(scalars[0]);
+        }
     }
     return mergedMultiplier;
 }
@@ -140,7 +141,7 @@ BaseEntity *Multiplication::mergeSums() {
     for (int i = 0; i < elements.size(); i++) {
         if (Sum *s = dynamic_cast<Sum *>(elements[i])) {
             BaseEntity *result = sumProduct(s);
-            delete s;
+            //deleteElement(elements[i]);
             BaseEntity *evaluated = result->evaluateFunction();
             if (evaluated != result)
                 delete result;

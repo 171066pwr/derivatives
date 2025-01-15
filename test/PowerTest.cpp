@@ -20,7 +20,7 @@ void PowerTest::testEqualsOperators() {
     replace(testEntity, new Power(3, {sum}, 2));
     testEntity = printAndEvaluateFunction(testEntity, "Sum base");
 
-    replace(testEntity, new Power(multi, sum));
+    replace(testEntity, new Power(multi->copy(), sum->copy()));
     testEntity = printAndEvaluateFunction(testEntity, "Sum base, multiplication power");
 }
 
