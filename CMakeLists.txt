@@ -3,30 +3,30 @@ project(Derivatives)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
-set(SOURCE_FILES main.cpp entities/BaseEntity.cpp entities/BaseEntity.h entities/Parser.cpp entities/Parser.h entities/ScalarEntity.cpp entities/ScalarEntity.h entities/VariableEntity.cpp entities/VariableEntity.h utils/NumberUtils.cpp utils/NumberUtils.h entities/SumEntity.cpp entities/SumEntity.h utils/Logger.h
-        test/SumEntityTest.cpp
-        test/SumEntityTest.h
+set(SOURCE_FILES main.cpp entities/BaseEntity.cpp entities/BaseEntity.h entities/Parser.cpp entities/Parser.h entities/Scalar.cpp entities/Scalar.h entities/Variable.cpp entities/Variable.h utils/NumberUtils.cpp utils/NumberUtils.h entities/Sum.cpp entities/Sum.h utils/Logger.h
+        test/SumTest.cpp
+        test/SumTest.h
         test/BaseEntityTest.cpp
         test/BaseEntityTest.h
         test/EntityTest.h
-        test/MultiplicationEntityTest.cpp
-        test/MultiplicationEntityTest.h
-        entities/MultiplicationEntity.cpp
-        entities/MultiplicationEntity.h utils/ConsoleUtils.cpp utils/ConsoleUtils.h)
+        test/MultiplicationTest.cpp
+        test/MultiplicationTest.h
+        entities/Multiplication.cpp
+        entities/Multiplication.h utils/ConsoleUtils.cpp utils/ConsoleUtils.h)
 
 add_executable(Derivatives ${SOURCE_FILES})
 
 project(Tests)
 
-set(TEST_FILES test/MainTest.cpp entities/BaseEntity.cpp entities/BaseEntity.h entities/Parser.cpp entities/Parser.h entities/ScalarEntity.cpp entities/ScalarEntity.h entities/VariableEntity.cpp entities/VariableEntity.h utils/NumberUtils.cpp utils/NumberUtils.h entities/SumEntity.cpp entities/SumEntity.h utils/Logger.h
-        test/SumEntityTest.cpp
-        test/SumEntityTest.h
+set(TEST_FILES test/MainTest.cpp entities/BaseEntity.cpp entities/BaseEntity.h entities/Parser.cpp entities/Parser.h entities/Scalar.cpp entities/Scalar.h entities/Variable.cpp entities/Variable.h utils/NumberUtils.cpp utils/NumberUtils.h entities/Sum.cpp entities/Sum.h utils/Logger.h
+        test/SumTest.cpp
+        test/SumTest.h
         test/BaseEntityTest.cpp
         test/BaseEntityTest.h
         test/EntityTest.h
-        test/MultiplicationEntityTest.cpp
-        test/MultiplicationEntityTest.h
-        entities/MultiplicationEntity.cpp
-        entities/MultiplicationEntity.h utils/ConsoleUtils.cpp utils/ConsoleUtils.h test/VariableEntityTest.cpp test/VariableEntityTest.h)
+        test/MultiplicationTest.cpp
+        test/MultiplicationTest.h
+        entities/Multiplication.cpp
+        entities/Multiplication.h utils/ConsoleUtils.cpp utils/ConsoleUtils.h test/VariableTest.cpp test/VariableTest.h)
 
 add_executable(Tests ${TEST_FILES})

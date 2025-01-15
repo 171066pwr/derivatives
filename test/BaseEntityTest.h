@@ -9,6 +9,7 @@ public:
         testOperators();
         testInterfaces();
     };
+    
 private:
     void testInterfaces();
     void testOperators();

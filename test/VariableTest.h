@@ -3,7 +3,7 @@
 
 #include "EntityTest.h"
 
-class VariableEntityTest: public EntityTest {
+class VariableTest: public EntityTest {
 public:
     void runTest(string msg) override {
         EntityTest::runTest(msg);
@@ -16,6 +16,5 @@ private:
     void testVariableEvaluation();
     void testFunctionCheck();
 };
-
 
 #endif //TESTS_VARIABLEENTITYTEST_H

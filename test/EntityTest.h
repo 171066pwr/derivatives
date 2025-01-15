@@ -13,7 +13,7 @@ public:
 
     template <typename T>
     void testType(BaseEntity *testEntity, string successMsg, string failMsg){
-        testCondition((bool) dynamic_cast<T*>(testEntity), successMsg, failMsg);
+        testCondition((bool) dynamic_cast<T *>(testEntity), successMsg, failMsg);
     }
 
     void testCondition(bool condition, string successMsg, string failMsg) {
@@ -23,15 +23,15 @@ public:
             Logger::warn(failMsg);
     }
 
-    BaseEntity* printAndEvaluateFunction(BaseEntity *e, string comment = "") {
-        BaseEntity* result;
+    BaseEntity *printAndEvaluateFunction(BaseEntity *e, string comment = "") {
+        BaseEntity *result;
         cout << (comment == "" ? "" : comment + ":\n") << e->toString();
         cout << "   =    " << (result = e->evaluateFunction())->toString() << endl;
         return result;
     }
 
-    BaseEntity* printAndEvaluateValue(BaseEntity *e, double x, string comment = "") {
-        BaseEntity* result;
+    BaseEntity *printAndEvaluateValue(BaseEntity *e, double x, string comment = "") {
+        BaseEntity *result;
         cout << (comment == "" ? "" : comment + ":\n") << "[x == " + NumberUtils::toString(x) + "]   " << e->toString();
         cout << "   =   " << (result = e->evaluateValue(x))->toString() << endl;
         return result;
@@ -40,6 +40,12 @@ public:
     void printComparison(BaseEntity *e1, BaseEntity *e2, string comment = "") {
         cout << (comment == "" ? "" : comment + ":\n") << e1->toString();
         cout << "   =    " << e2->toString() << endl;
+    }
+
+    BaseEntity *replace(BaseEntity *&old, BaseEntity *current) {
+        if(old != current)
+            delete old;
+        return old = current;
     }
 };
 

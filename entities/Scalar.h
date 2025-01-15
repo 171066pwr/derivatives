@@ -6,32 +6,32 @@
 #include <iostream>
 #include <sstream>
 
-class ScalarEntity: public BaseEntity {
+class Scalar: public BaseEntity {
 public:
-    ScalarEntity(double multiplier);
-    BaseEntity* copy() override;
-    bool equals(const BaseEntity* entity) override;
+    Scalar(double multiplier = 1.0);
+    BaseEntity *copy() override;
+    bool equals(const BaseEntity *entity) override;
 
     bool operator==(const BaseEntity& entity) override {
-        const ScalarEntity* variable = dynamic_cast<const ScalarEntity*>(&entity);
+        const Scalar *variable = dynamic_cast<const Scalar *>(&entity);
         if(variable == nullptr)
             return false;
         return BaseEntity::operator==(*variable);
     }
 
-    bool operator==(const BaseEntity* entity) override {
+    bool operator==(const BaseEntity *entity) override {
         return equals(entity);
     }
 
     std::string toString() override;
-    BaseEntity* evaluateValue(double x) override;
+    BaseEntity *evaluateValue(double x) override;
     bool addElement(BaseEntity *element) override;
 
-    void add(ScalarEntity scalar) {
+    void add(Scalar scalar) {
         this->multiplier += scalar.multiplier;
     }
 
-    void multiply(ScalarEntity scalar) {
+    void multiply(Scalar scalar) {
         this->multiplier *= scalar.multiplier;
     }
 };

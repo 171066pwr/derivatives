@@ -4,30 +4,31 @@
 #include "BaseEntity.h"
 #include "../utils/Logger.h"
 
-class SumEntity: public BaseEntity {
+class Sum: public BaseEntity {
 private:
     void mergeSums();
     void mergeScalars();
     void mergeVariables();
-    void applyMultiplier();
+    void mergeMultiplications();
+    void mergeMultiplier();
 public:
-    SumEntity(double multiplier = 1.0): BaseEntity(multiplier) {};
-    SumEntity(double multiplier, initializer_list<BaseEntity*> list): BaseEntity(multiplier, list) {};
-    BaseEntity* copy();
-    bool equals(const BaseEntity* entity) override;
+    Sum(double multiplier = 1.0): BaseEntity(multiplier) {};
+    Sum(double multiplier, initializer_list<BaseEntity *> list): BaseEntity(multiplier, list) {};
+    BaseEntity *copy();
+    bool equals(const BaseEntity *entity) override;
 
     bool operator==(const BaseEntity& entity) override {
         return equals(&entity);
     }
 
-    bool operator==(const BaseEntity* entity) override {
+    bool operator==(const BaseEntity *entity) override {
         return equals(entity);
     }
 
     std::string toString();
     bool addElement(BaseEntity * element) override;
-    BaseEntity* evaluateFunction() override ;
-    BaseEntity* evaluateValue(double x) override;
+    BaseEntity *evaluateFunction() override ;
+    BaseEntity *evaluateValue(double x) override;
     bool updateAndGetIsFunction() override;
 };
 

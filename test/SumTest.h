@@ -3,7 +3,7 @@
 
 #include "EntityTest.h"
 
-class SumEntityTest: public EntityTest {
+class SumTest: public EntityTest {
 public:
     void runTest(string msg) override {
         EntityTest::runTest(msg);

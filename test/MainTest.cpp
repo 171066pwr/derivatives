@@ -1,6 +1,7 @@
 #include "BaseEntityTest.h"
-#include "SumEntityTest.h"
-#include "VariableEntityTest.h"
+#include "SumTest.h"
+#include "VariableTest.h"
+#include "MultiplicationTest.h"
 
 void runTests();
 
@@ -11,10 +12,12 @@ int main () {
 
 void runTests() {
     BaseEntityTest baseEntityTest;
-    SumEntityTest sumTest;
-    VariableEntityTest variableTest;
+    SumTest sumTest;
+    VariableTest variableTest;
+    MultiplicationTest multiplicationTest;
 
     baseEntityTest.runTest("BaseEntity tests");
-    variableTest.runTest("VariableEntity tests");
-    sumTest.runTest("SumEntity tests");
+    variableTest.runTest("Variable tests");
+    sumTest.runTest("Sum tests");
+    multiplicationTest.runTest("Multiplication tests");
 }

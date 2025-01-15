@@ -1,27 +1,28 @@
 #include <algorithm>
-#include "SumEntity.h"
+#include "Sum.h"
 #include <map>
-#include "VariableEntity.h"
+#include "Variable.h"
+#include "Multiplication.h"
 
-BaseEntity* SumEntity::copy() {
-    BaseEntity* copy = new SumEntity(multiplier);
+BaseEntity *Sum::copy() {
+    BaseEntity *copy = new Sum(multiplier);
     for(auto element: elements){
         copy->addElement(element->copy());
     }
     return copy;
 }
 
-bool SumEntity::equals(const BaseEntity *entity) {
+bool Sum::equals(const BaseEntity *entity) {
     //If the new type to be casted to is a pointer the result is a nullptr on error. If it is a reference it throws an exception.
     //So we have to cast pointers or catch bad_cast
-    const SumEntity* sum = dynamic_cast<const SumEntity*>(entity);
+    const Sum *sum = dynamic_cast<const Sum *>(entity);
     if(sum == nullptr)
         return false;
     else
         return BaseEntity::equals(sum);
 }
 
-std::string SumEntity::toString() {
+std::string Sum::toString() {
     if (elements.size() == 0) {
         return "0";
     }
@@ -29,15 +30,15 @@ std::string SumEntity::toString() {
                      "" :  NumberUtils::doubleEquals(multiplier, -1.0) ?
                            "-" : NumberUtils::toString(multiplier)) + "(";
     for(int i = 0; i < elements.size(); i++) {
-        result += (elements[i]->getMultiplier() < 0.0) ? "(" + elements[i]->toString() + ")" : elements[i]->toString();
-        if(elements[i] != elements.back() && elements[i+1]->getMultiplier() >= 0)
-            result += " + ";
+        result += elements[i]->toString();
+        if(elements[i] != elements.back())
+            result += (elements[i+1]->getMultiplier() >= 0) ? " + " : " ";
     }
     result += ")";
     return result;
 }
 
-bool SumEntity::addElement(BaseEntity * element) {
+bool Sum::addElement(BaseEntity * element) {
     if(!BaseEntity::addElement(element)){
         Logger::log("Failed to add element: " + element->toString());
         return false;
@@ -45,37 +46,43 @@ bool SumEntity::addElement(BaseEntity * element) {
     return true;
 }
 
-BaseEntity* SumEntity::evaluateFunction() {
+BaseEntity *Sum::evaluateFunction() {
     BaseEntity::evaluateFunction();
     mergeSums();
+    mergeMultiplications();
     mergeVariables();
     mergeScalars();
-    applyMultiplier();
-    if (elements.size() == 0)
-        return new ScalarEntity(0);
-    if (elements.size() == 1)
-        return elements[0];
+    mergeMultiplier();
+    if (elements.size() == 0) {
+        delete this;
+        return new Scalar(0);
+    }
+    if (elements.size() == 1) {
+        BaseEntity *element = elements[0];
+        delete this;
+        return element;
+    }
     updateAndGetIsFunction();
     return this;
 }
 
-BaseEntity* SumEntity::evaluateValue(double x) {
-    BaseEntity* evaluated = new SumEntity(this->multiplier);
+BaseEntity *Sum::evaluateValue(double x) {
+    BaseEntity *evaluated = new Sum(this->multiplier);
     BaseEntity::evaluateElementsValue(x, evaluated);
     return evaluated->evaluateFunction();
 }
 
-bool SumEntity::updateAndGetIsFunction() {
+bool Sum::updateAndGetIsFunction() {
     isFunction = false;
     return BaseEntity::updateAndGetIsFunction();
 }
 
-void SumEntity::mergeSums() {
-    vector<BaseEntity*> toErase;
-    vector<BaseEntity*> toInsert;
-    for(vector<BaseEntity*>::iterator iter = elements.begin(); iter != elements.end(); iter++) {
+void Sum::mergeSums() {
+    vector<BaseEntity *> toErase;
+    vector<BaseEntity *> toInsert;
+    for(vector<BaseEntity *>::iterator iter = elements.begin(); iter != elements.end(); iter++) {
         //if subelement is also sum, we can merge them.
-        if(SumEntity* s = dynamic_cast<SumEntity*>(*iter)) {
+        if(Sum *s = dynamic_cast<Sum *>(*iter)) {
             toInsert.insert(toInsert.end(), s->elements.begin(), s->elements.end());
             toErase.push_back(*iter);
         }
@@ -87,10 +94,10 @@ void SumEntity::mergeSums() {
     elements.insert(this->elements.end(), toInsert.begin(), toInsert.end());
 }
 
-void SumEntity::mergeScalars() {
-    vector<ScalarEntity*> scalars;
-    for(vector<BaseEntity*>::iterator iter = elements.begin(); iter != elements.end(); iter++) {
-        if(ScalarEntity* s = dynamic_cast<ScalarEntity*>(*iter)) {
+void Sum::mergeScalars() {
+    vector<Scalar *> scalars;
+    for(vector<BaseEntity *>::iterator iter = elements.begin(); iter != elements.end(); iter++) {
+        if(Scalar *s = dynamic_cast<Scalar *>(*iter)) {
             scalars.push_back(s);
         }
     }
@@ -102,18 +109,18 @@ void SumEntity::mergeScalars() {
         elements.erase(std::remove(elements.begin(), elements.end(), scalars[0]), elements.end());
 }
 
-void SumEntity::mergeVariables() {
-    map<std::string, vector<VariableEntity*>> varMap;
+void Sum::mergeVariables() {
+    map<std::string, vector<Variable *>> varMap;
 
-    for(vector<BaseEntity*>::iterator iter = elements.begin(); iter != elements.end(); iter++) {
-        if(VariableEntity* v = dynamic_cast<VariableEntity*>(*iter)) {
+    for(vector<BaseEntity *>::iterator iter = elements.begin(); iter != elements.end(); iter++) {
+        if(Variable *v = dynamic_cast<Variable *>(*iter)) {
             //don't have to find it first; [] operator initializes value for unexisting key with default () constructor value.
                 varMap[v->getSymbol()].push_back(v);
         }
     }
 
     for (auto const& x : varMap){
-        vector<VariableEntity*> variables = x.second;
+        vector<Variable *> variables = x.second;
         for (int i = variables.size()-1; i > 0; i--) {
             variables[0]->add(*variables[i]);
             elements.erase(std::remove(elements.begin(), elements.end(), variables[i]), elements.end());
@@ -123,7 +130,28 @@ void SumEntity::mergeVariables() {
     }
 }
 
-void SumEntity::applyMultiplier() {
+void Sum::mergeMultiplications() {
+    vector<Multiplication *> multiplications;
+    for(int i = 0; i < elements.size() && elements.size() > 1; i++) {
+        if(Multiplication *s = dynamic_cast<Multiplication *>(elements[i])) {
+            multiplications.push_back(s);
+        }
+    }
+
+    for(int i = 0; i < multiplications.size() && elements.size() > 1; i++){
+        for(int j = i+1; j < multiplications.size(); j++) {
+            if(multiplications[i]->contentsEquals(multiplications[j])) {
+                multiplications[i]->addToMultiplier(multiplications[j]->getMultiplier());
+                deleteElement(multiplications[j]);
+                multiplications.erase(multiplications.begin() + j);
+                j--;
+            }
+            evaluateAndReplaceElement(multiplications[i]);
+        }
+    }
+}
+
+void Sum::mergeMultiplier() {
     if (NumberUtils::doubleEquals(multiplier, 0)) {
         elements.clear();
     } else if (!NumberUtils::doubleEquals(multiplier, 1.0)) {

@@ -1,28 +1,28 @@
 #define _USE_MATH_DEFINES
 #include <cmath>
 #include "BaseEntityTest.h"
-#include "../entities/SumEntity.h"
-#include "../entities/ScalarEntity.h"
-#include "../entities/VariableEntity.h"
+#include "../entities/Sum.h"
+#include "../entities/Scalar.h"
+#include "../entities/Variable.h"
 
 void BaseEntityTest::testOperators() {
-    BaseEntity* original = new ScalarEntity(25);
-    BaseEntity* copy = original->copy();
-    BaseEntity* other = new ScalarEntity(20);
+    BaseEntity *original = new Scalar(25);
+    BaseEntity *copy = original->copy();
+    BaseEntity *other = new Scalar(20);
     Logger::important("Test == operator with scalar:");
     testCondition(*original == *copy, "success", "failure");
     Logger::important("Test != operator with scalar:");
     testCondition(*original != *other, "success", "failure");
 
-    BaseEntity* sum = new SumEntity(3, {original, other});
-    BaseEntity* sum2 = new SumEntity(3, {copy, other});
+    BaseEntity *sum = new Sum(3, {original, other});
+    BaseEntity *sum2 = new Sum(3, {copy, other});
     Logger::important("Test == operator with subelements:");
     testCondition(*sum == *sum2, "success", "failure");
     sum2->addElement(original);
     Logger::important("Test != operator with subelements:");
     testCondition(*sum != *sum2, "success", "failure");
 
-    BaseEntity* variable = new VariableEntity(3);
+    BaseEntity *variable = new Variable(3);
     Logger::important("Test == operator for different Entity types:");
     testCondition(!(*sum == *variable), "success", "failure");
     sum2->addElement(original);
@@ -31,17 +31,17 @@ void BaseEntityTest::testOperators() {
 }
 
 void BaseEntityTest::testInterfaces() {
-    BaseEntity* result;
+    BaseEntity *result;
     Logger::important("Test BaseEntity interface functions - inheritance");
     Logger::important("Test super constructor with initializer list");
-    SumEntity* subSumA = new SumEntity();
-    SumEntity* subSumB = new SumEntity(1, {new ScalarEntity(-1), new VariableEntity()});
-    SumEntity* subSubSum = new SumEntity(1, {new ScalarEntity(-42), new ScalarEntity(21), new VariableEntity(2), new VariableEntity(-3)});
+    Sum *subSumA = new Sum();
+    Sum *subSumB = new Sum(1, {new Scalar(-1), new Variable()});
+    Sum *subSubSum = new Sum(1, {new Scalar(-42), new Scalar(21), new Variable(2), new Variable(-3)});
     Logger::important("Test addElements with initializer list");//0.00002 + 3x + 3pi + e
-    subSumA->addElements({new VariableEntity(3), new VariableEntity("pi", 2), new VariableEntity("e"), new VariableEntity(0), subSubSum});
-    SumEntity* sum = new SumEntity(1, {new ScalarEntity(2), new ScalarEntity(20.00002), new VariableEntity(1), new VariableEntity(-1),
-                                       new VariableEntity("pi"), subSumA, subSumB});
-    result = new ScalarEntity(6.00002 + 3* M_PI + M_E);
+    subSumA->addElements({new Variable(3), new Variable("pi", 2), new Variable("e"), new Variable(0), subSubSum});
+    Sum *sum = new Sum(1, {new Scalar(2), new Scalar(20.00002), new Variable(1), new Variable(-1),
+                                       new Variable("pi"), subSumA, subSumB});
+    result = new Scalar(6.00002 + 3* M_PI + M_E);
     testCondition(*printAndEvaluateValue(sum, 2, "Evaluating value without evaluating isFunction") == *result,
                   result->toString(), "Incorrect - should be " + result->toString());
     printAndEvaluateFunction(sum, "Evaluating isFunction");
@@ -50,12 +50,12 @@ void BaseEntityTest::testInterfaces() {
                                         result->toString(), "Incorrect - should be " + result->toString());
     delete sum, subSubSum, subSumA, subSumB, result;
     Logger::important("Test updateAndGetFunction - function status propagation");
-    subSumA = new SumEntity(1, {new ScalarEntity(1), new VariableEntity("pi")});
-    subSumB = new SumEntity(1, {new ScalarEntity(2), new VariableEntity()});
-    sum = new SumEntity(1, {new VariableEntity("y"), subSumA, subSumB});
+    subSumA = new Sum(1, {new Scalar(1), new Variable("pi")});
+    subSumB = new Sum(1, {new Scalar(2), new Variable()});
+    sum = new Sum(1, {new Variable("y"), subSumA, subSumB});
     testCondition(sum->getIsFunction(), "isFunction propagated without update", "isFunction not propagated with update");
     testCondition(sum->updateAndGetIsFunction(), "isFunction updated properly", "isFunction not updated");
-    sum->addElement(new VariableEntity(-1));
+    sum->addElement(new Variable(-1));
     testCondition(!printAndEvaluateFunction(sum, "Substracting function component, then updating function status:")->getIsFunction(), "isFunction updated on function evaluation", "isFunction not updated on function evaluation");
     delete sum, subSumA, subSumB;
 
