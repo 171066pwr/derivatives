@@ -21,14 +21,7 @@ public:
     BaseEntity *copy() override;
 
     bool operator==(const BaseEntity& entity) override {
-        const Variable *variable = dynamic_cast<const Variable *>(&entity);
-        if(variable == nullptr)
-            return false;
-        else {
-            bool result = BaseEntity::operator==(*variable);
-            result = result && symbol == variable->symbol;
-            return result;
-        }
+        equals(&entity);
     }
 
     std::string toString() override;

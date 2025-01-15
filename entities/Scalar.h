@@ -13,10 +13,7 @@ public:
     bool equals(const BaseEntity *entity) override;
 
     bool operator==(const BaseEntity& entity) override {
-        const Scalar *variable = dynamic_cast<const Scalar *>(&entity);
-        if(variable == nullptr)
-            return false;
-        return BaseEntity::operator==(*variable);
+        return equals(&entity);
     }
 
     std::string toString() override;

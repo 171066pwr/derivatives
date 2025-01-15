@@ -1,6 +1,5 @@
 #include <algorithm>
 #include "Multiplication.h"
-#include "../utils/Logger.h"
 #include "../utils/NumberUtils.h"
 #include "Scalar.h"
 #include "Variable.h"
@@ -14,19 +13,11 @@ BaseEntity *Multiplication::copy() {
 }
 
 bool Multiplication::equals(const BaseEntity *entity) {
-    const Multiplication *multi = dynamic_cast<const Multiplication *>(entity);
-    if(multi == nullptr)
-        return false;
-    else
-        return BaseEntity::equals(multi);
+    return typeEquals<Multiplication>(entity) && BaseEntity::equals(entity);
 }
 
 bool Multiplication::contentsEquals(const BaseEntity *entity) {
-    const Multiplication *multi = dynamic_cast<const Multiplication *>(entity);
-    if(multi == nullptr)
-        return false;
-    else
-        BaseEntity::contentsEquals(entity);
+    return typeEquals<Multiplication>(entity) && BaseEntity::contentsEquals(entity);
 }
 
 std::string Multiplication::toString() {
@@ -43,14 +34,6 @@ std::string Multiplication::toString() {
     }
     result += ")";
     return result;
-}
-
-bool Multiplication::addElement(BaseEntity *element) {
-    if(!BaseEntity::addElement(element)){
-        Logger::log("Failed to add element: " + element->toString());
-        return false;
-    }
-    return true;
 }
 
 BaseEntity *Multiplication::evaluateFunction() {

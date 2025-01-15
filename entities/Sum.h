@@ -22,7 +22,6 @@ public:
     }
 
     std::string toString();
-    bool addElement(BaseEntity * element) override;
     BaseEntity *evaluateFunction() override ;
     BaseEntity *evaluateValue(double x) override;
     bool updateAndGetIsFunction() override;

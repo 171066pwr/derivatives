@@ -15,11 +15,7 @@ BaseEntity *Sum::copy() {
 bool Sum::equals(const BaseEntity *entity) {
     //If the new type to be casted to is a pointer the result is a nullptr on error. If it is a reference it throws an exception.
     //So we have to cast pointers or catch bad_cast
-    const Sum *sum = dynamic_cast<const Sum *>(entity);
-    if(sum == nullptr)
-        return false;
-    else
-        return BaseEntity::equals(sum);
+    return typeEquals<Sum>(entity) && BaseEntity::equals(entity);
 }
 
 std::string Sum::toString() {
@@ -36,14 +32,6 @@ std::string Sum::toString() {
     }
     result += ")";
     return result;
-}
-
-bool Sum::addElement(BaseEntity * element) {
-    if(!BaseEntity::addElement(element)){
-        Logger::log("Failed to add element: " + element->toString());
-        return false;
-    }
-    return true;
 }
 
 BaseEntity *Sum::evaluateFunction() {

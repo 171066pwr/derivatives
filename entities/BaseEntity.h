@@ -20,6 +20,12 @@ protected:
 
     BaseEntity *evaluateAndDelete(BaseEntity* entity);
     BaseEntity *evaluateAndReplaceElement(BaseEntity *entity);
+
+    template <typename T>
+    bool typeEquals(const BaseEntity *entity){
+        const T *t = dynamic_cast<const T *>(entity);
+        return t != nullptr;
+    }
 public:
     BaseEntity(double multiplier = 1.0);
     BaseEntity(double multiplier, initializer_list<BaseEntity *> list);

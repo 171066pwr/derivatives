@@ -9,11 +9,7 @@ BaseEntity *Scalar::copy() {
 }
 
 bool Scalar::equals(const BaseEntity *entity) {
-    const Scalar *e = dynamic_cast<const Scalar *>(entity);
-    if(e == nullptr)
-        return false;
-    else
-        return BaseEntity::equals(e);
+    return typeEquals<Scalar>(entity) && BaseEntity::equals(entity);
 }
 
 std::string Scalar::toString() {

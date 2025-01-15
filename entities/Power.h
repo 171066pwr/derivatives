@@ -2,14 +2,23 @@
 #define TESTS_POWER_H
 
 #include "BaseEntity.h"
+#include "Scalar.h"
 
 class Power: public BaseEntity {
 private:
-    double power;
+    BaseEntity* power;
 
 public:
-    Power(double multiplier = 1.0, double power = 1.0);
-    Power(double multiplier, double power, initializer_list<BaseEntity *> list): BaseEntity(multiplier, list), power(power) {};
+    Power(double power, double multiplier = 1.0): BaseEntity(multiplier) {
+        this->power = new Scalar(power);
+    };
+    Power(BaseEntity *power, double multiplier = 1.0): BaseEntity(multiplier) {
+        this->power = power;
+    };
+    Power(double power, BaseEntity * base, double multiplier = 1.0): BaseEntity(multiplier, {base}) {
+        this->power = new Scalar(power);
+    };
+    Power(BaseEntity *power, BaseEntity * base, double multiplier = 1.0): BaseEntity(multiplier, {base}), power(power) {};
     BaseEntity *copy();
     bool equals(const BaseEntity *entity) override;
     bool contentsEquals(const BaseEntity *entity) override;
@@ -23,6 +32,9 @@ public:
     BaseEntity *evaluateFunction() override ;
     BaseEntity *evaluateValue(double x) override;
     bool updateAndGetIsFunction() override;
+
+    bool addPower(Power power);
+    bool multiplyPower(Power power);
 };
 
 #endif //TESTS_POWER_H

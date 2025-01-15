@@ -85,7 +85,7 @@ void SumTest::testMultiplierValue() {
     Logger::important("Test multiplier 2, raw value evaluation");
     BaseEntity *sum = new Sum(2, {new Scalar(1), new Variable(1)});
     testEntity = printAndEvaluateValue(sum, 2, "Evaluated value");
-    testCondition(*testEntity == *new Scalar(6), "correct", "should be 6");
+    testCondition(*testEntity == *(new Scalar(6)), "correct", "should be 6");
     delete sum, testEntity;
 }
 
