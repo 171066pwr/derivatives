@@ -19,10 +19,6 @@ public:
         return BaseEntity::operator==(*variable);
     }
 
-    bool operator==(const BaseEntity *entity) override {
-        return equals(entity);
-    }
-
     std::string toString() override;
     BaseEntity *evaluateValue(double x) override;
     bool addElement(BaseEntity *element) override;

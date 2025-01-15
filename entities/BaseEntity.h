@@ -36,14 +36,6 @@ public:
         return !(*this == entity);
     }
 
-    virtual bool operator==(const BaseEntity *entity) {
-        return equals(entity);
-    }
-
-    virtual bool operator!=(const BaseEntity *entity) {
-        return this != entity;
-    }
-
     /* some functions accept only 1 element (sin/ln, if something else is added then it's added to their sum/multiplication single element)
  * grouping of elements can take place when adding on the rules of the isFunction (i.e. scalars, variable of equal power, possible further)
  * it is even better that we won't have it all in one huge class but distributed across responsible classes

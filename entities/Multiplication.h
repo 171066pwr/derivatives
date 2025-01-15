@@ -23,10 +23,6 @@ public:
         return equals(&entity);
     }
 
-    bool operator==(const BaseEntity *entity) override {
-        return equals(entity);
-    }
-
     std::string toString() override;
     bool addElement(BaseEntity * element) override;
     BaseEntity *evaluateFunction() override ;
