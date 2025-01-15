@@ -9,7 +9,10 @@ BaseEntity::BaseEntity(double multiplier, initializer_list<BaseEntity *> list): 
     addElements(list);
 }
 
-BaseEntity::~BaseEntity() {}
+BaseEntity::~BaseEntity() {
+    for(int i = 0; i < elements.size(); i++)
+        delete elements[i];
+}
 
 BaseEntity *BaseEntity::copy() {
     BaseEntity *copy = new BaseEntity(multiplier);

@@ -1,5 +1,11 @@
 #include "Power.h"
 #include "../utils/NumberUtils.h"
+#include "../utils/Logger.h"
+#include "Multiplication.h"
+
+Power::~Power() {
+    delete this->power;
+}
 
 BaseEntity *Power::copy() {
     BaseEntity* copy = new Power(power->copy(), multiplier);
@@ -34,10 +40,17 @@ std::string Power::toString() {
 }
 
 bool Power::addElement(BaseEntity *element) {
+    if(elements.size() == 1) {
+        Logger::log("This power already has base");
+        return false;
+    }
     return BaseEntity::addElement(element);
 }
 
 BaseEntity *Power::evaluateFunction() {
+    BaseEntity::evaluateFunction();
+    power = evaluatePower();
+
     return BaseEntity::evaluateFunction();
 }
 
@@ -55,4 +68,25 @@ bool Power::addPower(Power power) {
 
 bool Power::multiplyPower(Power power) {
     return false;
+}
+
+BaseEntity *Power::evaluatePower() {
+    BaseEntity *newPower = power->evaluateFunction();
+    if(power != newPower) {
+        delete power;
+        power = newPower;
+    }
+    return power;
+}
+
+BaseEntity *Power::splitMultiplications() {
+    if(elements[0]->getSize() <2 || !typeEquals<Multiplication>(elements[0]))
+        return this;
+    Multiplication *m = dynamic_cast<Multiplication *>(elements[0]);
+    Multiplication *product = new Multiplication(multiplier);
+    for(int i = 0; i < m->getSize(); i++) {
+        product->addElement(new Power(this->power->copy(), m->getElement(i)->copy()));
+    }
+    delete this->power;
+
 }

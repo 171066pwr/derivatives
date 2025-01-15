@@ -6,7 +6,9 @@
 
 class Power: public BaseEntity {
 private:
+    //could also make Power accept two child elements - base and power
     BaseEntity* power;
+    ~Power();
 
 public:
     Power(double power, double multiplier = 1.0): BaseEntity(multiplier) {
@@ -35,6 +37,8 @@ public:
 
     bool addPower(Power power);
     bool multiplyPower(Power power);
+    BaseEntity *evaluatePower();
+    BaseEntity* splitMultiplications();
 };
 
 #endif //TESTS_POWER_H

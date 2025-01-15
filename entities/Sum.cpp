@@ -47,6 +47,7 @@ BaseEntity *Sum::evaluateFunction() {
     }
     if (elements.size() == 1) {
         BaseEntity *element = elements[0];
+        elements.clear();
         delete this;
         return element;
     }
@@ -72,10 +73,10 @@ void Sum::mergeSums() {
         //if subelement is also sum, we can merge them.
         if(Sum *s = dynamic_cast<Sum *>(*iter)) {
             toInsert.insert(toInsert.end(), s->elements.begin(), s->elements.end());
+            s->elements.clear();
             toErase.push_back(*iter);
         }
     }
-    //Erase merged SumEntities in separate loop - iterator invalidates on modification
     for (auto e: toErase) {
         deleteElement(e);
     }
@@ -141,7 +142,8 @@ void Sum::mergeMultiplications() {
 
 void Sum::mergeMultiplier() {
     if (NumberUtils::doubleEquals(multiplier, 0)) {
-        elements.clear();
+        for(int i = elements.size(); i <= 0; i--)
+            deleteElement(elements[i]);
     } else if (!NumberUtils::doubleEquals(multiplier, 1.0)) {
         for (auto element: elements) {
             element->multiplyByScalar(multiplier);

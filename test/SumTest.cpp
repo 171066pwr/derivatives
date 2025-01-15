@@ -5,17 +5,16 @@
 
 void SumTest::testEqualsOperators() {
     BaseEntity *original = new Variable("pi", 2);
-    BaseEntity *copy = original->copy();
     BaseEntity *other = new Variable(2);
     BaseEntity *sum = new Sum(2, {original, other});
-    BaseEntity *sum2 = new Sum(2, {copy, other});
+    BaseEntity *sum2 = new Sum(2, {original->copy(), other->copy()});
     Logger::important("test == operator:");
     testCondition(*sum == *sum2, "success", "failure");
     delete sum2;
-    sum2 = new Sum(2, {other, copy});
+    sum2 = new Sum(2, {other, original->copy()});
     Logger::important("test != operator:");
     testCondition(*sum != *sum2, "success", "failure");
-    delete original, copy, other, sum, sum2;
+    delete original, other, sum, sum2;
 }
 
 void SumTest::testSum() {

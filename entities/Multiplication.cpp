@@ -137,7 +137,6 @@ BaseEntity *Multiplication::mergeVariables() {
 }
 
 BaseEntity *Multiplication::mergeSums() {
-    Sum *sum;
     for (int i = 0; i < elements.size(); i++) {
         if (Sum *s = dynamic_cast<Sum *>(elements[i])) {
             BaseEntity *result = sumProduct(s);

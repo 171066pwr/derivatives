@@ -29,7 +29,7 @@ protected:
 public:
     BaseEntity(double multiplier = 1.0);
     BaseEntity(double multiplier, initializer_list<BaseEntity *> list);
-    ~BaseEntity();
+    virtual ~BaseEntity();
     virtual BaseEntity *copy();
     virtual bool equals(const BaseEntity *entity);
     virtual bool contentsEquals(const BaseEntity *entity);
