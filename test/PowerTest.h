@@ -9,12 +9,12 @@ public:
     void runTest(string msg) override {
         EntityTest::runTest(msg);
         testEqualsOperators();
-        initialTest();
+        testConstructorsAndToString();
     }
 
 private:
     void testEqualsOperators();
-    void initialTest();
+    void testConstructorsAndToString();
 };
 
 #endif //TESTS_POWERTEST_H

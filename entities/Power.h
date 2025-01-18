@@ -8,8 +8,7 @@ class Power: public BaseEntity {
 private:
     //could also make Power accept two child elements - base and power
     BaseEntity* power;
-    ~Power();
-
+    void replaceBase(BaseEntity *base);
 public:
     Power(double power, double multiplier = 1.0): BaseEntity(multiplier) {
         this->power = new Scalar(power);
@@ -21,8 +20,10 @@ public:
         this->power = new Scalar(power);
     };
     Power(BaseEntity *power, BaseEntity * base, double multiplier = 1.0): BaseEntity(multiplier, {base}), power(power) {};
+    ~Power();
     BaseEntity *copy();
     bool equals(const BaseEntity *entity) override;
+    bool equalsExceptMultiplier(const BaseEntity *entity) override;
     bool contentsEquals(const BaseEntity *entity) override;
 
     bool operator==(const BaseEntity& entity) override {
@@ -35,10 +36,12 @@ public:
     BaseEntity *evaluateValue(double x) override;
     bool updateAndGetIsFunction() override;
 
-    bool addPower(Power power);
-    bool multiplyPower(Power power);
-    BaseEntity *evaluatePower();
-    BaseEntity* splitMultiplications();
+    void mergePower();
+    BaseEntity *splitMultiplications();
+    BaseEntity *getBase();
+    BaseEntity *getPower();
+    bool addToPower(Power *pwr);
+
 };
 
 #endif //TESTS_POWER_H

@@ -3,6 +3,7 @@
 #include "../utils/NumberUtils.h"
 #include "Scalar.h"
 #include "Variable.h"
+#include "Power.h"
 
 BaseEntity *Multiplication::copy() {
     BaseEntity *copy = new Multiplication(multiplier);
@@ -48,6 +49,7 @@ BaseEntity *Multiplication::evaluateFunction() {
         elements[0]->multiplyByScalar(multiplier);
         return evaluateAndDelete(elements[0]);
     }
+    mergeVariables();
     updateAndGetIsFunction();
     return mergeSums();
 }
@@ -111,29 +113,25 @@ void Multiplication::mergeMultiplications() {
     elements.insert(this->elements.end(), toInsert.begin(), toInsert.end());
 }
 
-
 BaseEntity *Multiplication::mergeVariables() {
-//        if(Variable *v = dynamic_cast<Variable *>(*iter)) {
+    map<std::string, vector<Variable *>> varMap;
+    vector<Power *> mergedPowers;
 
-    //later with POW
-//
-//    map<std::string, vector<Variable *>> varMap;
-//    for(vector<BaseEntity *>::iterator iter = elements.begin(); iter != elements.end(); iter++) {
-//        if(Variable *v = dynamic_cast<Variable *>(*iter)) {
-//            //don't have to find it first; [] operator initializes value for unexisting key with default () constructor value.
-//            varMap[v->getSymbol()].push_back(v);
-//        }
-//    }
+    for(vector<BaseEntity *>::iterator iter = elements.begin(); iter != elements.end(); iter++) {
+        if(Variable *v = dynamic_cast<Variable *>(*iter)) {
+            varMap[v->getSymbol()].push_back(v);
+        }
+    }
 
-//    for (auto const& x : varMap){
-//        vector<Variable *> variables = x.second;
-//        for (int i = variables.size()-1; i > 0; i--) {
-//            variables[0]->add(*variables[i]);
-//            elements.erase(std::remove(elements.begin(), elements.end(), variables[i]), elements.end());
-//        }
-//        if (variables[0]->getMultiplier() == 0)
-//            elements.erase(std::remove(elements.begin(), elements.end(), variables[0]), elements.end());
-//    }
+    for (auto const& x : varMap){
+        vector<Variable *> variables = x.second;
+        if(variables.size() > 1) {
+            addElement(new Power(variables.size(), variables[0]->copy()));
+            for (int i = variables.size() - 1; i >= 0; i--) {
+                deleteElement(variables[i]);
+            }
+        }
+    }
     return this;
 }
 
@@ -141,7 +139,7 @@ BaseEntity *Multiplication::mergeSums() {
     for (int i = 0; i < elements.size(); i++) {
         if (Sum *s = dynamic_cast<Sum *>(elements[i])) {
             BaseEntity *result = sumProduct(s);
-            //deleteElement(elements[i]);
+            deleteElement(elements[i]);
             BaseEntity *evaluated = result->evaluateFunction();
             if (evaluated != result)
                 delete result;

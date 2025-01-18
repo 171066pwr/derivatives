@@ -18,20 +18,16 @@ protected:
         deleteAndZero(element);
     }
 
-    BaseEntity *evaluateAndDelete(BaseEntity* entity);
+    static BaseEntity *evaluateAndDelete(BaseEntity* entity);
     BaseEntity *evaluateAndReplaceElement(BaseEntity *entity);
 
-    template <typename T>
-    bool typeEquals(const BaseEntity *entity){
-        const T *t = dynamic_cast<const T *>(entity);
-        return t != nullptr;
-    }
 public:
     BaseEntity(double multiplier = 1.0);
     BaseEntity(double multiplier, initializer_list<BaseEntity *> list);
     virtual ~BaseEntity();
     virtual BaseEntity *copy();
     virtual bool equals(const BaseEntity *entity);
+    virtual bool equalsExceptMultiplier(const BaseEntity *entity);
     virtual bool contentsEquals(const BaseEntity *entity);
 
     virtual bool operator==(const BaseEntity& entity) {
@@ -56,6 +52,24 @@ public:
     virtual BaseEntity *evaluateValue(double x);
     virtual BaseEntity *evaluateDerivative();
     virtual bool updateAndGetIsFunction();
+
+    template <typename T>
+    static bool typeEquals(const BaseEntity *entity){
+        const T *t = dynamic_cast<const T *>(entity);
+        return t != nullptr;
+    }
+
+    template<typename T>
+    static void deleteAndZero(T *&entity) {
+        delete entity;
+        entity = nullptr;
+    }
+
+    static BaseEntity *replace(BaseEntity *&old, BaseEntity *current) {
+        if(old != current)
+            delete old;
+        return old = current;
+    }
 
     void evaluateElementsValue(double x, BaseEntity *entity);
 
@@ -91,12 +105,6 @@ public:
 
     BaseEntity *getElement(int index) {
         return (index >= 0 && index < elements.size()) ? elements[index] : nullptr;
-    }
-
-    template<typename T>
-    void deleteAndZero(T *&entity) {
-        delete entity;
-        entity = nullptr;
     }
 };
 

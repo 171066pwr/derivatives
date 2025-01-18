@@ -25,6 +25,10 @@ bool BaseEntity::equals(const BaseEntity *entity) {
     return result && contentsEquals(entity);
 }
 
+bool BaseEntity::equalsExceptMultiplier(const BaseEntity *entity) {
+    return contentsEquals(entity);
+}
+
 //it requires sort or compare by maps so it can ignore order...
 bool BaseEntity::contentsEquals(const BaseEntity *entity) {
     //map of contents and their count. I can't use pointers here, but then - how can I use overridden operators/equals?
