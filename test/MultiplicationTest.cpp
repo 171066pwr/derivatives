@@ -1,6 +1,7 @@
 #include "MultiplicationTest.h"
 #include "../entities/Variable.h"
 #include "../entities/Multiplication.h"
+#include "../entities/Power.h"
 
 void MultiplicationTest::testEqualsOperators() {
     BaseEntity *original = new Variable("pi", 2);
@@ -41,8 +42,8 @@ void MultiplicationTest::testMergeMultiplications() {
     testEntity = multi->copy();
     testEntity->addElements({subA, subB});
     replace(testEntity, printAndEvaluateFunction(testEntity));
-    expected = new Multiplication(150, {new Variable(), new Variable(), new Variable("y")});
-    testCondition(*testEntity == *expected, "correct", "should be 150(x*x*y)");
+    expected = new Multiplication(150, {new Variable("y"), new Power(2, new Variable())});
+    testCondition(*testEntity == *expected, "correct", "should be " + expected->toString());
     deleteMultiple({testEntity, expected, multi}); // can't delete subA, subB - they were deleted during evaluation as subelements! Deleting again will result in segfault!
 }
 
@@ -51,9 +52,9 @@ void MultiplicationTest::testMergeSums() {
     BaseEntity *sumA = new Sum(1, {new Scalar(2), new Variable()});
     BaseEntity *sumB = new Sum(1, {new Scalar(-2), new Variable()});
     BaseEntity *testEntity = new Multiplication(1, {sumA->copy(), sumB->copy()});
-    BaseEntity *expected = new Sum(1, {new Scalar(-4), new Multiplication(1, {new Variable(), new Variable()})});
+    BaseEntity *expected = new Sum(1, {new Scalar(-4), new Power(2, new Variable())});
     testEntity = printAndEvaluateFunction(testEntity, "Evaluating sum multiplication");
-    testCondition(*testEntity == *expected, "correct", "should be (-4 + x*x)");
+    testCondition(*testEntity == *expected, "correct", "should be " + expected->toString());
 
     replace(testEntity, new Multiplication(
             1, {new Sum(1, {new Scalar(-2), new Variable()}), new Scalar(2)}));
