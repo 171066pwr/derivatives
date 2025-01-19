@@ -137,12 +137,3 @@ BaseEntity *BaseEntity::evaluateAndDelete(BaseEntity *entity) {
         deleteAndZero(entity);
     return evaluated;
 }
-
-BaseEntity *BaseEntity::evaluateAndReplaceElement(BaseEntity *entity) {
-    BaseEntity* evaluated = entity->evaluateFunction();
-    if(evaluated != entity) {
-        std::replace(elements.begin(), elements.end(), entity, evaluated);
-        deleteAndZero(entity);
-    }
-    return evaluated;
-}

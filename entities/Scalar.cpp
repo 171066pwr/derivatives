@@ -12,6 +12,10 @@ bool Scalar::equals(const BaseEntity *entity) {
     return typeEquals<Scalar>(entity) && BaseEntity::equals(entity);
 }
 
+bool Scalar::contentsEquals(const BaseEntity *entity) {
+    return typeEquals<Scalar>(entity);
+}
+
 std::string Scalar::toString() {
     return NumberUtils::toString(multiplier);
 }

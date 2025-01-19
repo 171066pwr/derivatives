@@ -13,6 +13,7 @@ private:
     string symbol = SUBSTITUTE_SYMBOL;
 
     bool equals(const BaseEntity *entity) override;
+    bool contentsEquals(const BaseEntity *entity) override;
     Scalar *evaluate(double x);
 public:
     static void changeSubstituteSymbol(string symbol);
@@ -28,11 +29,6 @@ public:
     BaseEntity *evaluateFunction() override ;
     BaseEntity *evaluateValue(double x) override;
     bool updateAndGetIsFunction() override;
-
-    void add(Variable entity) {
-        if (this->symbol == entity.symbol)
-            this->multiplier += entity.multiplier;
-    }
 
     string getSymbol() {
         return symbol;

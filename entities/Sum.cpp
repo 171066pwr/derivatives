@@ -37,9 +37,7 @@ std::string Sum::toString() {
 BaseEntity *Sum::evaluateFunction() {
     BaseEntity::evaluateFunction();
     mergeSums();
-    mergeMultiplications();
-    mergeVariables();
-    mergeScalars();
+    mergeContents();
     mergeMultiplier();
     if (elements.size() == 0) {
         return new Scalar(0);
@@ -81,63 +79,21 @@ void Sum::mergeSums() {
     elements.insert(this->elements.end(), toInsert.begin(), toInsert.end());
 }
 
-void Sum::mergeScalars() {
-    vector<Scalar *> scalars;
-    for(vector<BaseEntity *>::iterator iter = elements.begin(); iter != elements.end(); iter++) {
-        if(Scalar *s = dynamic_cast<Scalar *>(*iter)) {
-            scalars.push_back(s);
-        }
-    }
-    for (int i = scalars.size()-1; i > 0; i--) {
-        scalars[0]->add(*scalars[i]);
-        deleteElement(scalars[i]);
-    }
-    if (scalars.size() == 1 && NumberUtils::doubleEquals(scalars[0]->getMultiplier(), 0.0))
-        elements.erase(std::remove(elements.begin(), elements.end(), scalars[0]), elements.end());
-}
-
-void Sum::mergeVariables() {
-    map<std::string, vector<Variable *>> varMap;
-
-    for(vector<BaseEntity *>::iterator iter = elements.begin(); iter != elements.end(); iter++) {
-        if(Variable *v = dynamic_cast<Variable *>(*iter)) {
-            //don't have to find it first; [] operator initializes value for unexisting key with default () constructor value.
-                varMap[v->getSymbol()].push_back(v);
-        }
-    }
-
-    for (auto const& x : varMap){
-        vector<Variable *> variables = x.second;
-        for (int i = variables.size()-1; i > 0; i--) {
-            variables[0]->add(*variables[i]);
-            elements.erase(std::remove(elements.begin(), elements.end(), variables[i]), elements.end());
-        }
-        if (variables[0]->getMultiplier() == 0)
-            elements.erase(std::remove(elements.begin(), elements.end(), variables[0]), elements.end());
-    }
-}
-
-void Sum::mergeMultiplications() {
-    vector<Multiplication *> multiplications;
-    for(int i = 0; i < elements.size() && elements.size() > 1; i++) {
-        if(Multiplication *s = dynamic_cast<Multiplication *>(elements[i])) {
-            multiplications.push_back(s);
-        }
-    }
-
-    for(int i = 0; i < multiplications.size() && elements.size() > 1; i++){
+void Sum::mergeContents() {
+    for(int i = 0; i < elements.size() && elements.size() > 1; i++){
         bool updated = false;
-        for(int j = i+1; j < multiplications.size(); j++) {
-            if(multiplications[i]->contentsEquals(multiplications[j])) {
-                multiplications[i]->addToMultiplier(multiplications[j]->getMultiplier());
-                deleteElement(multiplications[j]);
-                multiplications.erase(multiplications.begin() + j);
+        for(int j = i+1; j < elements.size(); j++) {
+            if(elements[i]->equalsExceptMultiplier(elements[j])) {
+                elements[i]->addToMultiplier(elements[j]->getMultiplier());
+                deleteElement(elements[j]);
                 updated = true;
                 j--;
             }
         }
-        if (updated)
-            evaluateAndReplaceElement(multiplications[i]);
+        if (updated) {
+            evaluateAndReplaceElement(elements[i]);
+            i--;
+        }
     }
 }
 
@@ -150,5 +106,14 @@ void Sum::mergeMultiplier() {
             element->multiplyByScalar(multiplier);
         }
         multiplier = 1;
+    }
+}
+
+void Sum::evaluateAndReplaceElement(BaseEntity *entity) {
+    BaseEntity* evaluated = entity->evaluateFunction();
+    if(evaluated != entity) {
+        if(!NumberUtils::doubleEquals(evaluated->getMultiplier(), 0.0))
+            std::replace(elements.begin(), elements.end(), entity, evaluated);
+        deleteElement(entity);
     }
 }

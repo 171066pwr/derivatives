@@ -7,10 +7,10 @@
 class Sum: public BaseEntity {
 private:
     void mergeSums();
-    void mergeScalars();
-    void mergeVariables();
-    void mergeMultiplications();
     void mergeMultiplier();
+    void mergeContents();
+    void evaluateAndReplaceElement(BaseEntity *entity);
+
 public:
     Sum(double multiplier = 1.0): BaseEntity(multiplier) {};
     Sum(double multiplier, initializer_list<BaseEntity *> list): BaseEntity(multiplier, list) {};

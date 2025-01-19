@@ -22,11 +22,15 @@ BaseEntity *Variable::copy() {
 }
 
 bool Variable::equals(const BaseEntity *entity) {
+    return contentsEquals(entity) && NumberUtils::doubleEquals(this->multiplier, entity->getMultiplier());
+}
+
+bool Variable::contentsEquals(const BaseEntity *entity) {
     const Variable *e = dynamic_cast<const Variable *>(entity);
     if(e == nullptr)
         return false;
     else
-        return this->symbol == e->symbol && NumberUtils::doubleEquals(this->multiplier, e->multiplier);
+        return this->symbol == e->symbol;
 }
 
 std::string Variable::toString() {
@@ -60,4 +64,3 @@ BaseEntity *Variable::evaluateFunction() {
 bool Variable::updateAndGetIsFunction() {
     return isFunction = (symbol == SUBSTITUTE_SYMBOL);
 }
-

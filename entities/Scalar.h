@@ -11,6 +11,7 @@ public:
     Scalar(double multiplier = 1.0);
     BaseEntity *copy() override;
     bool equals(const BaseEntity *entity) override;
+    bool contentsEquals(const BaseEntity *entity) override;
 
     bool operator==(const BaseEntity& entity) override {
         return equals(&entity);
@@ -19,14 +20,6 @@ public:
     std::string toString() override;
     BaseEntity *evaluateValue(double x) override;
     bool addElement(BaseEntity *element) override;
-
-    void add(Scalar scalar) {
-        this->multiplier += scalar.multiplier;
-    }
-
-    void multiply(Scalar scalar) {
-        this->multiplier *= scalar.multiplier;
-    }
 };
 
 #endif //DERIVATIVES_SCALARENTITY_H

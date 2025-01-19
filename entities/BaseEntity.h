@@ -19,7 +19,6 @@ protected:
     }
 
     static BaseEntity *evaluateAndDelete(BaseEntity* entity);
-    BaseEntity *evaluateAndReplaceElement(BaseEntity *entity);
 
 public:
     BaseEntity(double multiplier = 1.0);
@@ -73,7 +72,7 @@ public:
 
     void evaluateElementsValue(double x, BaseEntity *entity);
 
-    double getMultiplier() {
+    double getMultiplier() const {
         return multiplier;
     }
 
@@ -89,10 +88,6 @@ public:
 
     void addToMultiplier(double scalar) {
         multiplier += scalar;
-    }
-
-    void invertSign() {
-        multiplier = -multiplier;
     }
 
     int getSize() {

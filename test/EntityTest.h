@@ -27,10 +27,10 @@ public:
         BaseEntity *result;
         cout << (comment == "" ? "" : comment + ":\n") << e->toString();
         cout << "   =    " << (result = e->evaluateFunction())->toString() << endl;
-        if (e != result) {
-            delete e;
-            e = nullptr;
-        }
+//        if (e != result) {
+//            delete e;
+//            e = nullptr;
+//        }
         return result;
     }
 
