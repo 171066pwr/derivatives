@@ -39,17 +39,16 @@ std::string Multiplication::toString() {
 
 BaseEntity *Multiplication::evaluateFunction() {
     BaseEntity::evaluateFunction();
-    //merge multiplications or multipliers first? In recursive action it will merge everything anyways?
     if(NumberUtils::doubleEquals(multiplier, 0.0) || NumberUtils::doubleEquals(multiplier *= mergeMultipliers(), 0.0)) {
         return new Scalar(0);
     }
     mergeMultiplications();
-
+    mergeVariables();
+    mergePowers();
     if (elements.size() == 1) {
         elements[0]->multiplyByScalar(multiplier);
         return evaluateAndDelete(elements[0]);
     }
-    mergeVariables();
     updateAndGetIsFunction();
     return mergeSums();
 }
@@ -113,7 +112,7 @@ void Multiplication::mergeMultiplications() {
     elements.insert(this->elements.end(), toInsert.begin(), toInsert.end());
 }
 
-BaseEntity *Multiplication::mergeVariables() {
+void Multiplication::mergeVariables() {
     map<std::string, vector<Variable *>> varMap;
     vector<Power *> mergedPowers;
 
@@ -132,7 +131,41 @@ BaseEntity *Multiplication::mergeVariables() {
             }
         }
     }
-    return this;
+}
+
+void Multiplication::mergePowers() {
+    map<std::string, vector<Variable *>> varMap;
+    vector<Power *> powers;
+    for(vector<BaseEntity *>::iterator iter = elements.begin(); iter != elements.end(); iter++) {
+        if(Power *v = dynamic_cast<Power *>(*iter)) {
+            powers.push_back(v);
+        }
+        if(Variable *v = dynamic_cast<Variable *>(*iter)) {
+            varMap[v->getSymbol()].push_back(v);
+        }
+    }
+    for(int i = 0; i < powers.size(); i++) {
+        Power *power = powers[i];
+        for(int j = 0; j < elements.size(); j++) {
+            if(elements[j] == powers[i])
+                continue;
+
+            if(Variable *v = dynamic_cast<Variable *>(elements[j])) {
+                if(*power->getBase() == *v) {
+                    power->addToPower(1.0);
+                    deleteElement(elements[j]);
+                    j--;
+                }
+            } else if(Power *p = dynamic_cast<Power *>(elements[j])) {
+                if(*power->getBase() == *p->getBase()) {
+                    if(power->mergePower(p))
+                        powers.erase(std::remove(powers.begin(), powers.end(), elements[j]), powers.end());
+                    deleteElement(elements[j]);
+                    j--;
+                }
+            }
+        }
+    }
 }
 
 BaseEntity *Multiplication::mergeSums() {

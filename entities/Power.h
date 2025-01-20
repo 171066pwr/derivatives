@@ -7,8 +7,10 @@
 class Power: public BaseEntity {
 private:
     //could also make Power accept two child elements - base and power
-    BaseEntity* power;
+    BaseEntity* power = nullptr;
     void replaceBase(BaseEntity *base);
+    void mergePower();
+    BaseEntity *handleEdgeCases();
 public:
     Power(double power, double multiplier = 1.0): BaseEntity(multiplier) {
         this->power = new Scalar(power);
@@ -36,12 +38,11 @@ public:
     BaseEntity *evaluateValue(double x) override;
     bool updateAndGetIsFunction() override;
 
-    void mergePower();
     BaseEntity *splitMultiplications();
     BaseEntity *getBase();
     BaseEntity *getPower();
-    bool addToPower(Power *pwr);
-
+    bool mergePower(Power *pwr);
+    void addToPower(double increase);
 };
 
 #endif //TESTS_POWER_H

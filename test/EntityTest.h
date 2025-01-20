@@ -23,18 +23,25 @@ public:
             Logger::warn(failMsg);
     }
 
+    void testValue(BaseEntity* testSubject, BaseEntity* expected) {
+        if(*testSubject == *expected)
+            Logger::success("correct");
+        else
+            Logger::warn("should be " + expected->toString());
+    }
+
     BaseEntity *printAndEvaluateFunction(BaseEntity *&e, string comment = "") {
         BaseEntity *result;
         cout << (comment == "" ? "" : comment + ":\n") << e->toString();
         cout << "   =    " << (result = e->evaluateFunction())->toString() << endl;
-//        if (e != result) {
-//            delete e;
-//            e = nullptr;
-//        }
+        if (e != result) {
+            delete e;
+            e = nullptr;
+        }
         return result;
     }
 
-    BaseEntity *printAndEvaluateValue(BaseEntity *e, double x, string comment = "") {
+    BaseEntity *printAndEvaluateValue(BaseEntity *&e, double x, string comment = "") {
         BaseEntity *result;
         cout << (comment == "" ? "" : comment + ":\n") << "[x == " + NumberUtils::toString(x) + "]   " << e->toString();
         cout << "   =   " << (result = e->evaluateValue(x))->toString() << endl;
@@ -47,8 +54,10 @@ public:
     }
 
     BaseEntity *replace(BaseEntity *&old, BaseEntity *current) {
-        if(old != current)
+        if(old != current) {
             delete old;
+            old = nullptr;
+        }
         return old = current;
     }
 

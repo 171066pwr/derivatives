@@ -45,12 +45,12 @@ void BaseEntityTest::testInterfaces() {
                                        new Variable("pi"), subSumA->copy(), subSumB->copy()});
     expected = new Scalar(6.00002 + 3* M_PI + M_E);
     testEntity = printAndEvaluateValue(sum, 2, "Evaluating value without evaluating isFunction");
-    testCondition(*testEntity == *expected,expected->toString(), "Incorrect - should be " + expected->toString());
+    testValue(testEntity,expected);
     sum = printAndEvaluateFunction(sum, "Evaluating isFunction");
     testEntity = sum->copy();
     testCondition(*testEntity == *(sum = printAndEvaluateFunction(sum, "Second evaluation (should be already in final form): ")),
         "correct", "incorrect");
-    replace(testEntity, printAndEvaluateValue(sum, 2, "Evaluating value after evaluating isFunction"));
+    testEntity = printAndEvaluateValue(sum, 2, "Evaluating value after evaluating isFunction");
     testCondition(*testEntity == *expected,expected->toString(), "Incorrect - should be " + expected->toString());
     deleteMultiple({subSubSum, subSumA, subSumB, testEntity, expected});
 

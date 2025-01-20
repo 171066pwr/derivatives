@@ -10,13 +10,14 @@ public:
         testEqualsOperators();
         testMergeMultiplications();
         testMergeSums();
+        testMergeVariablesAndPowers();
     }
 
 private:
     void testEqualsOperators();
     void testMergeMultiplications();
     void testMergeSums();
-
+    void testMergeVariablesAndPowers();
 };
 
 #endif //MULTIPLICATIONENTITY_H

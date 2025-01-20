@@ -16,19 +16,19 @@ void VariableTest::testEqualsOperators() {
 void VariableTest::testVariableEvaluation() {
     Logger::important("Test variable evaluation:");
     BaseEntity *variable = new Variable("pi", 1);
-    testCondition(*printAndEvaluateValue(variable, 3) == *new Scalar(M_PI), "success", "failure");
+    testValue(printAndEvaluateValue(variable, 3), new Scalar(M_PI));
     replace(variable, new Variable("e", 2));
-    testCondition(*printAndEvaluateValue(variable, 3) == *new Scalar(2*M_E), "success", "failure");
+    testValue(printAndEvaluateValue(variable, 3), new Scalar(2*M_E));
     replace(variable, new Variable(3));
-    testCondition(*printAndEvaluateValue(variable, 3) == *new Scalar(9), "success", "failure");
+    testValue(printAndEvaluateValue(variable, 3), new Scalar(9));
     replace(variable, new Variable("y", 2));
-    testCondition(*printAndEvaluateValue(variable, 3) == *new Variable("y", 2), "success", "failure");
+    testValue(printAndEvaluateValue(variable, 3), new Variable("y", 2));
     replace(variable, new Variable(0));
-    testCondition(*printAndEvaluateValue(variable, 3) == *new Scalar(0), "success", "failure");
+    testValue(printAndEvaluateValue(variable, 3), new Scalar(0));
     replace(variable, new Variable("pi", 0));
-    testCondition(*printAndEvaluateValue(variable, 3) == *new Scalar(0), "success", "failure");
+    testValue(printAndEvaluateValue(variable, 3), new Scalar(0));
     replace(variable, new Variable("y", 0));
-    testCondition(*printAndEvaluateValue(variable, 3) == *new Scalar(0), "success", "failure");
+    testValue(printAndEvaluateValue(variable, 3), new Scalar(0));
     delete variable;
 }
 

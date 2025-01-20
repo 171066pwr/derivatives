@@ -8,7 +8,8 @@ class Multiplication: public BaseEntity {
 private:
     void mergeMultiplications();
     double mergeMultipliers();
-    BaseEntity* mergeVariables();
+    void mergeVariables();
+    void mergePowers();
     BaseEntity *mergeSums();
     BaseEntity *sumProduct(Sum *sum);
     Multiplication *copyAllWithoutSelected(BaseEntity *selected);

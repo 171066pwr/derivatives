@@ -10,9 +10,8 @@ Power::~Power() {
 
 BaseEntity *Power::copy() {
     BaseEntity* copy = new Power(power->copy(), multiplier);
-    for(auto element: elements){
-        copy->addElement(element->copy());
-    }
+    if(elements.size() > 0)
+        copy->addElement(getBase()->copy());
     return copy;
 }
 
@@ -44,7 +43,7 @@ std::string Power::toString() {
                      "" : NumberUtils::doubleEquals(multiplier, -1.0) ?
                            "-": NumberUtils::toString(multiplier) + "*";
     result += "(" + elements[0]->toString() + ")" + "^";
-    result += power->toString();
+    result += NumberUtils::doubleEquals(power->getMultiplier(), 1.0) ? power ->toString() : "(" + power->toString() + ")";
     return result;
 }
 
@@ -57,17 +56,22 @@ bool Power::addElement(BaseEntity *element) {
 }
 
 BaseEntity *Power::evaluateFunction() {
+    if(NumberUtils::doubleEquals(multiplier, 0.0))
+        return new Scalar(0);
     BaseEntity::evaluateFunction();
     power = evaluateAndDelete(power);
+    BaseEntity *result = handleEdgeCases();
+    if(result != this)
+        return result;
     splitMultiplications();
     mergePower();
     return this;
 }
 
 BaseEntity *Power::evaluateValue(double x) {
-    if(typeEquals<Scalar>(power) && typeEquals<Scalar>(getBase())) {
-        return new Scalar(multiplier*pow(getBase()->getMultiplier(), power->getMultiplier()));
-    }
+    BaseEntity *result = handleEdgeCases();
+    if(result != this)
+        return result;
     BaseEntity *evPower = power->copy()->evaluateValue(x);
     BaseEntity *evBase = getBase()->copy()->evaluateValue(x);
     Power newPower = Power(evPower, evBase, this->multiplier);
@@ -107,20 +111,41 @@ BaseEntity *Power::getBase() {
     return nullptr;
 }
 
+void Power::replaceBase(BaseEntity *base) {
+    delete elements[0];
+    elements[0] = base;
+}
+
 BaseEntity *Power::getPower() {
     return power;
 }
 
-bool Power::addToPower(Power *pwr) {
-    if(getBase() == pwr->getBase()) {
+bool Power::mergePower(Power *pwr) {
+    if(*getBase() == *pwr->getBase()) {
         BaseEntity *newPower = new Sum(1, {power, pwr->power->copy()});
-        power = newPower->evaluateAndDelete(newPower);
+        replace(power, newPower->evaluateAndDelete(newPower));
+        this->multiplier *= pwr->getMultiplier();
         return true;
     }
     return false;
 }
 
-void Power::replaceBase(BaseEntity *base) {
-    delete elements[0];
-    elements[0] = base;
+void Power::addToPower(double increase) {
+    BaseEntity *newPower = new Sum(1, {power, new Scalar(increase)});
+    power = newPower->evaluateAndDelete(newPower);
+}
+
+BaseEntity *Power::handleEdgeCases() {
+    if(power == nullptr)
+        return new Scalar(1);
+    if(Scalar *s = dynamic_cast<Scalar *>(power)) {
+        if (NumberUtils::doubleEquals(s->getMultiplier(), 0.0))
+            return new Scalar(1);
+        if (typeEquals<Scalar>(getBase())) {
+            return new Scalar(multiplier * pow(getBase()->getMultiplier(), power->getMultiplier()));
+        }
+    }
+    if(elements.size() == 0)
+        return new Scalar(0);
+    return this;
 }
