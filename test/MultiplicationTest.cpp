@@ -10,11 +10,10 @@ void MultiplicationTest::testEqualsOperators() {
     BaseEntity *multi2 = new Multiplication(2, {original->copy(), other->copy()});
     Logger::important("test == operator:");
     testCondition(*multi == *multi2, "success", "failure");
-    delete multi2;
-    multi2 = new Multiplication(2, {other, original->copy()});
+    replace(multi2, new Multiplication(2, {other->copy(), original->copy()}));
     Logger::important("test != operator:");
     testCondition(*multi != *multi2, "success", "failure");
-    deleteMultiple({original, other, multi, multi2});
+    deleteMultiple({multi, multi2});
 }
 
 void MultiplicationTest::testMergeMultiplications() {

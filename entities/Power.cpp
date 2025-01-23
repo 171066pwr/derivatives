@@ -5,7 +5,6 @@
 
 Power::~Power() {
     deleteAndZero(power);
-    deleteAndZero(elements[0]);
 }
 
 BaseEntity *Power::copy() {

@@ -10,6 +10,9 @@ BaseEntity::BaseEntity(double multiplier, initializer_list<BaseEntity *> list): 
 }
 
 BaseEntity::~BaseEntity() {
+    for(int i = elements.size()-1; i > 0 ;--i){
+        deleteAndZero(elements[i]);
+    }
 }
 
 BaseEntity *BaseEntity::copy() {
@@ -136,4 +139,9 @@ BaseEntity *BaseEntity::evaluateAndDelete(BaseEntity *entity) {
     if(evaluated != entity)
         deleteAndZero(entity);
     return evaluated;
+}
+
+void BaseEntity::deleteElement(BaseEntity *element) {
+    elements.erase(std::remove(elements.begin(), elements.end(), element), elements.end());
+    deleteAndZero(element);
 }

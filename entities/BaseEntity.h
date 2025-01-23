@@ -12,11 +12,7 @@ protected:
     double multiplier = 1.0;
     bool isFunction = false;
     vector<BaseEntity *> elements;
-
-    void deleteElement(BaseEntity *element) {
-        elements.erase(std::remove(elements.begin(), elements.end(), element), elements.end());
-        deleteAndZero(element);
-    }
+    void deleteElement(BaseEntity *element);
 
     static BaseEntity *evaluateAndDelete(BaseEntity* entity);
 

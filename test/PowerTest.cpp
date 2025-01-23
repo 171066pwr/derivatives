@@ -33,7 +33,7 @@ void PowerTest::testEvaluation() {
     BaseEntity *variable = new Variable(2);
     BaseEntity *sum = new Sum(1, {variable, scalar});
     BaseEntity *testEntity = new Power(2);
-    BaseEntity *multi = new Multiplication(2, {variable, scalar});
+    BaseEntity *multi = new Multiplication(2, {variable->copy(), scalar->copy()});
     BaseEntity *expected;
     double x = 2.0;
     Logger::important("Testing constructors and toString");
@@ -62,10 +62,17 @@ void PowerTest::testEvaluation() {
 
     BaseEntity *power = new Power(variable->copy(), variable->copy(), 0.25);
     replace(testEntity, new Power(power->copy(), power->copy(), 2));
+    testEntity = printAndEvaluateFunction(testEntity, "Power base, power power - without multipliers");
+    replace(testEntity, printAndEvaluateValue(testEntity, x));
+    replace(expected, new Scalar(191581231380566414401.0));
+    testValue(testEntity, expected);
+
+    replace(power, new Power(variable->copy(), variable->copy(), 0.25));
+    replace(testEntity, new Power(power->copy(), power->copy(), 2));
     testEntity = printAndEvaluateFunction(testEntity, "Power base, power power");
     replace(testEntity, printAndEvaluateValue(testEntity, x));
     replace(expected, new Scalar(191581231380566414401.0));
     testValue(testEntity, expected);
 
-    deleteMultiple({scalar, variable, sum, testEntity, multi});
+    deleteMultiple({sum, testEntity, multi});
 }
