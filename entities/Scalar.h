@@ -3,8 +3,6 @@
 
 #include "BaseEntity.h"
 #include "../utils/NumberUtils.h"
-#include <iostream>
-#include <sstream>
 
 class Scalar: public BaseEntity {
 public:
@@ -15,6 +13,14 @@ public:
 
     bool operator==(const BaseEntity& entity) override {
         return equals(&entity);
+    }
+
+    static Scalar *zero() {
+        return new Scalar(0.0);
+    }
+
+    static Scalar *one() {
+        return new Scalar();
     }
 
     std::string toString() override;

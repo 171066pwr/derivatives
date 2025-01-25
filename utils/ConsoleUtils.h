@@ -2,7 +2,6 @@
 #define TESTS_CONSOLEUTILS_H
 
 #include <wincon.h>
-
 #include "stdlib.h"
 
 using namespace std;

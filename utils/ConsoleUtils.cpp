@@ -1,4 +1,3 @@
-
 #include <wincon.h>
 #include "ConsoleUtils.h"
 

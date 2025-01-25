@@ -1,7 +1,6 @@
 #ifndef DERIVATIVES_UTILITIES_H
 #define DERIVATIVES_UTILITIES_H
 
-#include <iostream>
 #include <sstream>
 #include <iomanip>
 

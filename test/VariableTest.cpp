@@ -24,11 +24,11 @@ void VariableTest::testVariableEvaluation() {
     replace(variable, new Variable("y", 2));
     testValue(printAndEvaluateValue(variable, 3), new Variable("y", 2));
     replace(variable, new Variable(0));
-    testValue(printAndEvaluateValue(variable, 3), new Scalar(0));
+    testValue(printAndEvaluateValue(variable, 3), Scalar::zero());
     replace(variable, new Variable("pi", 0));
-    testValue(printAndEvaluateValue(variable, 3), new Scalar(0));
+    testValue(printAndEvaluateValue(variable, 3), Scalar::zero());
     replace(variable, new Variable("y", 0));
-    testValue(printAndEvaluateValue(variable, 3), new Scalar(0));
+    testValue(printAndEvaluateValue(variable, 3), Scalar::zero());
     delete variable;
 }
 

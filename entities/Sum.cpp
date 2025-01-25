@@ -1,8 +1,6 @@
 #include <algorithm>
 #include "Sum.h"
-#include <map>
 #include "Variable.h"
-#include "Multiplication.h"
 
 BaseEntity *Sum::copy() {
     BaseEntity *copy = new Sum(multiplier);
@@ -13,7 +11,7 @@ BaseEntity *Sum::copy() {
 }
 
 bool Sum::equals(const BaseEntity *entity) {
-    //If the new type to be casted to is a pointer the result is a nullptr on error. If it is a reference it throws an exception.
+    //If the new type to be cast to is a pointer the result is a nullptr on error. If it is a reference it throws an exception.
     //So we have to cast pointers or catch bad_cast
     return typeEquals<Sum>(entity) && BaseEntity::equals(entity);
 }
@@ -40,7 +38,7 @@ BaseEntity *Sum::evaluateFunction() {
     mergeContents();
     mergeMultiplier();
     if (elements.size() == 0) {
-        return new Scalar(0);
+        return Scalar::zero();
     }
     if (elements.size() == 1) {
         BaseEntity *element = elements[0];
@@ -52,8 +50,10 @@ BaseEntity *Sum::evaluateFunction() {
 }
 
 BaseEntity *Sum::evaluateValue(double x) {
+    if (isZero())
+        return Scalar::zero();
     BaseEntity *evaluated = new Sum(this->multiplier);
-    BaseEntity::evaluateElementsValue(x, evaluated);
+    evaluateElementsValue(x, evaluated);
     return evaluated->evaluateFunction();
 }
 
@@ -98,7 +98,7 @@ void Sum::mergeContents() {
 }
 
 void Sum::mergeMultiplier() {
-    if (NumberUtils::doubleEquals(multiplier, 0.0)) {
+    if (isZero()) {
         for(int i = elements.size() -1; i >= 0; i--)
             deleteElement(elements[i]);
     } else if (!NumberUtils::doubleEquals(multiplier, 1.0)) {
@@ -112,7 +112,7 @@ void Sum::mergeMultiplier() {
 void Sum::evaluateAndReplaceElement(BaseEntity *entity) {
     BaseEntity* evaluated = entity->evaluateFunction();
     if(evaluated != entity) {
-        if(!NumberUtils::doubleEquals(evaluated->getMultiplier(), 0.0))
+        if(!evaluated->isZero())
             std::replace(elements.begin(), elements.end(), entity, evaluated);
         deleteElement(entity);
     }

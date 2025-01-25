@@ -1,5 +1,4 @@
 #include "BaseEntity.h"
-
 #include "../utils/NumberUtils.h"
 #include "Scalar.h"
 
@@ -69,6 +68,9 @@ bool BaseEntity::addElements(std::initializer_list<BaseEntity *> list) {
 }
 
 BaseEntity * BaseEntity::evaluateFunction() {
+    if (isZero())
+        return Scalar::zero();
+
     if (elements.size() > 0) {
         isFunction = false;
         BaseEntity *evaluated;
@@ -94,9 +96,9 @@ BaseEntity * BaseEntity::evaluateFunction() {
  * For consistency I should probably also do it while evaluating isFunction, will think about it later.
 */
 BaseEntity *BaseEntity::evaluateValue(double x) {
-    BaseEntity *evaluated = new BaseEntity(multiplier);
-    evaluateElementsValue(x, evaluated);
-    return evaluated;
+    if (isZero())
+        return Scalar::zero();
+    return this;
 }
 
 void BaseEntity::evaluateElementsValue(double x, BaseEntity *entity) {
@@ -111,7 +113,7 @@ BaseEntity *BaseEntity::evaluateDerivative() {
     //And it would be lost when closing this isFunction and stack frame; The space would be probably re-allocated to new frames.
     //Just remember that objects allocated globally have to be deleted manually!
     if(!isFunction)
-        return new Scalar(0);
+        return Scalar::zero();
 
     BaseEntity *derivative = new BaseEntity();
     for(int i = 0; i < elements.size(); i++){

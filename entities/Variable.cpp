@@ -40,6 +40,8 @@ std::string Variable::toString() {
 }
 
 BaseEntity *Variable::evaluateValue(double x) {
+    if (isZero())
+        return Scalar::zero();
     BaseEntity * result;
     if(symbol == SUBSTITUTE_SYMBOL) {
         result = evaluate(x);
@@ -53,12 +55,6 @@ BaseEntity *Variable::evaluateValue(double x) {
 
 Scalar *Variable::evaluate(double x) {
     return new Scalar(multiplier * x);
-}
-
-BaseEntity *Variable::evaluateFunction() {
-    if(NumberUtils::doubleEquals(multiplier, 0))
-        return new Scalar(0);
-    return this;
 }
 
 bool Variable::updateAndGetIsFunction() {

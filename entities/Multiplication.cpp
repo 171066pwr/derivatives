@@ -39,8 +39,8 @@ std::string Multiplication::toString() {
 
 BaseEntity *Multiplication::evaluateFunction() {
     BaseEntity::evaluateFunction();
-    if(NumberUtils::doubleEquals(multiplier, 0.0) || NumberUtils::doubleEquals(multiplier *= mergeMultipliers(), 0.0)) {
-        return new Scalar(0);
+    if(NumberUtils::doubleEquals(multiplier *= mergeMultipliers(), 0.0)) {
+        return Scalar::zero();
     }
     mergeMultiplications();
     mergeVariables();
@@ -54,8 +54,10 @@ BaseEntity *Multiplication::evaluateFunction() {
 }
 
 BaseEntity *Multiplication::evaluateValue(double x) {
+    if (isZero())
+        return Scalar::zero();
     BaseEntity *evaluated = new Multiplication(this->multiplier);
-    BaseEntity::evaluateElementsValue(x, evaluated);
+    evaluateElementsValue(x, evaluated);
     return evaluated->evaluateFunction();
 }
 
@@ -68,7 +70,7 @@ double Multiplication::mergeMultipliers() {
     double mergedMultiplier = 1.0;
     vector<Scalar *> scalars;
     for (int i = 0; i < elements.size(); i++) {
-        if (NumberUtils::doubleEquals(elements[i]->getMultiplier(), 0.0)) {
+        if (elements[i]->isZero()) {
             mergedMultiplier = 0.0;
             break;
         }

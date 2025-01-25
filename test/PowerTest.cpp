@@ -29,8 +29,8 @@ void PowerTest::testEqualsOperators() {
 }
 
 void PowerTest::testEvaluation() {
-    BaseEntity *zero = new Scalar(0);
-    BaseEntity *one = new Scalar();
+    BaseEntity *zero = Scalar::zero();
+    BaseEntity *one = Scalar::one();
     BaseEntity *scalar3 = new Scalar(3);
     BaseEntity *variable = new Variable();
     BaseEntity *variable2 = new Variable(2);
@@ -113,6 +113,11 @@ void PowerTest::testEvaluation() {
     testEntity = printAndEvaluateFunction(testEntity, "1 base, 3 power");
     replace(testEntity, printAndEvaluateValue(testEntity, 2));
     testValue(testEntity, one);
+
+    replace(testEntity, new Power(zero->copy(), one->copy(), 0));
+    testEntity = printAndEvaluateFunction(testEntity, "0 multiplier, 1 base, 0 power");
+    replace(testEntity, printAndEvaluateValue(testEntity, 2));
+    testValue(testEntity, zero);
 
     deleteMultiple({sum, testEntity, multi, zero, one, variable});
 }

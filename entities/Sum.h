@@ -2,7 +2,6 @@
 #define DERIVATIVES_SUMENTITY_H
 
 #include "BaseEntity.h"
-#include "../utils/Logger.h"
 
 class Sum: public BaseEntity {
 private:

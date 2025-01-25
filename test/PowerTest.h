@@ -1,7 +1,6 @@
 #ifndef TESTS_POWERTEST_H
 #define TESTS_POWERTEST_H
 
-
 #include "EntityTest.h"
 
 class PowerTest: public EntityTest {

@@ -37,7 +37,7 @@ void MultiplicationTest::testMergeMultiplications() {
     deleteMultiple({testEntity, expected});
 
     Logger::important("Test merge multiplications");
-    BaseEntity *subA = new Multiplication(1.0/5, {new Scalar(5), new Scalar(1), new Variable(2)});
+    BaseEntity *subA = new Multiplication(1.0/5, {new Scalar(5), Scalar::one(), new Variable(2)});
     BaseEntity *subB = new Multiplication(2, {new Scalar(5), new Variable(), new Variable("y", 1.0/2)});
     testEntity = multi->copy();
     testEntity->addElements({subA, subB});

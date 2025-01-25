@@ -18,16 +18,14 @@ bool Power::equals(const BaseEntity *entity) {
     const Power *e = dynamic_cast<const Power *>(entity);
     if(e == nullptr)
         return false;
-    else
-        return (*this->power == *e->power) && BaseEntity::equals(e);
+    return (*this->power == *e->power) && BaseEntity::equals(e);
 }
 
 bool Power::equalsExceptMultiplier(const BaseEntity *entity) {
     const Power *e = dynamic_cast<const Power *>(entity);
     if(e == nullptr)
         return false;
-    else
-        return (*this->power == *e->power) && contentsEquals(entity);
+    return (*this->power == *e->power) && contentsEquals(entity);
 }
 
 bool Power::contentsEquals(const BaseEntity *entity) {
@@ -55,8 +53,8 @@ bool Power::addElement(BaseEntity *element) {
 }
 
 BaseEntity *Power::evaluateFunction() {
-    if(NumberUtils::doubleEquals(multiplier, 0.0))
-        return new Scalar(0);
+    if(isZero())
+        return Scalar::zero();
     BaseEntity::evaluateFunction();
     power = evaluateAndDelete(power);
     BaseEntity *result = handleEdgeCases();
@@ -68,6 +66,8 @@ BaseEntity *Power::evaluateFunction() {
 }
 
 BaseEntity *Power::evaluateValue(double x) {
+    if (isZero())
+        return Scalar::zero();
     BaseEntity *result = handleEdgeCases();
     if(result != this)
         return result;
@@ -136,15 +136,19 @@ void Power::addToPower(double increase) {
 
 BaseEntity *Power::handleEdgeCases() {
     if(power == nullptr)
-        return new Scalar(1);
+        return Scalar::one();
+    if (power->isZero())
+        return Scalar::one();
     if(Scalar *s = dynamic_cast<Scalar *>(power)) {
-        if (NumberUtils::doubleEquals(s->getMultiplier(), 0.0))
-            return new Scalar(1);
-        if (typeEquals<Scalar>(getBase())) {
-            return new Scalar(multiplier * pow(getBase()->getMultiplier(), power->getMultiplier()));
-        }
+        if (s->isZero())
+            return Scalar::one();
+            if(Scalar *base = dynamic_cast<Scalar *>(getBase())) {
+                if (NumberUtils::doubleEquals(base->getMultiplier(), 1.0))
+                    return Scalar::one();
+                return new Scalar(multiplier * pow(base->getMultiplier(), power->getMultiplier()));
+            }
     }
     if(elements.size() == 0)
-        return new Scalar(0);
+        return Scalar::zero();
     return this;
 }

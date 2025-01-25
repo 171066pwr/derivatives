@@ -26,7 +26,6 @@ public:
     }
 
     std::string toString() override;
-    BaseEntity *evaluateFunction() override ;
     BaseEntity *evaluateValue(double x) override;
     bool updateAndGetIsFunction() override;
 

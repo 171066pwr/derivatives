@@ -12,7 +12,9 @@ set(SOURCE_FILES main.cpp entities/BaseEntity.cpp entities/BaseEntity.h entities
         test/MultiplicationTest.cpp
         test/MultiplicationTest.h
         entities/Multiplication.cpp
-        entities/Multiplication.h utils/ConsoleUtils.cpp utils/ConsoleUtils.h entities/Power.cpp entities/Power.h)
+        entities/Multiplication.h utils/ConsoleUtils.cpp utils/ConsoleUtils.h entities/Power.cpp entities/Power.h
+        entities/Fraction.cpp
+        entities/Fraction.h)
 
 add_executable(Derivatives ${SOURCE_FILES})
 
@@ -27,6 +29,8 @@ set(TEST_FILES test/MainTest.cpp entities/BaseEntity.cpp entities/BaseEntity.h e
         test/MultiplicationTest.cpp
         test/MultiplicationTest.h
         entities/Multiplication.cpp
-        entities/Multiplication.h utils/ConsoleUtils.cpp utils/ConsoleUtils.h test/VariableTest.cpp test/VariableTest.h entities/Power.cpp entities/Power.h test/PowerTest.cpp test/PowerTest.h)
+        entities/Multiplication.h utils/ConsoleUtils.cpp utils/ConsoleUtils.h test/VariableTest.cpp test/VariableTest.h entities/Power.cpp entities/Power.h test/PowerTest.cpp test/PowerTest.h
+        entities/Fraction.cpp
+        entities/Fraction.h)
 
 add_executable(Tests ${TEST_FILES})

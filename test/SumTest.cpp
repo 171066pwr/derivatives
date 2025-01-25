@@ -19,10 +19,10 @@ void SumTest::testEqualsOperators() {
 
 void SumTest::testSum() {
     Logger::important("Test Sum - evaluation");
-    Sum *sum = new Sum(1, {new Scalar(-5), new Scalar(5), new Scalar(1)});
+    Sum *sum = new Sum(1, {new Scalar(-5), new Scalar(5), Scalar::one()});
     Sum *subSumA = new Sum(1, {new Variable(2), new Variable(3), new Variable("c", 0.1)});
     Sum *subSumB = new Sum(1, {new Variable(-2), new Variable("pi", -1), new Variable(-4), new Scalar(1.3)});
-    BaseEntity *expected = new Scalar(1);
+    BaseEntity *expected = Scalar::one();
     BaseEntity *testEntity = sum->copy();
     Logger::important("Test merging scalars");
     testEntity = printAndEvaluateFunction(testEntity);
@@ -55,15 +55,15 @@ void SumTest::testMultiplier0() {
     BaseEntity *sum = new Sum(0, {new Scalar(-99), new Variable("pi", 2),
                                         new Sum(1, {new Variable(1), new Scalar(1000)})});
     sum = printAndEvaluateFunction(sum, "Evaluated Function, multiplier: 0");
-    testCondition(*sum == *(new Scalar(0)), "Multiplier 0 transformed to scalar 0",
+    testCondition(*sum == *(Scalar::zero()), "Multiplier 0 transformed to scalar 0",
                   "Failed to transform multiplier 0 into scalar 0");
     delete sum;
 }
 
 void SumTest::testMultiplier1() {
     Logger::important("Test multiplier 1");
-    BaseEntity *sum = new Sum(1, {new Scalar(1), new Variable(1)});
-    BaseEntity *expected = new Sum(1, {new Scalar(), new Variable()});
+    BaseEntity *sum = new Sum(1, {Scalar::one(), new Variable(1)});
+    BaseEntity *expected = new Sum(1, {Scalar::one(), new Variable()});
     sum = printAndEvaluateFunction(sum, "Evaluated Function, multiplier: 1");
     testCondition(*sum == *expected,
                   "Multiplied by 1 correctly", "Failed to multiply by 1");
@@ -72,7 +72,7 @@ void SumTest::testMultiplier1() {
 
 void SumTest::testMultiplier2() {
     Logger::important("Test multiplier 2, isFunction evaluation");
-    BaseEntity *sum = new Sum(2, {new Scalar(1), new Variable(1)});
+    BaseEntity *sum = new Sum(2, {Scalar::one(), new Variable(1)});
     BaseEntity *expected = new Sum(1, {new Scalar(2), new Variable(2)});
     sum = printAndEvaluateFunction(sum, "Evaluated Function, multiplier: 2");
     testCondition(*sum == *expected,
@@ -83,7 +83,7 @@ void SumTest::testMultiplier2() {
 void SumTest::testMultiplierValue() {
     BaseEntity *testEntity;
     Logger::important("Test multiplier 2, raw value evaluation");
-    BaseEntity *sum = new Sum(2, {new Scalar(1), new Variable(1)});
+    BaseEntity *sum = new Sum(2, {Scalar::one(), new Variable(1)});
     testEntity = printAndEvaluateValue(sum, 2, "Evaluated value");
     testValue(testEntity, new Scalar(6));
     delete sum, testEntity;
@@ -91,8 +91,8 @@ void SumTest::testMultiplierValue() {
 
 void SumTest::testMultiplierNested() {
     Logger::important("Test multipliers on sum and subsum");
-    BaseEntity *sum = new Sum(3, {new Scalar(1), new Variable(2),
-                                        new Sum(2, {new Scalar(1), new Variable(2)})});
+    BaseEntity *sum = new Sum(3, {Scalar::one(), new Variable(2),
+                                        new Sum(2, {Scalar::one(), new Variable(2)})});
     BaseEntity *testEntity = printAndEvaluateValue(sum, 2, "Raw value evaluation for x=2");
     testValue(testEntity, new Scalar(45));
     sum = printAndEvaluateFunction(sum, "Function evaluation");

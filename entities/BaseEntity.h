@@ -1,4 +1,6 @@
 #include <algorithm>
+
+#include "../utils/NumberUtils.h"
 #ifndef DERIVATIVES_BASEENTITY_H
 #define DERIVATIVES_BASEENTITY_H
 
@@ -76,6 +78,10 @@ public:
         double result = multiplier;
         multiplier = 1.0;
         return result;
+    }
+
+    bool isZero() {
+        return NumberUtils::doubleEquals(multiplier, 0.0);
     }
 
     void multiplyByScalar(double scalar) {

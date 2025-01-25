@@ -55,7 +55,7 @@ void BaseEntityTest::testInterfaces() {
     deleteMultiple({subSubSum, subSumA, subSumB, testEntity, expected});
 
     Logger::important("Test updateAndGetFunction - function status propagation");
-    subSumA = new Sum(1, {new Scalar(1), new Variable("pi")});
+    subSumA = new Sum(1, {Scalar::one(), new Variable("pi")});
     subSumB = new Sum(1, {new Scalar(2), new Variable()});
     sum = new Sum(1, {new Variable("y"), subSumA, subSumB});
     testCondition(sum->getIsFunction(), "isFunction propagated without update", "isFunction not propagated with update");
