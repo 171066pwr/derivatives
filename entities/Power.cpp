@@ -3,29 +3,22 @@
 #include "../utils/Logger.h"
 #include "Multiplication.h"
 
-Power::~Power() {
-    deleteAndZero(power);
-}
-
 BaseEntity *Power::copy() {
-    BaseEntity* copy = new Power(power->copy(), multiplier);
-    if(elements.size() > 0)
-        copy->addElement(getBase()->copy());
-    return copy;
+    return new Power(elements[1]->copy(), elements[0]->copy(), multiplier);
 }
 
 bool Power::equals(const BaseEntity *entity) {
     const Power *e = dynamic_cast<const Power *>(entity);
     if(e == nullptr)
         return false;
-    return (*this->power == *e->power) && BaseEntity::equals(e);
+    return BaseEntity::equals(e);
 }
 
 bool Power::equalsExceptMultiplier(const BaseEntity *entity) {
     const Power *e = dynamic_cast<const Power *>(entity);
     if(e == nullptr)
         return false;
-    return (*this->power == *e->power) && contentsEquals(entity);
+    return contentsEquals(entity);
 }
 
 bool Power::contentsEquals(const BaseEntity *entity) {
@@ -40,7 +33,7 @@ std::string Power::toString() {
                      "" : NumberUtils::doubleEquals(multiplier, -1.0) ?
                            "-": NumberUtils::toString(multiplier) + "*";
     result += "(" + elements[0]->toString() + ")" + "^";
-    result += NumberUtils::doubleEquals(power->getMultiplier(), 1.0) ? power ->toString() : "(" + power->toString() + ")";
+    result += NumberUtils::doubleEquals(getPower()->getMultiplier(), 1.0) ? getPower()->toString() : "(" + getPower()->toString() + ")";
     return result;
 }
 
@@ -56,7 +49,6 @@ BaseEntity *Power::evaluateFunction() {
     if(isZero())
         return Scalar::zero();
     BaseEntity::evaluateFunction();
-    power = evaluateAndDelete(power);
     BaseEntity *result = handleEdgeCases();
     if(result != this)
         return result;
@@ -71,7 +63,7 @@ BaseEntity *Power::evaluateValue(double x) {
     BaseEntity *result = handleEdgeCases();
     if(result != this)
         return result;
-    BaseEntity *evPower = power->copy()->evaluateValue(x);
+    BaseEntity *evPower = getPower()->copy()->evaluateValue(x);
     BaseEntity *evBase = getBase()->copy()->evaluateValue(x);
     Power newPower = Power(evPower, evBase, this->multiplier);
     return newPower.evaluateValue(x);
@@ -85,8 +77,8 @@ bool Power::updateAndGetIsFunction() {
 //or rather it hints that calculating derivative should come first, then grouping later for better presentation.
 void Power::mergePower() {
     if(Power *m = dynamic_cast<Power *>(getBase())) {
-        Multiplication *newPower = new Multiplication(1, {power, m->power->copy()});
-        power = newPower->evaluateAndDelete(newPower);
+        Multiplication *newPower = new Multiplication(1, {getPower()->copy(), m->getPower()->copy()});
+        replacePower(evaluateAndDelete(newPower));
         replaceBase(m->getBase()->copy());
     }
 }
@@ -96,7 +88,7 @@ BaseEntity *Power::splitMultiplications() {
         if(m->getSize() > 1) {
             Multiplication *product = new Multiplication(multiplier);
             for(int i = 0; i < m->getSize(); i++) {
-                product->addElement(new Power(this->power->copy(), m->getElement(i)->copy()));
+                product->addElement(new Power(getPower()->copy(), m->getElement(i)->copy()));
             }
             return product;
         }
@@ -116,13 +108,18 @@ void Power::replaceBase(BaseEntity *base) {
 }
 
 BaseEntity *Power::getPower() {
-    return power;
+    return elements[1];
+}
+
+void Power::replacePower(BaseEntity *power) {
+    delete elements[1];
+    elements[1] = power;
 }
 
 bool Power::mergePower(Power *pwr) {
     if(*getBase() == *pwr->getBase()) {
-        BaseEntity *newPower = new Sum(1, {power, pwr->power->copy()});
-        replace(power, newPower->evaluateAndDelete(newPower));
+        BaseEntity *newPower = new Sum(1, {getPower()->copy(), pwr->getPower()->copy()});
+        replacePower(evaluateAndDelete(newPower));
         this->multiplier *= pwr->getMultiplier();
         return true;
     }
@@ -130,22 +127,22 @@ bool Power::mergePower(Power *pwr) {
 }
 
 void Power::addToPower(double increase) {
-    BaseEntity *newPower = new Sum(1, {power, new Scalar(increase)});
-    power = newPower->evaluateAndDelete(newPower);
+    BaseEntity *newPower = new Sum(1, {getPower()->copy(), new Scalar(increase)});
+    replacePower(evaluateAndDelete(newPower));
 }
 
 BaseEntity *Power::handleEdgeCases() {
-    if(power == nullptr)
+    if(getPower() == nullptr)
         return Scalar::one();
-    if (power->isZero())
+    if (getPower()->isZero())
         return Scalar::one();
-    if(Scalar *s = dynamic_cast<Scalar *>(power)) {
+    if(Scalar *s = dynamic_cast<Scalar *>(getPower())) {
         if (s->isZero())
             return Scalar::one();
             if(Scalar *base = dynamic_cast<Scalar *>(getBase())) {
                 if (NumberUtils::doubleEquals(base->getMultiplier(), 1.0))
                     return Scalar::one();
-                return new Scalar(multiplier * pow(base->getMultiplier(), power->getMultiplier()));
+                return new Scalar(multiplier * pow(base->getMultiplier(), getPower()->getMultiplier()));
             }
     }
     if(elements.size() == 0)

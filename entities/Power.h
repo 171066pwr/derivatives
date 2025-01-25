@@ -6,23 +6,13 @@
 
 class Power: public BaseEntity {
 private:
-    //could also make Power accept two child elements - base and power
-    BaseEntity* power = nullptr;
     void replaceBase(BaseEntity *base);
+    void replacePower(BaseEntity *power);
     void mergePower();
     BaseEntity *handleEdgeCases();
 public:
-    Power(double power, double multiplier = 1.0): BaseEntity(multiplier) {
-        this->power = new Scalar(power);
-    };
-    Power(BaseEntity *power, double multiplier = 1.0): BaseEntity(multiplier) {
-        this->power = power;
-    };
-    Power(double power, BaseEntity * base, double multiplier = 1.0): BaseEntity(multiplier, {base}) {
-        this->power = new Scalar(power);
-    };
-    Power(BaseEntity *power, BaseEntity * base, double multiplier = 1.0): BaseEntity(multiplier, {base}), power(power) {};
-    ~Power();
+    Power(double power, BaseEntity * base, double multiplier = 1.0): BaseEntity(multiplier, {base, new Scalar(power)}) {};
+    Power(BaseEntity *power, BaseEntity * base, double multiplier = 1.0): BaseEntity(multiplier, {base, power}) {};
     BaseEntity *copy();
     bool equals(const BaseEntity *entity) override;
     bool equalsExceptMultiplier(const BaseEntity *entity) override;

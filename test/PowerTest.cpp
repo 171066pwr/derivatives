@@ -35,13 +35,12 @@ void PowerTest::testEvaluation() {
     BaseEntity *variable = new Variable();
     BaseEntity *variable2 = new Variable(2);
     BaseEntity *sum = new Sum(1, {variable2, scalar3});
-    BaseEntity *testEntity = new Power(2);
+    BaseEntity *testEntity = new Power(2, scalar3->copy());
     BaseEntity *multi = new Multiplication(2, {variable2->copy(), scalar3->copy()});
     BaseEntity *expected;
     double x = 2.0;
     Logger::important("Testing evaluation");
 
-    testEntity->addElement(scalar3->copy());
     testEntity = printAndEvaluateFunction(testEntity, "Scalar base");
     testValue(testEntity, expected = new Scalar(9));
 
