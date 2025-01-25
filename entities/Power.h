@@ -5,14 +5,14 @@
 #include "Scalar.h"
 
 class Power: public BaseEntity {
-private:
     void replaceBase(BaseEntity *base);
     void replacePower(BaseEntity *power);
     void mergePower();
     BaseEntity *handleEdgeCases();
 public:
-    Power(double power, BaseEntity * base, double multiplier = 1.0): BaseEntity(multiplier, {base, new Scalar(power)}) {};
-    Power(BaseEntity *power, BaseEntity * base, double multiplier = 1.0): BaseEntity(multiplier, {base, power}) {};
+    Power(double power, double base, double multiplier = 1.0): BaseEntity(multiplier, {new Scalar(base), new Scalar(power)}) {}
+    Power(double power, BaseEntity * base, double multiplier = 1.0): BaseEntity(multiplier, {base, new Scalar(power)}) {}
+    Power(BaseEntity *power, BaseEntity * base, double multiplier = 1.0): BaseEntity(multiplier, {base, power}) {}
     BaseEntity *copy();
     bool equals(const BaseEntity *entity) override;
     bool equalsExceptMultiplier(const BaseEntity *entity) override;

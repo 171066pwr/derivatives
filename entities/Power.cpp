@@ -65,8 +65,12 @@ BaseEntity *Power::evaluateValue(double x) {
         return result;
     BaseEntity *evPower = getPower()->copy()->evaluateValue(x);
     BaseEntity *evBase = getBase()->copy()->evaluateValue(x);
-    Power newPower = Power(evPower, evBase, this->multiplier);
-    return newPower.evaluateValue(x);
+    Power *newPower = new Power(evPower, evBase, this->multiplier);
+
+    if (*getPower() == *evPower && *getBase() == *evBase) {
+        return newPower;
+    }
+    return newPower->evaluateValue(x);
 }
 
 bool Power::updateAndGetIsFunction() {

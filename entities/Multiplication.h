@@ -5,7 +5,6 @@
 #include "Sum.h"
 
 class Multiplication: public BaseEntity {
-private:
     void mergeMultiplications();
     double mergeMultipliers();
     void mergeVariables();
@@ -14,8 +13,8 @@ private:
     BaseEntity *sumProduct(Sum *sum);
     Multiplication *copyAllWithoutSelected(BaseEntity *selected);
 public:
-    Multiplication(double multiplier = 1.0): BaseEntity(multiplier) {};
-    Multiplication(double multiplier, initializer_list<BaseEntity *> list): BaseEntity(multiplier, list) {};
+    Multiplication(double multiplier = 1.0): BaseEntity(multiplier) {}
+    Multiplication(double multiplier, initializer_list<BaseEntity *> list): BaseEntity(multiplier, list) {}
     BaseEntity *copy();
     bool equals(const BaseEntity *entity) override;
     bool contentsEquals(const BaseEntity *entity) override;

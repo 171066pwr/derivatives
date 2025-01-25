@@ -11,8 +11,8 @@ private:
     void evaluateAndReplaceElement(BaseEntity *entity);
 
 public:
-    Sum(double multiplier = 1.0): BaseEntity(multiplier) {};
-    Sum(double multiplier, initializer_list<BaseEntity *> list): BaseEntity(multiplier, list) {};
+    Sum(double multiplier = 1.0): BaseEntity(multiplier) {}
+    Sum(double multiplier, initializer_list<BaseEntity *> list): BaseEntity(multiplier, list) {}
     BaseEntity *copy();
     bool equals(const BaseEntity *entity) override;
 

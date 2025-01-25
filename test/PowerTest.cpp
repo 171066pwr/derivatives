@@ -34,6 +34,7 @@ void PowerTest::testEvaluation() {
     BaseEntity *scalar3 = new Scalar(3);
     BaseEntity *variable = new Variable();
     BaseEntity *variable2 = new Variable(2);
+    BaseEntity *y = new Variable("y");
     BaseEntity *sum = new Sum(1, {variable2, scalar3});
     BaseEntity *testEntity = new Power(2, scalar3->copy());
     BaseEntity *multi = new Multiplication(2, {variable2->copy(), scalar3->copy()});
@@ -118,5 +119,21 @@ void PowerTest::testEvaluation() {
     replace(testEntity, printAndEvaluateValue(testEntity, 2));
     testValue(testEntity, zero);
 
-    deleteMultiple({sum, testEntity, multi, zero, one, variable});
+    replace(testEntity, new Power(y->copy(), variable->copy()));
+    replace(expected, new Power(y->copy(), new Scalar(2)));
+    testEntity = printAndEvaluateFunction(testEntity, "x base, y power");
+    testCondition(testEntity->getIsFunction(), "is function", "is not function");
+    replace(testEntity, printAndEvaluateValue(testEntity, 2));
+    testValue(testEntity, expected);
+    testCondition(!testEntity->getIsFunction(), "is not function", "is function");
+
+    replace(testEntity, new Power(variable->copy(), y->copy()));
+    replace(expected, new Power(2, y->copy()));
+    testEntity = printAndEvaluateFunction(testEntity, "y base, x power");
+    testCondition(testEntity->getIsFunction(), "is function", "is not function");
+    replace(testEntity, printAndEvaluateValue(testEntity, 2));
+    testValue(testEntity, expected);
+    testCondition(!testEntity->getIsFunction(), "is not function", "is function");
+
+    deleteMultiple({sum, testEntity, expected, multi, zero, one, y, variable});
 }

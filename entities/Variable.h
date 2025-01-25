@@ -7,7 +7,6 @@
 #include "Scalar.h"
 
 class Variable: public BaseEntity {
-private:
     static string SUBSTITUTE_SYMBOL;
     static map<string, double> constants;
     string symbol = SUBSTITUTE_SYMBOL;
