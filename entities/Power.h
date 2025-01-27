@@ -13,7 +13,7 @@ public:
     Power(double power, double base, double multiplier = 1.0): BaseEntity(multiplier, {new Scalar(base), new Scalar(power)}) {}
     Power(double power, BaseEntity * base, double multiplier = 1.0): BaseEntity(multiplier, {base, new Scalar(power)}) {}
     Power(BaseEntity *power, BaseEntity * base, double multiplier = 1.0): BaseEntity(multiplier, {base, power}) {}
-    BaseEntity *copy();
+    BaseEntity *copy() override;
     bool equals(const BaseEntity *entity) override;
     bool equalsExceptMultiplier(const BaseEntity *entity) override;
     bool contentsEquals(const BaseEntity *entity) override;
@@ -33,6 +33,7 @@ public:
     BaseEntity *getPower();
     bool mergePower(Power *pwr);
     void addToPower(double increase);
+    void addToPower(BaseEntity *increase);
 };
 
 #endif //TESTS_POWER_H

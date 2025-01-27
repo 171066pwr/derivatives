@@ -2,6 +2,7 @@
 #include "../entities/Sum.h"
 #include "../entities/Scalar.h"
 #include "../entities/Variable.h"
+#include "../entities/Multiplication.h"
 
 void SumTest::testEqualsOperators() {
     BaseEntity *original = new Variable("pi", 2);
@@ -99,4 +100,15 @@ void SumTest::testMultiplierNested() {
     testValue(sum, new Sum(1, {new Scalar(9), new Variable(18)}));
     testValue(printAndEvaluateValue(sum, 2, "Evaluating for x = 2"), new Scalar(45));
     deleteMultiple({sum, testEntity});
+}
+
+void SumTest::testMergeEdgeCase() {
+//    Logger::important("Test merge elements of different type but equal contents");
+//    BaseEntity *sum = new Sum(1, {new Fraction(1, {new Variable(), new Variable}), new Power()});
+//    BaseEntity *testEntity = printAndEvaluateValue(sum, 2, "Raw value evaluation for x=2");
+//    testValue(testEntity, new Scalar(45));
+//    sum = printAndEvaluateFunction(sum, "Function evaluation");
+//    testValue(sum, new Sum(1, {new Scalar(9), new Variable(18)}));
+//    testValue(printAndEvaluateValue(sum, 2, "Evaluating for x = 2"), new Scalar(45));
+//    deleteMultiple({sum, testEntity});
 }

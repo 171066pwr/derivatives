@@ -16,6 +16,10 @@ bool Sum::equals(const BaseEntity *entity) {
     return typeEquals<Sum>(entity) && BaseEntity::equals(entity);
 }
 
+bool Sum::contentsEquals(const BaseEntity *entity) {
+    return typeEquals<Sum>(entity) && BaseEntity::contentsEquals(entity);
+}
+
 std::string Sum::toString() {
     if (elements.size() == 0) {
         return "0";
@@ -54,7 +58,7 @@ BaseEntity *Sum::evaluateValue(double x) {
         return Scalar::zero();
     BaseEntity *evaluated = new Sum(this->multiplier);
     evaluateElementsValue(x, evaluated);
-    return evaluated->evaluateFunction();
+    return evaluateAndDelete(evaluated);
 }
 
 bool Sum::updateAndGetIsFunction() {

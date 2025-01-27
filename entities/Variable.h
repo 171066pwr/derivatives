@@ -11,14 +11,14 @@ class Variable: public BaseEntity {
     static map<string, double> constants;
     string symbol = SUBSTITUTE_SYMBOL;
 
-    bool equals(const BaseEntity *entity) override;
-    bool contentsEquals(const BaseEntity *entity) override;
     Scalar *evaluate(double x);
 public:
     static void changeSubstituteSymbol(string symbol);
     Variable(double multiplier = 1.0);
     Variable(string symbol, double multiplier = 1.0);
     BaseEntity *copy() override;
+    bool equals(const BaseEntity *entity) override;
+    bool contentsEquals(const BaseEntity *entity) override;
 
     bool operator==(const BaseEntity& entity) override {
         return equals(&entity);

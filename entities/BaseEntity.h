@@ -88,6 +88,10 @@ public:
         multiplier *= scalar;
     }
 
+    void invertSign() {
+        multiplier *= -1.0;
+    }
+
     void addToMultiplier(double scalar) {
         multiplier += scalar;
     }
@@ -103,6 +107,8 @@ public:
     BaseEntity *getElement(int index) {
         return (index >= 0 && index < elements.size()) ? elements[index] : nullptr;
     }
+
+    void replaceElement(BaseEntity *oldElement, BaseEntity *newElement);
 };
 
 #endif //DERIVATIVES_BASEENTITY_H

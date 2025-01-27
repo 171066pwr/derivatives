@@ -24,6 +24,7 @@ private:
     void testMultiplier2();
     void testMultiplierValue();
     void testMultiplierNested();
+    void testMergeEdgeCase();
 };
 
 #endif //SUMENTITYTEST_H

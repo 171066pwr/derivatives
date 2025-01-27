@@ -1,6 +1,5 @@
 #include <algorithm>
 #include "Multiplication.h"
-#include "../utils/NumberUtils.h"
 #include "Scalar.h"
 #include "Variable.h"
 #include "Power.h"
@@ -58,7 +57,7 @@ BaseEntity *Multiplication::evaluateValue(double x) {
         return Scalar::zero();
     BaseEntity *evaluated = new Multiplication(this->multiplier);
     evaluateElementsValue(x, evaluated);
-    return evaluated->evaluateFunction();
+    return evaluateAndDelete(evaluated);
 }
 
 bool Multiplication::updateAndGetIsFunction() {

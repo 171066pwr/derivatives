@@ -147,3 +147,8 @@ void BaseEntity::deleteElement(BaseEntity *element) {
     elements.erase(std::remove(elements.begin(), elements.end(), element), elements.end());
     deleteAndZero(element);
 }
+
+void BaseEntity::replaceElement(BaseEntity *oldElement, BaseEntity *newElement) {
+    std::replace(elements.begin(), elements.end(), oldElement, newElement);
+    deleteAndZero(oldElement);
+}

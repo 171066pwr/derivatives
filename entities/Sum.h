@@ -13,8 +13,9 @@ private:
 public:
     Sum(double multiplier = 1.0): BaseEntity(multiplier) {}
     Sum(double multiplier, initializer_list<BaseEntity *> list): BaseEntity(multiplier, list) {}
-    BaseEntity *copy();
+    BaseEntity *copy() override;
     bool equals(const BaseEntity *entity) override;
+    bool contentsEquals(const BaseEntity *entity) override;
 
     bool operator==(const BaseEntity& entity) override {
         return equals(&entity);

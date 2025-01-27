@@ -38,8 +38,8 @@ std::string Power::toString() {
 }
 
 bool Power::addElement(BaseEntity *element) {
-    if(elements.size() == 1) {
-        Logger::log("This power already has base");
+    if(elements.size() > 1) {
+        Logger::log("This power already has both elements");
         return false;
     }
     return BaseEntity::addElement(element);
@@ -131,7 +131,11 @@ bool Power::mergePower(Power *pwr) {
 }
 
 void Power::addToPower(double increase) {
-    BaseEntity *newPower = new Sum(1, {getPower()->copy(), new Scalar(increase)});
+    addToPower(new Scalar(increase));
+}
+
+void Power::addToPower(BaseEntity *increase) {
+    BaseEntity *newPower = new Sum(1, {getPower()->copy(), increase->copy()});
     replacePower(evaluateAndDelete(newPower));
 }
 

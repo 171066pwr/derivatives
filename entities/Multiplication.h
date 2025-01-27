@@ -15,7 +15,7 @@ class Multiplication: public BaseEntity {
 public:
     Multiplication(double multiplier = 1.0): BaseEntity(multiplier) {}
     Multiplication(double multiplier, initializer_list<BaseEntity *> list): BaseEntity(multiplier, list) {}
-    BaseEntity *copy();
+    BaseEntity *copy() override;
     bool equals(const BaseEntity *entity) override;
     bool contentsEquals(const BaseEntity *entity) override;
 
@@ -24,7 +24,7 @@ public:
     }
 
     std::string toString() override;
-    BaseEntity *evaluateFunction() override ;
+    BaseEntity *evaluateFunction() override;
     BaseEntity *evaluateValue(double x) override;
     bool updateAndGetIsFunction() override;
 };
