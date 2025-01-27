@@ -141,17 +141,19 @@ void Power::addToPower(BaseEntity *increase) {
 
 BaseEntity *Power::handleEdgeCases() {
     if(getPower() == nullptr)
-        return Scalar::one();
+        return new Scalar(multiplier);
     if (getPower()->isZero())
-        return Scalar::one();
+        return new Scalar(multiplier);
     if(Scalar *s = dynamic_cast<Scalar *>(getPower())) {
-        if (s->isZero())
-            return Scalar::one();
-            if(Scalar *base = dynamic_cast<Scalar *>(getBase())) {
-                if (NumberUtils::doubleEquals(base->getMultiplier(), 1.0))
-                    return Scalar::one();
-                return new Scalar(multiplier * pow(base->getMultiplier(), getPower()->getMultiplier()));
-            }
+        if (*s == *Scalar::one()) {
+            getBase()->multiplyByScalar(multiplier);
+            return getBase()->copy();
+        }
+        if(Scalar *base = dynamic_cast<Scalar *>(getBase())) {
+            if (NumberUtils::doubleEquals(base->getMultiplier(), 1.0))
+                return new Scalar(multiplier);
+            return new Scalar(multiplier * pow(base->getMultiplier(), getPower()->getMultiplier()));
+        }
     }
     if(elements.size() == 0)
         return Scalar::zero();

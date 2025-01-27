@@ -1,7 +1,6 @@
 #include "Fraction.h"
 #include "../utils/Logger.h"
 #include "NaN.h"
-#include "Sum.h"
 #include "Variable.h"
 #include "Power.h"
 
@@ -40,11 +39,12 @@ bool Fraction::addElement(BaseEntity *element) {
 }
 
 BaseEntity *Fraction::evaluateFunction() {
-    if(isZero())
-        return Scalar::zero();
-    mergeMultipliers();
+    BaseEntity *result = evaluateZero();
+    if(this != result)
+        return result;
+    multiplier = mergeMultipliers();
     BaseEntity::evaluateFunction();
-    BaseEntity *result = splitSum();
+    result = splitSum();
     if(this != result)
         return result->evaluateFunction();
     result = swapPower();
@@ -57,16 +57,11 @@ BaseEntity *Fraction::evaluateFunction() {
 }
 
 BaseEntity *Fraction::evaluateValue(double x) {
-    if (isZero())
-        return Scalar::zero();
     BaseEntity *numerator = getNumerator()->evaluateValue(x);
     BaseEntity *denominator = getDenominator()->evaluateValue(x);
-
-    if(denominator->isZero())
-        return new NaN();
-    if (numerator->isZero())
-        return Scalar::zero();
-
+    BaseEntity *result =evaluateZero(numerator, denominator);
+    if(this != result)
+        return result;
     if(Scalar *m = dynamic_cast<Scalar *>(numerator)) {
         if(Scalar *n = dynamic_cast<Scalar *>(denominator)) {
             return new Scalar(mergeMultipliers());
@@ -116,7 +111,7 @@ BaseEntity *Fraction::mergeFraction() {
     BaseEntity *denominator = getDenominator();
 
     if(numerator->equalsExceptMultiplier(denominator)) {
-        return numeratorTimesMultiplier();
+        return new Scalar(mergeMultipliers());
     }
     if(Scalar *n = dynamic_cast<Scalar *>(denominator)) {
         return numeratorTimesMultiplier();
@@ -139,6 +134,7 @@ BaseEntity *Fraction::mergeFraction() {
         if(Variable *n = dynamic_cast<Variable *>(getDenominator())) {
             if(n->equals(p->getBase())) {
                 p->addToPower(-1.0);
+                p->multiplyByScalar(multiplier);
                 return p->copy();
             }
         }
@@ -175,11 +171,23 @@ BaseEntity *Fraction::swapPower() {
 }
 
 double Fraction::mergeMultipliers() {
-    return (multiplier * getNumerator()->getMultiplier()) / getDenominator()->getMultiplier();
+    return (multiplier * getNumerator()->getAndResetMultiplier()) / getDenominator()->getAndResetMultiplier();
 }
 
 BaseEntity *Fraction::numeratorTimesMultiplier() {
     BaseEntity *copy = getNumerator()->copy();
     copy->multiplyByScalar(multiplier);
     return copy;
+}
+
+BaseEntity *Fraction::evaluateZero() {
+    return evaluateZero(getNumerator(), getDenominator());
+}
+
+BaseEntity *Fraction::evaluateZero(BaseEntity *numerator, BaseEntity *denominator) {
+    if(denominator->isZero())
+        return new NaN();
+    if(isZero() || numerator->isZero())
+        return Scalar::zero();
+    return this;
 }

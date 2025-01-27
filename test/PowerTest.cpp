@@ -109,15 +109,29 @@ void PowerTest::testEvaluation() {
     replace(testEntity, printAndEvaluateValue(testEntity, 2));
     testValue(testEntity, zero);
 
-    replace(testEntity, new Power(scalar3->copy(), one->copy()));
-    testEntity = printAndEvaluateFunction(testEntity, "1 base, 3 power");
+    replace(testEntity, new Power(scalar3->copy(), one->copy(), 2));
+    testEntity = printAndEvaluateFunction(testEntity, "2 multiplier, 1 base, 3 power");
     replace(testEntity, printAndEvaluateValue(testEntity, 2));
-    testValue(testEntity, one);
+    replace(expected, new Scalar(2));
+    testValue(testEntity, expected);
 
     replace(testEntity, new Power(zero->copy(), one->copy(), 0));
     testEntity = printAndEvaluateFunction(testEntity, "0 multiplier, 1 base, 0 power");
     replace(testEntity, printAndEvaluateValue(testEntity, 2));
     testValue(testEntity, zero);
+
+    replace(testEntity, new Power(zero->copy(), one->copy(), 3));
+    testEntity = printAndEvaluateFunction(testEntity, "3 multiplier, 1 base, 0 power");
+    replace(testEntity, printAndEvaluateValue(testEntity, 2));
+    testValue(testEntity, scalar3);
+
+    replace(testEntity, new Power(one->copy(), variable->copy(), 1));
+    testEntity = printAndEvaluateFunction(testEntity, "x base, 1 power");
+    replace(expected, variable->copy());
+    testValue(testEntity, expected);
+    replace(testEntity, printAndEvaluateValue(testEntity, 2));
+    replace(expected, new Scalar(2));
+    testValue(testEntity, expected);
 
     replace(testEntity, new Power(y->copy(), variable->copy()));
     replace(expected, new Power(y->copy(), new Scalar(2)));
