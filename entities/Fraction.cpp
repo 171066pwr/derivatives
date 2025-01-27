@@ -26,7 +26,7 @@ std::string Fraction::toString() {
     string result = NumberUtils::doubleEquals(multiplier, 1.0) ?
                     "" : NumberUtils::doubleEquals(multiplier, -1.0) ?
                          "-": NumberUtils::toString(multiplier) + "*";
-    result += "(" + elements[0]->toString() + ")" + "/(" + getDenominator()->toString() + ")";
+    result += "(" + getNumerator()->toString() + ")" + "/(" + getDenominator()->toString() + ")";
     return result;
 }
 
@@ -50,7 +50,7 @@ BaseEntity *Fraction::evaluateFunction() {
     if(this == result) {
         result = swapPower();
         if (this == result)
-            result = mergeFraction();
+            result = mergeOther();
         if (this == result) {
             if (*copy != *this) {
                 delete(copy);
@@ -72,7 +72,7 @@ BaseEntity *Fraction::evaluateValue(double x) {
         return result;
     if(Scalar *m = dynamic_cast<Scalar *>(numerator)) {
         if(Scalar *n = dynamic_cast<Scalar *>(denominator)) {
-            return new Scalar(mergeMultipliers());
+            return new Scalar((multiplier * numerator->getMultiplier()) / denominator->getMultiplier());
         }
     }
     return evaluateAndDelete(new Fraction(denominator, numerator, multiplier));
@@ -116,7 +116,7 @@ BaseEntity *Fraction::splitSum() {
     return this;
 }
 
-BaseEntity *Fraction::mergeFraction() {
+BaseEntity *Fraction::mergeOther() {
     BaseEntity *numerator = getNumerator();
     BaseEntity *denominator = getDenominator();
 
@@ -213,6 +213,6 @@ BaseEntity *Fraction::handleEdgeCases(BaseEntity *numerator, BaseEntity *denomin
     if(isZero() || numerator->isZero())
         return Scalar::zero();
     if(denominator == Scalar::one())
-        return numerator;
+        return numerator->copy();
     return this;
 }

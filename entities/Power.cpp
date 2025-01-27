@@ -146,8 +146,9 @@ BaseEntity *Power::handleEdgeCases() {
         return new Scalar(multiplier);
     if(Scalar *s = dynamic_cast<Scalar *>(getPower())) {
         if (*s == *Scalar::one()) {
-            getBase()->multiplyByScalar(multiplier);
-            return getBase()->copy();
+            BaseEntity *copy = getBase()->copy();
+            copy->multiplyByScalar(multiplier);
+            return copy;
         }
         if(Scalar *base = dynamic_cast<Scalar *>(getBase())) {
             if (NumberUtils::doubleEquals(base->getMultiplier(), 1.0))

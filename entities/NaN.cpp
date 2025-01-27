@@ -20,7 +20,7 @@ BaseEntity *NaN::evaluateFunction() {
 }
 
 BaseEntity *NaN::evaluateValue(double x) {
-    return this;
+    return new NaN();
 }
 
 bool NaN::updateAndGetIsFunction() {

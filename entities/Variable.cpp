@@ -48,7 +48,7 @@ BaseEntity *Variable::evaluateValue(double x) {
     } else if(constants.find(symbol) != constants.end()) {
         result = evaluate(constants[symbol]);
     } else {
-        result = evaluateFunction();
+        result = this->copy();
     }
     return result;
 }

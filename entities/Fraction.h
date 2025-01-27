@@ -11,7 +11,7 @@ class Fraction: public BaseEntity {
     BaseEntity *handleEdgeCases(BaseEntity *numerator, BaseEntity *denominator);
     BaseEntity *handleEdgeCases();
     BaseEntity *splitSum();
-    BaseEntity *mergeFraction();
+    BaseEntity *mergeOther();
     void mergeMultiplications(Multiplication *dividend, Multiplication *divisor);
     BaseEntity *swapPower();
     BaseEntity *numeratorTimesMultiplier();
