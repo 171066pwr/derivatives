@@ -8,8 +8,8 @@
 class Fraction: public BaseEntity {
     void replaceNumerator(BaseEntity *numerator);
     void replaceDenominator(BaseEntity *denominator);
-    BaseEntity *evaluateZero(BaseEntity *numerator, BaseEntity *denominator);
-    BaseEntity *evaluateZero();
+    BaseEntity *handleEdgeCases(BaseEntity *numerator, BaseEntity *denominator);
+    BaseEntity *handleEdgeCases();
     BaseEntity *splitSum();
     BaseEntity *mergeFraction();
     void mergeMultiplications(Multiplication *dividend, Multiplication *divisor);

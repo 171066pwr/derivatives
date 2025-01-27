@@ -39,27 +39,35 @@ bool Fraction::addElement(BaseEntity *element) {
 }
 
 BaseEntity *Fraction::evaluateFunction() {
-    BaseEntity *result = evaluateZero();
+    BaseEntity *result = handleEdgeCases();
     if(this != result)
         return result;
     multiplier = mergeMultipliers();
     BaseEntity::evaluateFunction();
+    //Second evaluation in case of changes. I find it more ellegant than update flag and I don't care about memory.
+    BaseEntity *copy = this->copy();
     result = splitSum();
-    if(this != result)
-        return result->evaluateFunction();
-    result = swapPower();
-    if(this != result)
-        return result->evaluateFunction();
-    result = mergeFraction();
-    if(this != result)
-        return result->evaluateFunction();
-    return this;
+    if(this == result) {
+        result = swapPower();
+        if (this == result)
+            result = mergeFraction();
+        if (this == result) {
+            if (*copy != *this) {
+                delete(copy);
+                return evaluateFunction();
+            }
+            delete(copy);
+            return this;
+        }
+    }
+    delete(copy);
+    return result->evaluateFunction();
 }
 
 BaseEntity *Fraction::evaluateValue(double x) {
     BaseEntity *numerator = getNumerator()->evaluateValue(x);
     BaseEntity *denominator = getDenominator()->evaluateValue(x);
-    BaseEntity *result =evaluateZero(numerator, denominator);
+    BaseEntity *result = handleEdgeCases(numerator, denominator);
     if(this != result)
         return result;
     if(Scalar *m = dynamic_cast<Scalar *>(numerator)) {
@@ -84,22 +92,24 @@ BaseEntity *Fraction::getDenominator() {
 }
 
 void Fraction::replaceNumerator(BaseEntity *numerator) {
-    delete elements[0];
-    elements[0] = numerator;
-
+    if (elements[0] != numerator) {
+        delete elements[0];
+        elements[0] = numerator;
+    }
 }
 
 void Fraction::replaceDenominator(BaseEntity *denominator) {
-    delete elements[0];
-    elements[0] = denominator;
-
+    if (elements[1] != denominator) {
+        delete elements[1];
+        elements[1] = denominator;
+    }
 }
 
 BaseEntity *Fraction::splitSum() {
     if(Sum *n = dynamic_cast<Sum *>(getNumerator())) {
         Sum *result = new Sum(multiplier);
         for(int i = 0; i < n->getSize(); i++) {
-            result->addElement(new Fraction(getDenominator()->copy(), n->copy()));
+            result->addElement(new Fraction(getDenominator()->copy(), n->getElement(i)->copy()));
         }
         return result;
     }
@@ -125,10 +135,23 @@ BaseEntity *Fraction::mergeFraction() {
                 break;
             }
         }
+        //eliminate similar elements if it's division of multiplications
         if(Multiplication *n = dynamic_cast<Multiplication *>(numerator)) {
             mergeMultiplications(n, m);
         }
     }
+
+    if(Multiplication *m = dynamic_cast<Multiplication *>(numerator)) {
+        for (int i = 0; i < m->getSize(); i++) {
+            if (denominator->equals(m->getElement(i))) {
+                replaceDenominator(Scalar::one());
+                m->replaceElement(m->getElement(i), Scalar::one());
+                break;
+            }
+        }
+    }
+    replaceDenominator(getDenominator()->evaluateFunction());
+    replaceNumerator(getNumerator()->evaluateFunction());
 
     if(Power *p = dynamic_cast<Power *>(getNumerator())) {
         if(Variable *n = dynamic_cast<Variable *>(getDenominator())) {
@@ -180,14 +203,16 @@ BaseEntity *Fraction::numeratorTimesMultiplier() {
     return copy;
 }
 
-BaseEntity *Fraction::evaluateZero() {
-    return evaluateZero(getNumerator(), getDenominator());
+BaseEntity *Fraction::handleEdgeCases() {
+    return handleEdgeCases(getNumerator(), getDenominator());
 }
 
-BaseEntity *Fraction::evaluateZero(BaseEntity *numerator, BaseEntity *denominator) {
+BaseEntity *Fraction::handleEdgeCases(BaseEntity *numerator, BaseEntity *denominator) {
     if(denominator->isZero())
         return new NaN();
     if(isZero() || numerator->isZero())
         return Scalar::zero();
+    if(denominator == Scalar::one())
+        return numerator;
     return this;
 }
