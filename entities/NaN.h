@@ -1,8 +1,9 @@
 #ifndef TESTS_NAN_H
 #define TESTS_NAN_H
 
+#include <limits>
 #include "BaseEntity.h"
-#include "cmath"
+
 
 class NaN: public BaseEntity {
     static const string NOT_A_NUMBER;
