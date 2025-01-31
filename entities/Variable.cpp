@@ -58,7 +58,7 @@ BaseEntity *Variable::evaluateValue(double x) {
 }
 
 BaseEntity * Variable::evaluateDerivative() {
-    if (isFunction)
+    if (updateAndGetIsFunction())
         return new Scalar(multiplier);
     return Scalar::zero();
 }
