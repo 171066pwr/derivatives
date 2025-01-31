@@ -33,6 +33,7 @@ public:
     bool addElement(BaseEntity * element) override;
     BaseEntity *evaluateFunction() override ;
     BaseEntity *evaluateValue(double x) override;
+    BaseEntity *evaluateDerivative() override;
     bool updateAndGetIsFunction() override;
 
     BaseEntity *getNumerator();

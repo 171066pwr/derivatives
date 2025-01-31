@@ -2,23 +2,18 @@
 #include <cmath>
 #include "../utils/Logger.h"
 #include "Multiplication.h"
+#include "UnsupportedDerivative.h"
 
 BaseEntity *Power::copy() {
     return new Power(elements[1]->copy(), elements[0]->copy(), multiplier);
 }
 
 bool Power::equals(const BaseEntity *entity) {
-    const Power *e = dynamic_cast<const Power *>(entity);
-    if(e == nullptr)
-        return false;
-    return BaseEntity::equals(e);
+    return typeEquals<Power>(entity) && BaseEntity::equals(entity);
 }
 
 bool Power::equalsExceptMultiplier(const BaseEntity *entity) {
-    const Power *e = dynamic_cast<const Power *>(entity);
-    if(e == nullptr)
-        return false;
-    return contentsEquals(entity);
+    return typeEquals<Power>(entity) && contentsEquals(entity);
 }
 
 bool Power::contentsEquals(const BaseEntity *entity) {
@@ -26,7 +21,7 @@ bool Power::contentsEquals(const BaseEntity *entity) {
 }
 
 std::string Power::toString() {
-    if (elements.size() == 0) {
+    if (elements.empty()) {
         return "0";
     }
     string result = NumberUtils::doubleEquals(multiplier, 1.0) ?
@@ -73,6 +68,17 @@ BaseEntity *Power::evaluateValue(double x) {
     return newPower->evaluateValue(x);
 }
 
+BaseEntity * Power::evaluateDerivative() {
+    Power *derivative = dynamic_cast<Power *>(copy());
+    if (derivative->getPower()->getIsFunction())
+        //unsupported for now
+        return new UnsupportedDerivative(derivative);
+    Multiplication *result = new Multiplication(1, {derivative->getPower()->copy(), derivative});
+    Sum *newPower = new Sum(1, {new Scalar(-1.0), derivative->getPower()->copy()});
+    derivative->replacePower(newPower);
+    return result;
+}
+
 bool Power::updateAndGetIsFunction() {
     return BaseEntity::updateAndGetIsFunction();
 }
@@ -101,7 +107,7 @@ BaseEntity *Power::splitMultiplications() {
 }
 
 BaseEntity *Power::getBase() {
-    if(elements.size() >0)
+    if(!elements.empty())
         return elements[0];
     return nullptr;
 }
@@ -156,7 +162,7 @@ BaseEntity *Power::handleEdgeCases() {
             return new Scalar(multiplier * pow(base->getMultiplier(), getPower()->getMultiplier()));
         }
     }
-    if(elements.size() == 0)
+    if(elements.empty())
         return Scalar::zero();
     return this;
 }

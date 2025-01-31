@@ -24,6 +24,10 @@ BaseEntity *Scalar::evaluateValue(double x) {
     return new Scalar(multiplier);
 }
 
+BaseEntity * Scalar::evaluateDerivative() {
+    return zero();
+}
+
 bool Scalar::addElement(BaseEntity *element) {
     Logger::log("Can't add child entity to scalar value");
     return false;

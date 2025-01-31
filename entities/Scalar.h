@@ -25,6 +25,7 @@ public:
 
     std::string toString() override;
     BaseEntity *evaluateValue(double x) override;
+    BaseEntity * evaluateDerivative() override;
     bool addElement(BaseEntity *element) override;
 };
 

@@ -1,4 +1,5 @@
 #include "BaseEntityTest.h"
+#include "DerivativesTest.h"
 #include "SumTest.h"
 #include "VariableTest.h"
 #include "MultiplicationTest.h"
@@ -19,6 +20,7 @@ void runTests() {
     MultiplicationTest multiplicationTest;
     PowerTest powerTest;
     FractionTest fractionTest;
+    DerivativesTest derivativesTest;
 
     baseEntityTest.runTest("BaseEntity tests");
     variableTest.runTest("Variable tests");
@@ -26,4 +28,5 @@ void runTests() {
     multiplicationTest.runTest("Multiplication tests");
     powerTest.runTest("Power tests");
     fractionTest.runTest("Fraction tests");
+    derivativesTest.runTest("Derivatives tests");
 }

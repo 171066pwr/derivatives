@@ -3,6 +3,8 @@
 
 #include "../utils/Logger.h"
 #include "../entities/BaseEntity.h"
+#include "../entities/Scalar.h"
+#include "../entities/Variable.h"
 #include "../utils/NumberUtils.h"
 
 class EntityTest {
@@ -32,7 +34,7 @@ public:
 
     BaseEntity *printAndEvaluateFunction(BaseEntity *&e, string comment = "") {
         BaseEntity *result;
-        cout << (comment == "" ? "" : comment + ":\n") << e->toString();
+        cout << (comment.empty() ? "" : comment + ":\n") << e->toString();
         cout << "   =    " << (result = e->evaluateFunction())->toString() << endl;
         if (e != result) {
             delete e;
@@ -43,13 +45,20 @@ public:
 
     BaseEntity *printAndEvaluateValue(BaseEntity *&e, double x, string comment = "") {
         BaseEntity *result;
-        cout << (comment == "" ? "" : comment + ":\n") << "[x == " + NumberUtils::toString(x) + "]   " << e->toString();
+        cout << (comment.empty() ? "" : comment + ":\n") << "[" + Variable::getSubstituteSymbol() + " == " + NumberUtils::toString(x) + "]   " << e->toString();
         cout << "   =   " << (result = e->evaluateValue(x))->toString() << endl;
         return result;
     }
 
+    BaseEntity *printAndEvaluateDerivative(BaseEntity *&e, string comment = "") {
+        BaseEntity *result;
+        cout << (comment.empty() ? "" : comment + ":\n") << "[d" + Variable::getSubstituteSymbol() +"]   " << e->toString();
+        cout << "   =   " << (result = e->evaluateDerivative())->toString() << endl;
+        return result;
+    }
+
     void printComparison(BaseEntity *e1, BaseEntity *e2, string comment = "") {
-        cout << (comment == "" ? "" : comment + ":\n") << e1->toString();
+        cout << (comment.empty() ? "" : comment + ":\n") << e1->toString();
         cout << "   =    " << e2->toString() << endl;
     }
 

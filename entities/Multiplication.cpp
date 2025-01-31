@@ -21,7 +21,7 @@ bool Multiplication::contentsEquals(const BaseEntity *entity) {
 }
 
 std::string Multiplication::toString() {
-    if (elements.size() == 0) {
+    if (elements.empty()) {
         return "0";
     }
     string result = (NumberUtils::doubleEquals(multiplier, 1.0) ?
@@ -58,6 +58,23 @@ BaseEntity *Multiplication::evaluateValue(double x) {
     BaseEntity *evaluated = new Multiplication(this->multiplier);
     evaluateElementsValue(x, evaluated);
     return evaluateAndDelete(evaluated);
+}
+
+BaseEntity * Multiplication::evaluateDerivative() {
+    Sum *derivative = new Sum(multiplier);
+    for (int i = 0; i < elements.size(); i++) {
+        Multiplication *subproduct = new Multiplication();
+        BaseEntity *derived = elements[i]->evaluateDerivative();
+        for (int j = 0; j < elements.size(); j++) {
+            if (j == i) {
+                subproduct->addElement(derived);
+                continue;
+            }
+            subproduct->addElement(elements[j]->copy());
+        }
+        derivative->addElement(subproduct);
+    }
+    return derivative;
 }
 
 bool Multiplication::updateAndGetIsFunction() {

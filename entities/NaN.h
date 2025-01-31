@@ -4,15 +4,14 @@
 #include <limits>
 #include "BaseEntity.h"
 
-
 class NaN: public BaseEntity {
     static const string NOT_A_NUMBER;
 public:
     NaN(): BaseEntity(numeric_limits<double>::quiet_NaN()) {};
     BaseEntity *copy() override;
     bool equals(const BaseEntity *entity) override { return false;};
-    bool equalsExceptMultiplier(const BaseEntity *entity) { return false;};
-    bool contentsEquals(const BaseEntity *entity) { return false;};
+    bool equalsExceptMultiplier(const BaseEntity *entity) override { return false;};
+    bool contentsEquals(const BaseEntity *entity) override { return false;};
 
     bool operator==(const BaseEntity& entity) override {
         return false;

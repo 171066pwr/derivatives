@@ -11,8 +11,6 @@ BaseEntity *Sum::copy() {
 }
 
 bool Sum::equals(const BaseEntity *entity) {
-    //If the new type to be cast to is a pointer the result is a nullptr on error. If it is a reference it throws an exception.
-    //So we have to cast pointers or catch bad_cast
     return typeEquals<Sum>(entity) && BaseEntity::equals(entity);
 }
 
@@ -21,7 +19,7 @@ bool Sum::contentsEquals(const BaseEntity *entity) {
 }
 
 std::string Sum::toString() {
-    if (elements.size() == 0) {
+    if (elements.empty()) {
         return "0";
     }
     string result = (NumberUtils::doubleEquals(multiplier, 1.0) ?
@@ -41,7 +39,7 @@ BaseEntity *Sum::evaluateFunction() {
     mergeSums();
     mergeContents();
     mergeMultiplier();
-    if (elements.size() == 0) {
+    if (elements.empty()) {
         return Scalar::zero();
     }
     if (elements.size() == 1) {
@@ -59,6 +57,13 @@ BaseEntity *Sum::evaluateValue(double x) {
     BaseEntity *evaluated = new Sum(this->multiplier);
     evaluateElementsValue(x, evaluated);
     return evaluateAndDelete(evaluated);
+}
+
+BaseEntity * Sum::evaluateDerivative() {
+    Sum *derivative = new Sum(this->multiplier);
+    for (auto element : elements)
+        derivative->addElement(element->evaluateDerivative());
+    return derivative;
 }
 
 bool Sum::updateAndGetIsFunction() {

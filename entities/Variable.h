@@ -14,6 +14,7 @@ class Variable: public BaseEntity {
     Scalar *evaluate(double x);
 public:
     static void changeSubstituteSymbol(string symbol);
+    static string getSubstituteSymbol();
     Variable(double multiplier = 1.0);
     Variable(string symbol, double multiplier = 1.0);
     BaseEntity *copy() override;
@@ -26,6 +27,7 @@ public:
 
     std::string toString() override;
     BaseEntity *evaluateValue(double x) override;
+    BaseEntity *evaluateDerivative() override;
     bool updateAndGetIsFunction() override;
 
     string getSymbol() {

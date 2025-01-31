@@ -107,23 +107,10 @@ void BaseEntity::evaluateElementsValue(double x, BaseEntity *entity) {
     }
 }
 
-//It will return new object
 BaseEntity *BaseEntity::evaluateDerivative() {
-    //Have to allocate on the heap (global storage) with new operator. Without that it would be only allocated locally on stack
-    //And it would be lost when closing this isFunction and stack frame; The space would be probably re-allocated to new frames.
-    //Just remember that objects allocated globally have to be deleted manually!
     if(!isFunction)
         return Scalar::zero();
-
-    BaseEntity *derivative = new BaseEntity();
-    for(int i = 0; i < elements.size(); i++){
-        derivative->addElement(elements[i]->evaluateDerivative());
-    }
-    //re-evaluate after derivative
-    BaseEntity *result = derivative->evaluateFunction();
-    if (result != derivative)
-        delete derivative;
-    return result;
+    return copy();
 }
 
 bool BaseEntity::updateAndGetIsFunction() {

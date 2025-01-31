@@ -9,6 +9,10 @@ void Variable::changeSubstituteSymbol(string symbol) {
     SUBSTITUTE_SYMBOL = symbol;
 }
 
+string Variable::getSubstituteSymbol() {
+    return SUBSTITUTE_SYMBOL;
+}
+
 Variable::Variable(double multiplier) : BaseEntity(multiplier) {
     updateAndGetIsFunction();
 }
@@ -51,6 +55,12 @@ BaseEntity *Variable::evaluateValue(double x) {
         result = this->copy();
     }
     return result;
+}
+
+BaseEntity * Variable::evaluateDerivative() {
+    if (isFunction)
+        return new Scalar(multiplier);
+    return Scalar::zero();
 }
 
 Scalar *Variable::evaluate(double x) {

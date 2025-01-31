@@ -9,10 +9,7 @@ BaseEntity *Fraction::copy() {
 }
 
 bool Fraction::equals(const BaseEntity *entity) {
-    const Fraction *e = dynamic_cast<const Fraction *>(entity);
-    if(e == nullptr)
-        return false;
-    return BaseEntity::equals(e);
+    return typeEquals<Fraction>(entity) && BaseEntity::equals(entity);
 }
 
 bool Fraction::contentsEquals(const BaseEntity *entity) {
@@ -20,7 +17,7 @@ bool Fraction::contentsEquals(const BaseEntity *entity) {
 }
 
 std::string Fraction::toString() {
-    if (elements.size() == 0) {
+    if (elements.empty()) {
         return "0";
     }
     string result = NumberUtils::doubleEquals(multiplier, 1.0) ?
@@ -76,6 +73,20 @@ BaseEntity *Fraction::evaluateValue(double x) {
         }
     }
     return evaluateAndDelete(new Fraction(denominator, numerator, multiplier));
+}
+
+BaseEntity * Fraction::evaluateDerivative() {
+    Sum *numerator = new Sum();
+    Multiplication *denominator = new Multiplication();
+    Fraction *derivative = new Fraction(denominator, numerator, multiplier);
+
+    numerator->addElements({new Multiplication(1.0, {
+        this->getNumerator()->evaluateDerivative(), this->getDenominator()->copy()})});
+    numerator->addElements({new Multiplication(-1.0, {
+        this->getNumerator()->copy(), this->getDenominator()->evaluateDerivative()})});
+
+    denominator->addElements({new Multiplication(1.0, {getDenominator()->copy(), getDenominator()->copy()})});
+    return derivative;
 }
 
 bool Fraction::updateAndGetIsFunction() {

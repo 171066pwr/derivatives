@@ -24,6 +24,7 @@ public:
     std::string toString();
     BaseEntity *evaluateFunction() override ;
     BaseEntity *evaluateValue(double x) override;
+    BaseEntity *evaluateDerivative() override;
     bool updateAndGetIsFunction() override;
 };
 
