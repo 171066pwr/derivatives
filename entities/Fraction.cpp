@@ -76,6 +76,8 @@ BaseEntity *Fraction::evaluateValue(double x) {
 }
 
 BaseEntity * Fraction::evaluateDerivative() {
+    if(!isFunction)
+        return Scalar::zero();
     Sum *numerator = new Sum();
     Multiplication *denominator = new Multiplication();
     Fraction *derivative = new Fraction(denominator, numerator, multiplier);
@@ -199,6 +201,7 @@ void Fraction::mergeMultiplications(Multiplication *dividend, Multiplication *di
 BaseEntity *Fraction::swapPower() {
     if(Power *p = dynamic_cast<Power *>(getDenominator())) {
         p->getPower()->invertSign();
+        multiplyByScalar(1.0/p->getAndResetMultiplier());
         return new Multiplication(multiplier, {p->copy(), getNumerator()->copy()});
     }
     return this;

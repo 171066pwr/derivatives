@@ -60,6 +60,8 @@ BaseEntity *Sum::evaluateValue(double x) {
 }
 
 BaseEntity * Sum::evaluateDerivative() {
+    if(!isFunction)
+        return Scalar::zero();
     Sum *derivative = new Sum(this->multiplier);
     for (auto element : elements)
         derivative->addElement(element->evaluateDerivative());

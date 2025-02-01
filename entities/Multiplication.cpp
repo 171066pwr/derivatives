@@ -61,6 +61,8 @@ BaseEntity *Multiplication::evaluateValue(double x) {
 }
 
 BaseEntity * Multiplication::evaluateDerivative() {
+    if(!isFunction)
+        return Scalar::zero();
     Sum *derivative = new Sum(multiplier);
     for (int i = 0; i < elements.size(); i++) {
         Multiplication *subproduct = new Multiplication();

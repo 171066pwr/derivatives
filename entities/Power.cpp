@@ -69,6 +69,8 @@ BaseEntity *Power::evaluateValue(double x) {
 }
 
 BaseEntity * Power::evaluateDerivative() {
+    if(!isFunction)
+        return Scalar::zero();
     Power *derivative = dynamic_cast<Power *>(copy());
     if (derivative->getPower()->getIsFunction())
         //unsupported for now
