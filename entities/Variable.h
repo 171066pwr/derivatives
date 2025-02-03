@@ -15,6 +15,7 @@ class Variable: public BaseEntity {
 public:
     static void changeSubstituteSymbol(string symbol);
     static string getSubstituteSymbol();
+    static vector<string> getConstants();
     Variable(double multiplier = 1.0);
     Variable(string symbol, double multiplier = 1.0);
     BaseEntity *copy() override;

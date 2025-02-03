@@ -1,5 +1,6 @@
 #define _USE_MATH_DEFINES
 #include <cmath>
+#include <utility>
 #include "Variable.h"
 
 string Variable::SUBSTITUTE_SYMBOL = "x";
@@ -13,12 +14,19 @@ string Variable::getSubstituteSymbol() {
     return SUBSTITUTE_SYMBOL;
 }
 
-Variable::Variable(double multiplier) : BaseEntity(multiplier) {
-    updateAndGetIsFunction();
+vector<string> Variable::getConstants() {
+    vector<string> result;
+    for(auto & constant : constants)
+        result.push_back(constant.first);
+    return result;
 }
 
-Variable::Variable(string symbol = SUBSTITUTE_SYMBOL, double multiplier): BaseEntity(multiplier), symbol(symbol) {
-    updateAndGetIsFunction();
+Variable::Variable(double multiplier) : BaseEntity(multiplier) {
+    Variable::updateAndGetIsFunction();
+}
+
+Variable::Variable(string symbol = SUBSTITUTE_SYMBOL, double multiplier): BaseEntity(multiplier), symbol(std::move(symbol)) {
+    Variable::updateAndGetIsFunction();
 }
 
 BaseEntity *Variable::copy() {
