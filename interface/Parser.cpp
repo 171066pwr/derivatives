@@ -15,6 +15,7 @@ BaseEntity *Parser::parse(const char *source, int index) const {
         }
         ++index;
     }
+    return nullptr;
 }
 
 BaseEntity *Parser::parseFromString(const string& str) const {

@@ -33,11 +33,8 @@ void BasicMenu::displayMenu() {
 
     while (entity == nullptr) {
         cout << "Podaj: " << endl;
-        //clearCIN();
         if (fgets(str,100, stdin) == NULL || strcmp(str, "\n") == 0)
             continue;
-        cout << strlen(str) << endl;
-        cout << "czy null terminator:" << (str[strlen(str)] == '\0') << endl;
         entity = parse(str, parser);
     }
 
