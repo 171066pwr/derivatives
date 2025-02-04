@@ -48,25 +48,24 @@ BaseEntity *Multiplication::evaluateFunction() {
         elements[0]->multiplyByScalar(multiplier);
         return evaluateAndDelete(elements[0]);
     }
-    updateAndGetIsFunction();
     return mergeSums();
 }
 
-BaseEntity *Multiplication::evaluateValue(double x) {
+BaseEntity *Multiplication::evaluateValue(double x, string variable) {
     if (isZero())
         return Scalar::zero();
     BaseEntity *evaluated = new Multiplication(this->multiplier);
-    evaluateElementsValue(x, evaluated);
+    evaluateElementsValue(x, variable, evaluated);
     return evaluateAndDelete(evaluated);
 }
 
-BaseEntity * Multiplication::evaluateDerivative() {
-    if(!isFunction)
+BaseEntity * Multiplication::evaluateDerivative(string variable) {
+    if(!isFunction(variable))
         return Scalar::zero();
     Sum *derivative = new Sum(multiplier);
     for (int i = 0; i < elements.size(); i++) {
         Multiplication *subproduct = new Multiplication();
-        BaseEntity *derived = elements[i]->evaluateDerivative();
+        BaseEntity *derived = elements[i]->evaluateDerivative(variable);
         for (int j = 0; j < elements.size(); j++) {
             if (j == i) {
                 subproduct->addElement(derived);
@@ -77,11 +76,6 @@ BaseEntity * Multiplication::evaluateDerivative() {
         derivative->addElement(subproduct);
     }
     return derivative;
-}
-
-bool Multiplication::updateAndGetIsFunction() {
-    isFunction = false;
-    return BaseEntity::updateAndGetIsFunction();
 }
 
 double Multiplication::mergeMultipliers() {

@@ -13,16 +13,17 @@ std::string NaN::toString() {
 
 bool NaN::addElement(BaseEntity *element) {
     Logger::log("Can't add to " + NOT_A_NUMBER);
+    return false;
 }
 
 BaseEntity *NaN::evaluateFunction() {
     return this;
 }
 
-BaseEntity *NaN::evaluateValue(double x) {
+BaseEntity *NaN::evaluateValue(double x, string variable) {
     return new NaN();
 }
 
-bool NaN::updateAndGetIsFunction() {
+bool NaN::isFunction(string symbol) {
     return true;
 }

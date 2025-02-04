@@ -20,11 +20,11 @@ std::string Scalar::toString() {
     return NumberUtils::toString(multiplier);
 }
 
-BaseEntity *Scalar::evaluateValue(double x) {
+BaseEntity *Scalar::evaluateValue(double x, string variable) {
     return new Scalar(multiplier);
 }
 
-BaseEntity * Scalar::evaluateDerivative() {
+BaseEntity * Scalar::evaluateDerivative(string variable) {
     return zero();
 }
 

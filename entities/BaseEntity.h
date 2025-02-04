@@ -12,7 +12,6 @@ using namespace std;
 class BaseEntity {
 protected:
     double multiplier = 1.0;
-    bool isFunction = false;
     vector<BaseEntity *> elements;
     void deleteElement(BaseEntity *element);
 
@@ -47,8 +46,9 @@ public:
     virtual std::string toString();
     virtual BaseEntity *evaluateFunction();
     virtual BaseEntity *evaluateValue(double x);
-    virtual BaseEntity *evaluateDerivative();
-    virtual bool updateAndGetIsFunction();
+    virtual BaseEntity *evaluateValue(double x, string variable);
+    virtual BaseEntity *evaluateDerivative(string variable);
+    virtual bool isFunction(string symbol);
 
     template <typename T>
     static bool typeEquals(const BaseEntity *entity){
@@ -68,7 +68,9 @@ public:
         return old = current;
     }
 
-    void evaluateElementsValue(double x, BaseEntity *entity);
+    void evaluateElementsValue(double x, string variable, BaseEntity *entity);
+
+    BaseEntity *recursiveFunctionEvaluation();
 
     double getMultiplier() const {
         return multiplier;
@@ -98,10 +100,6 @@ public:
 
     int getSize() {
         return elements.size();
-    }
-
-    bool getIsFunction() {
-        return isFunction;
     }
 
     BaseEntity *getElement(int index) {

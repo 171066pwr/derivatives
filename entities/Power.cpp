@@ -52,37 +52,33 @@ BaseEntity *Power::evaluateFunction() {
     return this;
 }
 
-BaseEntity *Power::evaluateValue(double x) {
+BaseEntity *Power::evaluateValue(double x, string variable) {
     if (isZero())
         return Scalar::zero();
     BaseEntity *result = handleEdgeCases();
     if(result != this)
         return result;
-    BaseEntity *evPower = getPower()->copy()->evaluateValue(x);
-    BaseEntity *evBase = getBase()->copy()->evaluateValue(x);
+    BaseEntity *evPower = getPower()->copy()->evaluateValue(x, variable);
+    BaseEntity *evBase = getBase()->copy()->evaluateValue(x, variable);
     Power *newPower = new Power(evPower, evBase, this->multiplier);
 
     if (*getPower() == *evPower && *getBase() == *evBase) {
         return newPower;
     }
-    return newPower->evaluateValue(x);
+    return newPower->evaluateValue(x, variable);
 }
 
-BaseEntity * Power::evaluateDerivative() {
-    if(!isFunction)
+BaseEntity * Power::evaluateDerivative(string variable) {
+    if(!isFunction(variable))
         return Scalar::zero();
     Power *derivative = dynamic_cast<Power *>(copy());
-    if (derivative->getPower()->getIsFunction())
+    if (derivative->getPower()->isFunction(variable))
         //unsupported for now
         return new UnsupportedDerivative(derivative);
     Multiplication *result = new Multiplication(1, {derivative->getPower()->copy(), derivative});
     Sum *newPower = new Sum(1, {new Scalar(-1.0), derivative->getPower()->copy()});
     derivative->replacePower(newPower);
     return result;
-}
-
-bool Power::updateAndGetIsFunction() {
-    return BaseEntity::updateAndGetIsFunction();
 }
 
 //it doesn't really help when calculating derivative, might drop it...

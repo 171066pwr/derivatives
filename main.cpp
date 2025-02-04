@@ -3,7 +3,5 @@
 
 int main () {
     BasicMenu menu = BasicMenu(LIMIT);
-    menu.displayMenu();
-
-    system("pause");
+    menu.display();
 }

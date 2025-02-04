@@ -53,15 +53,13 @@ void DerivativesTest::testEvaluation() {
     testValue(testEntity, expected);
 
     replace(testEntity,variable3->copy());
-    Variable::changeSubstituteSymbol("y");
-    replace(testEntity, printAndEvaluateDerivative(testEntity, "differentiated by Y"));
+    replace(testEntity, printAndEvaluateDerivative(testEntity, "differentiated by Y", "y"));
     testValue(testEntity, expected);
 
     replace(testEntity,y->copy());
     replace(expected, one->copy());
-    replace(testEntity, printAndEvaluateDerivative(testEntity, "differentiated by Y"));
+    replace(testEntity, printAndEvaluateDerivative(testEntity, "differentiated by Y", "y"));
     testValue(testEntity, expected);
-    Variable::changeSubstituteSymbol("x");
 
     Logger::important("Power derivative");
     replace(testEntity,power->copy());
@@ -140,4 +138,27 @@ void DerivativesTest::testEvaluation() {
     replace(testEntity, printAndEvaluateDerivative(testEntity));
     replace(testEntity, printAndEvaluateFunction(testEntity));
     testValue(testEntity, expected);
+}
+
+void DerivativesTest::investigation() {
+    Logger::important("Investigating change of derivative variable...");
+    BaseEntity *variable = new Variable();
+    BaseEntity *variable3 = new Variable(3.0);
+    BaseEntity *y = new Variable("y");
+    BaseEntity *y2 = new Variable("y", 2.0);
+    BaseEntity *scalar21 = new Scalar(21.5);
+    BaseEntity *multi = new Multiplication(2.0, {variable3, y, variable, y2, scalar21});
+    BaseEntity *derivative = multi->evaluateDerivative("x");
+    BaseEntity *expected = new Multiplication(516.0, {variable->copy(), new Power(2, y->copy())});
+    derivative = printAndEvaluateFunction(derivative);
+    testValue(derivative, expected);
+
+    Logger::important("Changing to dy");
+    BaseEntity *derivativeY = multi->copy();
+    replace(derivativeY, derivativeY->evaluateDerivative("y"));
+    derivativeY = printAndEvaluateFunction(derivativeY);
+    replace(expected, new Multiplication(516.0, {y->copy(), new Power(2, variable->copy())}));
+    testValue(derivativeY, expected);
+
+    deleteMultiple({multi, derivative, derivativeY});
 }

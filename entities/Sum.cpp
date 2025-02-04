@@ -47,30 +47,24 @@ BaseEntity *Sum::evaluateFunction() {
         elements.clear();
         return element;
     }
-    updateAndGetIsFunction();
     return this;
 }
 
-BaseEntity *Sum::evaluateValue(double x) {
+BaseEntity *Sum::evaluateValue(double x, string variable) {
     if (isZero())
         return Scalar::zero();
     BaseEntity *evaluated = new Sum(this->multiplier);
-    evaluateElementsValue(x, evaluated);
+    evaluateElementsValue(x, variable, evaluated);
     return evaluateAndDelete(evaluated);
 }
 
-BaseEntity * Sum::evaluateDerivative() {
-    if(!isFunction)
+BaseEntity * Sum::evaluateDerivative(string variable) {
+    if(!isFunction(variable))
         return Scalar::zero();
     Sum *derivative = new Sum(this->multiplier);
     for (auto element : elements)
-        derivative->addElement(element->evaluateDerivative());
+        derivative->addElement(element->evaluateDerivative(variable));
     return derivative;
-}
-
-bool Sum::updateAndGetIsFunction() {
-    isFunction = false;
-    return BaseEntity::updateAndGetIsFunction();
 }
 
 void Sum::mergeSums() {
@@ -98,12 +92,18 @@ void Sum::mergeContents() {
                 elements[i]->addToMultiplier(elements[j]->getMultiplier());
                 deleteElement(elements[j]);
                 updated = true;
-                j--;
+                --j;
             }
         }
         if (updated) {
             evaluateAndReplaceElement(elements[i]);
-            i--;
+            --i;
+        }
+    }
+    for(int i = 0; i < elements.size() && elements.size() > 1; i++) {
+        if (NumberUtils::doubleEquals(0.0, elements[i]->getMultiplier())) {
+            deleteElement(elements[i]);
+            --i;
         }
     }
 }

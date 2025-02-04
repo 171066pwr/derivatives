@@ -25,9 +25,8 @@ public:
     std::string toString() override;
     bool addElement(BaseEntity * element) override;
     BaseEntity *evaluateFunction() override ;
-    BaseEntity *evaluateValue(double x) override;
-    BaseEntity *evaluateDerivative() override;
-    bool updateAndGetIsFunction() override;
+    BaseEntity *evaluateValue(double x, string variable) override;
+    BaseEntity *evaluateDerivative(string variable) override;
 
     BaseEntity *splitMultiplications();
     BaseEntity *getBase();

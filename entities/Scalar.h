@@ -24,9 +24,10 @@ public:
     }
 
     std::string toString() override;
-    BaseEntity *evaluateValue(double x) override;
-    BaseEntity * evaluateDerivative() override;
+    BaseEntity *evaluateValue(double x, string variable) override;
+    BaseEntity * evaluateDerivative(string variable) override;
     bool addElement(BaseEntity *element) override;
+    bool isFunction(string symbol) override {return false;}
 };
 
 #endif //DERIVATIVES_SCALARENTITY_H

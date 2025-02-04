@@ -9,16 +9,16 @@
 
 class EntityTest {
 public:
-    virtual void runTest(string title){
+    virtual void runTest(const string &title){
         Logger::log("\n------------\t" + title + "        ------------");
     };
 
     template <typename T>
-    void testType(BaseEntity *testEntity, string successMsg, string failMsg){
+    void testType(BaseEntity *testEntity, const string &successMsg, const string &failMsg){
         testCondition((bool) dynamic_cast<T *>(testEntity), successMsg, failMsg);
     }
 
-    void testCondition(bool condition, string successMsg, string failMsg) {
+    void testCondition(bool condition, const string &successMsg, const string &failMsg) {
         if(condition)
             Logger::success(successMsg);
         else
@@ -43,17 +43,17 @@ public:
         return result;
     }
 
-    BaseEntity *printAndEvaluateValue(BaseEntity *&e, double x, string comment = "") {
+    BaseEntity *printAndEvaluateValue(BaseEntity *&e, double x, string comment = "", const string &variable = "x") {
         BaseEntity *result;
-        cout << (comment.empty() ? "" : comment + ":\n") << "[" + Variable::getSubstituteSymbol() + " == " + NumberUtils::toString(x) + "]   " << e->toString();
-        cout << "   =   " << (result = e->evaluateValue(x))->toString() << endl;
+        cout << (comment.empty() ? "" : comment + ":\n") << "[" + variable + " == " + NumberUtils::toString(x) + "]   " << e->toString();
+        cout << "   =   " << (result = e->evaluateValue(x, variable))->toString() << endl;
         return result;
     }
 
-    BaseEntity *printAndEvaluateDerivative(BaseEntity *&e, string comment = "") {
+    BaseEntity *printAndEvaluateDerivative(BaseEntity *&e, string comment = "", const string &variable = "x") {
         BaseEntity *result;
-        cout << (comment.empty() ? "" : comment + ":\n") << "[d" + Variable::getSubstituteSymbol() +"]   " << e->toString();
-        cout << "   =   " << (result = e->evaluateDerivative())->toString() << endl;
+        cout << (comment.empty() ? "" : comment + ":\n") << "[d" + variable +"]   " << e->toString();
+        cout << "   =   " << (result = e->evaluateDerivative(variable))->toString() << endl;
         return result;
     }
 

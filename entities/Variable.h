@@ -7,14 +7,11 @@
 #include "Scalar.h"
 
 class Variable: public BaseEntity {
-    static string SUBSTITUTE_SYMBOL;
     static map<string, double> constants;
-    string symbol = SUBSTITUTE_SYMBOL;
+    string symbol = "x";
 
     Scalar *evaluate(double x);
 public:
-    static void changeSubstituteSymbol(string symbol);
-    static string getSubstituteSymbol();
     static vector<string> getConstants();
     Variable(double multiplier = 1.0);
     Variable(string symbol, double multiplier = 1.0);
@@ -27,9 +24,9 @@ public:
     }
 
     std::string toString() override;
-    BaseEntity *evaluateValue(double x) override;
-    BaseEntity *evaluateDerivative() override;
-    bool updateAndGetIsFunction() override;
+    BaseEntity *evaluateValue(double x, string variable) override;
+    BaseEntity *evaluateDerivative(string variable) override;
+    bool isFunction(string symbol) override;
 
     string getSymbol() {
         return symbol;

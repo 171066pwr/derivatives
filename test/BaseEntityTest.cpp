@@ -58,9 +58,12 @@ void BaseEntityTest::testInterfaces() {
     subSumA = new Sum(1, {Scalar::one(), new Variable("pi")});
     subSumB = new Sum(1, {new Scalar(2), new Variable()});
     sum = new Sum(1, {new Variable("y"), subSumA, subSumB});
-    testCondition(sum->getIsFunction(), "isFunction propagated without update", "isFunction not propagated with update");
-    testCondition(sum->updateAndGetIsFunction(), "isFunction updated properly", "isFunction not updated");
+    testCondition(sum->isFunction("x"), "x correct", "x incorrect");
+    testCondition(sum->isFunction("y"), "y correct", "y incorrect");
     sum->addElement(new Variable(-1));
-    testCondition(!printAndEvaluateFunction(sum, "Substracting function component, then updating function status:")->getIsFunction(), "isFunction updated on function evaluation", "isFunction not updated on function evaluation");
+    sum = printAndEvaluateFunction(sum, "Substracting x");
+
+    testCondition(!sum->isFunction("x"), "x correct", "x incorrect");
+    testCondition(sum->isFunction("y"), "y correct", "y incorrect");
     delete sum;
-};
+}

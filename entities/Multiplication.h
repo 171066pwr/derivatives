@@ -25,9 +25,8 @@ public:
 
     std::string toString() override;
     BaseEntity *evaluateFunction() override;
-    BaseEntity *evaluateValue(double x) override;
-    BaseEntity *evaluateDerivative() override;
-    bool updateAndGetIsFunction() override;
+    BaseEntity *evaluateValue(double x, string variable) override;
+    BaseEntity *evaluateDerivative(string variable) override;
 };
 
 #endif //DERIVATIVES_MULTIPLICATIONENTITY_H

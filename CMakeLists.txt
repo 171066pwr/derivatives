@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.5)
 project(Derivatives)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -static-libgcc -static-libstdc++ -static -lpthread")
 
 set(SOURCE_FILES main.cpp entities/BaseEntity.cpp entities/BaseEntity.h interface/Parser.cpp interface/Parser.h entities/Scalar.cpp entities/Scalar.h entities/Variable.cpp entities/Variable.h utils/NumberUtils.cpp utils/NumberUtils.h entities/Sum.cpp entities/Sum.h utils/Logger.h
         test/SumTest.cpp
@@ -44,6 +44,7 @@ set(TEST_FILES test/MainTest.cpp entities/BaseEntity.cpp entities/BaseEntity.h i
         test/DerivativesTest.h
         entities/UnsupportedDerivative.cpp
         entities/UnsupportedDerivative.h
-        interface/ParseException.h)
+        interface/ParseException.h
+)
 
 add_executable(Tests ${TEST_FILES})

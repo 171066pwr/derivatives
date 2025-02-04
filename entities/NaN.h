@@ -20,8 +20,8 @@ public:
     std::string toString() override;
     bool addElement(BaseEntity * element) override;
     BaseEntity *evaluateFunction() override ;
-    BaseEntity *evaluateValue(double x) override;
-    bool updateAndGetIsFunction() override;
+    BaseEntity *evaluateValue(double x, string variable) override;
+    bool isFunction(string symbol) override;
 };
 
 #endif //TESTS_NAN_H

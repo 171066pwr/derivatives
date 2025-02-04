@@ -61,9 +61,9 @@ BaseEntity *Fraction::evaluateFunction() {
     return result->evaluateFunction();
 }
 
-BaseEntity *Fraction::evaluateValue(double x) {
-    BaseEntity *numerator = getNumerator()->evaluateValue(x);
-    BaseEntity *denominator = getDenominator()->evaluateValue(x);
+BaseEntity *Fraction::evaluateValue(double x, string variable) {
+    BaseEntity *numerator = getNumerator()->evaluateValue(x, variable);
+    BaseEntity *denominator = getDenominator()->evaluateValue(x, variable);
     BaseEntity *result = handleEdgeCases(numerator, denominator);
     if(this != result)
         return result;
@@ -75,25 +75,20 @@ BaseEntity *Fraction::evaluateValue(double x) {
     return evaluateAndDelete(new Fraction(denominator, numerator, multiplier));
 }
 
-BaseEntity * Fraction::evaluateDerivative() {
-    if(!isFunction)
+BaseEntity * Fraction::evaluateDerivative(string variable) {
+    if(!isFunction(variable))
         return Scalar::zero();
     Sum *numerator = new Sum();
     Multiplication *denominator = new Multiplication();
     Fraction *derivative = new Fraction(denominator, numerator, multiplier);
 
     numerator->addElements({new Multiplication(1.0, {
-        this->getNumerator()->evaluateDerivative(), this->getDenominator()->copy()})});
+        this->getNumerator()->evaluateDerivative(variable), this->getDenominator()->copy()})});
     numerator->addElements({new Multiplication(-1.0, {
-        this->getNumerator()->copy(), this->getDenominator()->evaluateDerivative()})});
+        this->getNumerator()->copy(), this->getDenominator()->evaluateDerivative(variable)})});
 
     denominator->addElements({new Multiplication(1.0, {getDenominator()->copy(), getDenominator()->copy()})});
     return derivative;
-}
-
-bool Fraction::updateAndGetIsFunction() {
-    isFunction = false;
-    return BaseEntity::updateAndGetIsFunction();
 }
 
 BaseEntity *Fraction::getNumerator() {

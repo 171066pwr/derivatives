@@ -40,12 +40,8 @@ BaseEntity * UnsupportedDerivative::evaluateFunction() {
     return copy();
 }
 
-BaseEntity * UnsupportedDerivative::evaluateValue(double x) {
+BaseEntity * UnsupportedDerivative::evaluateValue(double x, string variable) {
     return copy();
-}
-
-bool UnsupportedDerivative::updateAndGetIsFunction() {
-    return true;
 }
 
 BaseEntity * UnsupportedDerivative::getBase() {

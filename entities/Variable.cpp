@@ -3,16 +3,7 @@
 #include <utility>
 #include "Variable.h"
 
-string Variable::SUBSTITUTE_SYMBOL = "x";
 map<string, double> Variable::constants {std::make_pair("e", M_E), std::make_pair("pi", M_PI)};
-
-void Variable::changeSubstituteSymbol(string symbol) {
-    SUBSTITUTE_SYMBOL = symbol;
-}
-
-string Variable::getSubstituteSymbol() {
-    return SUBSTITUTE_SYMBOL;
-}
 
 vector<string> Variable::getConstants() {
     vector<string> result;
@@ -21,13 +12,9 @@ vector<string> Variable::getConstants() {
     return result;
 }
 
-Variable::Variable(double multiplier) : BaseEntity(multiplier) {
-    Variable::updateAndGetIsFunction();
-}
+Variable::Variable(double multiplier) : BaseEntity(multiplier) {}
 
-Variable::Variable(string symbol = SUBSTITUTE_SYMBOL, double multiplier): BaseEntity(multiplier), symbol(std::move(symbol)) {
-    Variable::updateAndGetIsFunction();
-}
+Variable::Variable(string symbol, double multiplier): BaseEntity(multiplier), symbol(std::move(symbol)) {}
 
 BaseEntity *Variable::copy() {
     return new Variable(symbol, multiplier);
@@ -51,11 +38,11 @@ std::string Variable::toString() {
                   "-" : NumberUtils::toString(multiplier)) + symbol;
 }
 
-BaseEntity *Variable::evaluateValue(double x) {
+BaseEntity *Variable::evaluateValue(double x, string variable) {
     if (isZero())
         return Scalar::zero();
     BaseEntity * result;
-    if(symbol == SUBSTITUTE_SYMBOL) {
+    if(symbol == variable) {
         result = evaluate(x);
     } else if(constants.find(symbol) != constants.end()) {
         result = evaluate(constants[symbol]);
@@ -65,8 +52,8 @@ BaseEntity *Variable::evaluateValue(double x) {
     return result;
 }
 
-BaseEntity * Variable::evaluateDerivative() {
-    if (updateAndGetIsFunction())
+BaseEntity * Variable::evaluateDerivative(string variable) {
+    if (isFunction(variable))
         return new Scalar(multiplier);
     return Scalar::zero();
 }
@@ -75,6 +62,6 @@ Scalar *Variable::evaluate(double x) {
     return new Scalar(multiplier * x);
 }
 
-bool Variable::updateAndGetIsFunction() {
-    return isFunction = (symbol == SUBSTITUTE_SYMBOL);
+bool Variable::isFunction(string symbol) {
+    return this->symbol == symbol;
 }

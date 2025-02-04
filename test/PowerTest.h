@@ -5,7 +5,7 @@
 
 class PowerTest: public EntityTest {
 public:
-    void runTest(string msg) override {
+    void runTest(const string &msg) override {
         EntityTest::runTest(msg);
         testEqualsOperators();
         testEvaluation();

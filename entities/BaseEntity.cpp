@@ -53,8 +53,6 @@ std::string BaseEntity::toString() {
 }
 
 bool BaseEntity::addElement(BaseEntity * element) {
-    if(element->isFunction)
-        this->isFunction = true;
     elements.push_back(element);
     return true;
 }
@@ -72,7 +70,6 @@ BaseEntity * BaseEntity::evaluateFunction() {
         return Scalar::zero();
 
     if (elements.size() > 0) {
-        isFunction = false;
         BaseEntity *evaluated;
         for(int i = 0; i < elements.size(); i++) {
             evaluated = elements[i]->evaluateFunction();
@@ -83,7 +80,6 @@ BaseEntity * BaseEntity::evaluateFunction() {
                 delete elements[i];
                 elements[i] = evaluated;
             }
-            isFunction = isFunction || evaluated->isFunction;
         }
     }
     return this;
@@ -96,31 +92,39 @@ BaseEntity * BaseEntity::evaluateFunction() {
  * For consistency I should probably also do it while evaluating isFunction, will think about it later.
 */
 BaseEntity *BaseEntity::evaluateValue(double x) {
+    return evaluateValue(x, "x");
+}
+
+BaseEntity * BaseEntity::evaluateValue(double x, string variable) {
     if (isZero())
         return Scalar::zero();
     return this;
 }
 
-void BaseEntity::evaluateElementsValue(double x, BaseEntity *entity) {
-    for(int i = 0; i < elements.size(); i++){
-        entity->addElement(elements[i]->evaluateValue(x));
-    }
+void BaseEntity::evaluateElementsValue(double x, string variable, BaseEntity *entity) {
+    for(int i = 0; i < elements.size(); i++)
+        entity->addElement(elements[i]->evaluateValue(x, variable));
 }
 
-BaseEntity *BaseEntity::evaluateDerivative() {
-    if(!isFunction)
+BaseEntity * BaseEntity::recursiveFunctionEvaluation() {
+    BaseEntity *result = this->evaluateFunction();
+    if (*this != *result)
+        replace(result, result->recursiveFunctionEvaluation());
+    return result;
+}
+
+BaseEntity *BaseEntity::evaluateDerivative(string variable) {
+    if(!isFunction(variable))
         return Scalar::zero();
     return copy();
 }
 
-bool BaseEntity::updateAndGetIsFunction() {
-    for(int i = 0; i < elements.size(); i++) {
-        if(elements[i]->isFunction) {
-            isFunction = true;
-            break;
-        }
+bool BaseEntity::isFunction(string symbol) {
+    for(auto & element : elements) {
+        if (element->isFunction(symbol))
+            return true;
     }
-    return isFunction;
+    return false;
 }
 
 BaseEntity *BaseEntity::evaluateAndDelete(BaseEntity *entity) {
