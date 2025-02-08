@@ -1,4 +1,5 @@
 #include "BaseEntity.h"
+#include <algorithm>
 #include "../utils/NumberUtils.h"
 #include "Scalar.h"
 

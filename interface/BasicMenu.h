@@ -126,7 +126,6 @@ struct ChoiceMenu {
             }
         }
     }
-
 };
 
 #endif //BASICMENU_H

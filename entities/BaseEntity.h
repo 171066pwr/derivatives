@@ -1,11 +1,9 @@
-#include <algorithm>
-
-#include "../utils/NumberUtils.h"
 #ifndef DERIVATIVES_BASEENTITY_H
 #define DERIVATIVES_BASEENTITY_H
 
 #include <string>
 #include <vector>
+#include "../utils/NumberUtils.h"
 
 using namespace std;
 

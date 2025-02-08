@@ -20,7 +20,11 @@ public:
     }
 
     const char *what() const noexcept override {
-        return message;
+        string msg(message);
+        msg = msg + ": " + cause;
+        char *result = new char[msg.size()+1];
+        result = strcpy(result, msg.c_str());
+        return result;
     }
 
     const char *getGraphicIndicator() const {

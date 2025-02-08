@@ -20,8 +20,7 @@ BaseEntity *BasicMenu::parse(const std::string& input, const Parser& parser) {
         BaseEntity *entity = parser.parseFromString(input);
         return entity;
     } catch(const ParseException &e) {
-        cout << e.getGraphicIndicator() << endl;
-        cout << e.what() << endl;
+        printf("\033[31m%s\033[0m\n%s\n", e.getGraphicIndicator(), e.what());
         return nullptr;
     }
 }
@@ -31,7 +30,7 @@ bool BasicMenu::loadEntity() {
     string variable = "x";
     cout << "Wprowadz funkcje:\n";
 
-    Parser parser = Parser(Variable::getConstants());
+    Parser parser = Parser();
     BaseEntity *entity = nullptr;
     while (entity == nullptr) {
         if (fgets(str,100, stdin) == NULL || strcmp(str, "\n") == 0)

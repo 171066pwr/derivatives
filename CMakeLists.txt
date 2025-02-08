@@ -45,6 +45,8 @@ set(TEST_FILES test/MainTest.cpp entities/BaseEntity.cpp entities/BaseEntity.h i
         entities/UnsupportedDerivative.cpp
         entities/UnsupportedDerivative.h
         interface/ParseException.h
+        test/ParserTest.cpp
+        test/ParserTest.h
 )
 
 add_executable(Tests ${TEST_FILES})

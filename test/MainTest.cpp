@@ -5,6 +5,7 @@
 #include "MultiplicationTest.h"
 #include "PowerTest.h"
 #include "FractionTest.h"
+#include "ParserTest.h"
 
 void runTests();
 
@@ -21,6 +22,7 @@ void runTests() {
     PowerTest powerTest;
     FractionTest fractionTest;
     DerivativesTest derivativesTest;
+    ParserTest parserTest;
 
     baseEntityTest.runTest("BaseEntity tests");
     variableTest.runTest("Variable tests");
@@ -29,4 +31,5 @@ void runTests() {
     powerTest.runTest("Power tests");
     fractionTest.runTest("Fraction tests");
     derivativesTest.runTest("Derivatives tests");
+    parserTest.runTest("Parser tests");
 }
