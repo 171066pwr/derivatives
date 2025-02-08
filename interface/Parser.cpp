@@ -1,5 +1,6 @@
 #include "Parser.h"
 
+#include <algorithm>
 #include <string>
 #include "ParseException.h"
 #include "../entities/BaseEntity.h"
@@ -109,17 +110,17 @@ double Parser::parseDouble(const char *source, int *index) const {
 string Parser::parseSymbol(const char *source, int *index) const {
     char * ptr = nullptr;
     int i = *index;
-    while (source[i] >= 'a' && source[i] <= 'z' && source[i] != '\0')
+    string symbol;
+    while (source[i] >= 'a' && source[i] <= 'z' && source[i] != '\0') {
         ++i;
-    string symbol(source + *index, source + *index + i);
-    //if symbol not recognized, then return just single letter
-    for (auto e: symbols) {
-        if (strcmp(e.c_str(), symbol.c_str()) == 0) {
-            *index = *index + i;
+        symbol = string(source + *index, source + i);
+        if (std::find(symbols.begin(), symbols.end(), symbol) != symbols.end()) {
+            *index = i;
             return symbol;
         }
     }
+    //if symbol not recognized, then return just single letter
     symbol = string(source + *index, source + *index + 1);
-    *index = *index + 1;
+    *index += 1;
     return symbol;
 }
