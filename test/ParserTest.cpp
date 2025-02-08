@@ -94,7 +94,7 @@ void ParserTest::testNoOperationMultiply() {
     input = "xy2.1(x(1.2ypi)";
     replace(result, parseWithoutException(input, p));
     if (result != nullptr) {
-        replace(expected, new Multiplication(1.0, {new Variable(), new Variable("y"),
+        replace(expected, new Multiplication(1.0, {new Variable(), new Variable("y"), new Scalar(2.1),
             new Multiplication(1.0, {new Variable("x"), new Multiplication(1.0,
                 {new Scalar(1.2), new Variable("y"), new Variable("pi")})
             })

@@ -71,6 +71,7 @@ BaseEntity *Parser::parse(const char *source, int *index) const {
     if (entities.empty())
         throw ParseException(i, "Entity body missing");
     if (entities.size() == 1) {
+        *index = i;
         return entities[0];
     }
 
