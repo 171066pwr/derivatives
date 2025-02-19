@@ -91,7 +91,7 @@ void BasicMenu::display() {
     while (repeat) {
         cls();
         printf("Program liczy proste pochodne. Pozostalo do zaimplementowania:\n- funkcje trygonometryczne\n- logarytm\n");
-        printf("- funkcja wykladnicza (mozna ja wprowadzic, ale wynikiem bedzie nieobliczona pochodna)");
+        printf("- funkcja wykladnicza (mozna ja wprowadzic, ale wynikiem bedzie nieobliczona pochodna)\n");
         printf("- funkcja exp (sama stala 'e' jest rozpoznawana)\noraz zlozenie funkcji ogolem (bez w/w nie bylo potrzebne)\n\n");
 
         repeat = loadEntity();

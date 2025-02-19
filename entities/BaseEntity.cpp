@@ -66,6 +66,14 @@ bool BaseEntity::addElements(std::initializer_list<BaseEntity *> list) {
     return true;
 }
 
+bool BaseEntity::addElements(vector<BaseEntity *> list) {
+    for (BaseEntity *entity: list) {
+        if (!addElement(entity))
+            return false;
+    }
+    return true;
+}
+
 BaseEntity * BaseEntity::evaluateFunction() {
     if (isZero())
         return Scalar::zero();

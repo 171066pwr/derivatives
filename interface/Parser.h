@@ -10,26 +10,45 @@
 using namespace std;
 
 class Parser {
-    vector<string> symbols;
-    BaseEntity *parse(const char *source, int *index) const;
-    double parseDouble(const char *source, int *index) const;
-    string parseSymbol(const char *source, int *index) const;
-
-    enum LastParsed {
+    enum Parsed {
         NOTHING,
-        SCALAR,
-        SYMBOL,
         ENTITY,
-        MULTIPLICATION
+        OPERATOR,
+        END
+    };
+
+    enum Operator {
+        EMPTY,
+        PLUS,
+        MINUS,
+        MULTIPLY,
+        DIVIDE,
+        POWER
     };
 
     enum Operation {
         NONE,
-        PLUS,
-        MINUS,
-        MULTIPLY,
-        DIVIDE
+        MULTIPLICATION
     };
+
+    struct Status {
+        Parsed parsed;
+        Operator op;
+        BaseEntity *entity;
+
+        Status() {
+            parsed = NOTHING;
+            op = EMPTY;
+            entity = nullptr;
+        }
+    };
+
+    vector<string> symbols;
+    BaseEntity *parse(const char *source, int *index) const;
+    Status parseNext(const char *source, int *index) const;
+    double parseDouble(const char *source, int *index) const;
+    string parseSymbol(const char *source, int *index) const;
+
 public:
     explicit Parser(vector<string> symbols = Variable::getConstants()): symbols(std::move(symbols)){}
     BaseEntity *parseFromString(const string& str) const;

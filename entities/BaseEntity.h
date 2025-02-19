@@ -38,7 +38,8 @@ public:
  */
     virtual bool addElement(BaseEntity *element);
     virtual bool addElements(initializer_list<BaseEntity *> list);
-    /* todo - might be useful
+    virtual bool addElements(vector<BaseEntity *> list);
+    /* todo - sorting and comparator for grouping elements in the map
      * virtual void sortElements();
      * */
     virtual std::string toString();
@@ -102,6 +103,12 @@ public:
 
     BaseEntity *getElement(int index) {
         return (index >= 0 && index < elements.size()) ? elements[index] : nullptr;
+    }
+
+    BaseEntity *popLastElement() {
+        BaseEntity *last = elements.empty() ? nullptr : elements.back();
+        elements.pop_back();
+        return last;
     }
 
     void replaceElement(BaseEntity *oldElement, BaseEntity *newElement);
