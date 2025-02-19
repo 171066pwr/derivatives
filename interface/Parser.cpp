@@ -20,14 +20,7 @@ BaseEntity *Parser::parse(const char *source, int *index) const {
     vector<BaseEntity *> entities;
     Status prevStatus;
     Status status;
-    Status nextStatus;
-
-    // Parsed lastParsed = NOTHING;
-    // Parsed parsed = NOTHING;
-    Operation operation = NONE;
     Operation lastOperation = NONE;
-
-    //int i = *index;
 
     while (status.parsed != END) {
         status = parseNext(source, index);
@@ -46,7 +39,7 @@ BaseEntity *Parser::parse(const char *source, int *index) const {
         if (status.parsed == ENTITY) {
             if (prevStatus.parsed == ENTITY) {
                 if (lastOperation == NONE) {
-                    BaseEntity *multi = new Multiplication(1.0, {prevStatus.entity, status.entity});
+                    BaseEntity *multi = new Multiplication(1.0, {entities[entities.size() -1], status.entity});
                     entities.pop_back();
                     entities.push_back(multi);
                     lastOperation = MULTIPLICATION;
@@ -78,6 +71,7 @@ BaseEntity *Parser::parse(const char *source, int *index) const {
                             BaseEntity *fraction = new Fraction(status.entity, entities[entities.size() -1], 1.0);
                             entities.pop_back();
                             entities.push_back(fraction);
+                            lastOperation = NONE;
                         }
                         break;
                     case POWER:
@@ -99,21 +93,6 @@ BaseEntity *Parser::parse(const char *source, int *index) const {
             } else {
                 entities.push_back(status.entity);
             }
-// if (lastOperation == NONE) {
-//     if (lastParsed == ENTITY) {
-//         BaseEntity *last = entities[entities.size() - 1];
-//         BaseEntity *multi = new Multiplication(1.0, {last, current});
-//         entities.pop_back();
-//         entities.push_back(multi);
-//         lastParsed = MULTIPLICATION;
-//     } else if (lastParsed == MULTIPLICATION) {
-//         BaseEntity *multi = entities[entities.size() - 1];
-//         multi->addElement(current);
-//     } else if (lastParsed == NOTHING) {
-//         entities.push_back(current);
-//         lastParsed = parsed;
-//     }
-// } else if (lastOperation == NONE) {}
         }
 
         if (status.parsed == END) {
@@ -124,7 +103,6 @@ BaseEntity *Parser::parse(const char *source, int *index) const {
         prevStatus = status;
     }
 
-
     if (entities.size() == 0) {
         throw ParseException(*index, "Empty expression");
     }
@@ -134,24 +112,6 @@ BaseEntity *Parser::parse(const char *source, int *index) const {
     BaseEntity *result = new Sum();
     result->addElements(entities);
     return result;
-
-
-    // BaseEntity *result;
-    // switch(operation) {
-    //     case PLUS:
-    //     case MINUS:
-    //         result = new Sum(1.0);
-    //         break;
-    //     case MULTIPLY:
-    //         result = new Multiplication(1.0);
-    //         break;
-    //     default:
-    //         throw ParseException(i,"Invalid operation");
-    // }
-    // for (BaseEntity * entity : entities) {
-    //     result->addElement(entity);
-    // }
-    // return result;
 }
 
 Parser::Status Parser::parseNext(const char *source, int *index) const {
